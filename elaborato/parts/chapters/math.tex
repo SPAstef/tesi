@@ -1,0 +1,238 @@
+\chapter{Mathematical Background}
+In this chapter we will introduce all the mathematical concepts behind ZKP and ZK-friendly 
+functions.
+While we decided, for completeness, to include even some of the more fundamental notions, we still
+expect the reader to have at least a rough idea of these concepts.
+\Cref{sec:prime_fields} will introduce prime fields, cyclic groups other related notions.  
+
+\section{Finite algebra}\label{sec:prime_fields}
+In algebra, a \emph{tuple} consisting of one or more \emph{sets} together with one or more 
+\emph{operations} over the sets is called an \emph{algebraic structure}.
+Such structures can be organized according to a quite wide taxonomy, depending on whether 
+they satisfy certain properties or not. 
+We will denote sets with capital letters (e.g. \(S\)), a generic operation with a circled dot 
+\(\odot \) and algebraic structures with blackboard bold letters (e.g. \(\mathbb{A}\)).
+We will also denote elements of a set with lowercase letters \(a, b, c, \dots \) and variables 
+over a set with lowercase letters \(x, y, z, \dots \).
+Finally, we will often use the term algebra to mean algebraic structure, whenever we belive the 
+meaning to be clear from the context.
+\begin{remark}
+  Some letters will be used reserved to denote some common algebraic structures. 
+  In particular, \(\mathbb{B}\) will denote the boolean algebra, while \(\mathbb{N}, \mathbb{Z}, 
+  \mathbb{Q}, \mathbb{R}\) and \(\mathbb{C}\) will denote, respectively, the 
+  natural, integer, rational, real and complex numbers.
+\end{remark}
+
+We will denote the \emph{cardinality} of set \(S\) with \(\abs{S}\), and use the same notation for 
+the \emph{arity} of an operation: for example, if \(\odot \) is a binary operation, like integer 
+addition\footnote{if considered as a relation, addition would actually be ternary.}, then 
+\(\abs{\odot} = 2\).
+As a common abuse of notation in literature, when an algebraic structure \(\mathbb{A}\) has exactly 
+one \emph{underlying set} \(A\) we will identify the two, e.g.\ by writing \(x \in \mathbb{A}\) to 
+mean \(x \in A\).
+
+For computer science applications, algebras with a finite number of elements play a central role.
+\begin{definition}[Finite algebra]
+  Given an algebraic structure \(\mathbb{A}\), the \emph{order} \(\abs{\mathbb{A}}\) denotes the 
+  number of elements inside (the underlying set of) \(\mathbb{A}\).
+  If \(\abs{\mathbb{A}} \in \mathbb{N}\), then \(\mathbb{A}\) is a finite algebra.
+\end{definition}
+
+Elements of differents algebraic structures can be associated through \emph{morphisms}.
+\begin{definition}[Homomorphism]
+  Given two algebras \(\mathbb{A} = \Tuple{A, \odot_{1}, \dots, \odot_{n}}\), 
+  \(\mathbb{A}' = \Tuple{A', \odot'_{1}, \dots, \odot'_{n}}\) such that 
+  \(\forall i \le n\colon \abs{\odot_i} = \abs{\odot'_i} = a_i\), an homomorphism is a function 
+  \(h\colon A \to A'\) such that:
+  \begin{align*}
+    & \forall i \le n, \forall x_1,\dots, x_{a_{i}} \in A\colon 
+    h(\odot_{i}(x_{1}, \dots, x_{a_{i}})) = \odot'_{i}(h(x_{1}), \dots, h(x_{a_{i}})) && 
+    \textnormal{(linearity)}
+  \end{align*}
+  We say that \(\mathbb{A}\) is homomorphic to \(\mathbb{A}'\) through \(h\).
+\end{definition}
+
+\begin{definition}[Isomorphism]
+  An isomorphism is an homomorphism whose inverse is also an homomorphism.
+  Given two algebras \(\mathbb{A}\) and \(\mathbb{A}'\), if there exists some isomorphism 
+  \(h\colon \mathbb{A} \to \mathbb{A}'\) we write \(\mathbb{A} \cong \mathbb{A}'\).
+\end{definition}
+
+\begin{definition}[Endomorphism, Automorphism]
+  An endomorphism is a homomorphism from an algebraic structure \(\mathbb{A}\) to itself.
+  An automorphism is an endomorphism which is also an isomorphism.
+\end{definition}
+
+\subsection{Groups}
+We will now introduce some important classes of algebraic structures equipped with one fundamental 
+operation. 
+\begin{definition}[Monoid]
+  A monoid is a pair \(\mathbb{M} = \Tuple{M, \odot} \), where \(M\) is the 
+  underlying set and \(\odot\colon M \times M \to M\) is the \emph{composition} 
+  operation, such that the following properties are satisfied: 
+  \begin{align*}
+    & \forall x,y \in M\colon x \odot \left(y \odot z\right) = \left(x \odot y\right) \odot z
+      && \textnormal{(\emph{associativity})} \\
+    & \exists \algid \in M\colon \forall x \in M\colon x \odot \algid = x
+      && \textnormal{(\emph{identity element})}
+  \end{align*}
+  \(\mathbb{M}\) is a \emph{commutative (or abelian) monoid}, if it also holds that:
+  \begin{align*}
+    & \forall x,y \in M\colon x \odot y = y \odot x && (\emph{commutativity})
+  \end{align*}
+  Finally:
+  \begin{equation}\label{eq:exponentiation}    
+    \forall x \in \mathbb{M}, \forall k \in \mathbb{N}\colon x^{k} = 
+    \begin{cases}
+      \algid & k = 0 \\
+      x^{k-1} \odot x & k > 0
+    \end{cases}
+  \end{equation}
+\end{definition}
+
+\begin{definition}[Cyclic Monoid]
+  A cyclic monoid is a monoid \(\mathbb{M} = \Tuple{M, \odot}\) such that:
+  \[\exists g \in M\colon \mathbb{M} = \gengroup{g} = 
+  \Tuple{\Set{g^k}_{k \in \mathbb{N}}, \odot} \]  
+\end{definition}
+
+\begin{definition}[Group]
+  A group is a monoid \(\mathbb{G} = \Tuple{G, \odot} \), such that: 
+  \begin{align*}    
+    & \forall x \in G\colon \exists x^{-1} \in G\colon x \odot x^{-1} = \algid
+    && \textnormal{(\emph{inverse element})}
+  \end{align*}
+  With the notion of inverse element, we can rewrite and extend \Cref{eq:exponentiation} 
+  for groups as follows:
+  \[
+    \forall x \in \mathbb{G},\forall k \in \mathbb{Z}\colon x^k =
+    \begin{cases}
+      x^{k-1} \odot x & k \ge 0 \\
+      x^{k+1} \odot x^{-1} & k < 0
+    \end{cases}
+  \]
+  If \(\mathbb{G}\) is also a commutative (resp.\ cyclic) monoid, then it is a 
+  commutative (resp.\ cyclic) group.
+  A group \(\mathbb{G}' = \Tuple{G', \odot'}\) is a \emph{subgroup} of \(\mathbb{G}\) if 
+  \(G' \subseteq G\) and \(\odot' \subseteq \odot \).
+\end{definition}
+
+The identity element \(\algid \) of a monoid is typically denoted with \(1\) in 
+numeric algebras, when the composition operation resembles standard multiplication, or by \(0\) 
+when the composition operation resembles standard addition. 
+We use the notation \(\algid_{\mathbb{A}}\) (or \(1_{\mathbb{A}}\), 
+\(0_{\mathbb{A}}\)) to specify the algebra over which we intend to pick the identity element, 
+dropping the subscript when \(\mathbb{A}\) is clear from the context.
+
+It is important to stress that one should be careful not to confuse the symbol and the name of an 
+operation or of a special element with its semantics: the syntax to denote the inverse element 
+\(x^{-1}\) of a group is reminiscent of standard multiplication inversion, but this is not the 
+case in general.
+When the composition operation resembles standard addition, the inverse is more likely denoted 
+with \(-x\).
+
+\begin{example}
+  The algebra \(\mathbb{A} = \mathbb{Z} \setminus \Set{\times}\) (i.e.\ integer numbers 
+  without multiplication) is an abelian group: 
+  addition is associative and commutative, the identity element is 
+  \(\algid_{\mathbb{A}} = 0\), and every number \(x\) has an inverse \(x^{-1} = -x\) 
+  (e.g. \({42}^{-1} = -42\)). 
+\end{example}
+
+\begin{example}\label{ex:endo_group}
+  Given a commutative group \(\mathbb{G} = \Tuple{G, \odot}\), consider the algebra 
+  \(\Endset{\mathbb{G}}_{+} = \Tuple{H, +}\), where \(H\) is the set endomorphisms over 
+  \(\mathbb{G}\) and \(+\colon H \times H \to H\) is defined as: 
+  \(\left(h_1 + h_2\right)\left(x\right) \equiv \left(h_1 + h_2\right)\left(x\right)\).
+
+  \(\Endset{\mathbb{G}}_{+}\) is a commutative group: \(+\) is associative and 
+  commutative, the identity element is \(\algid_{\Endset{\mathbb{G}}_{+}} = z\), where
+  \(z\) is the zero endomorphism (i.e. \(\forall x \in G\colon z\left(x\right) = 
+  \algid_{\mathbb{G}}\)); finally, every homomorphism \(h \in H\) has an inverse 
+  \(h^{-1} = -h\) such that \(\forall x \in G\colon \left(-h\right)\left(x\right) = 
+  {h\left(x\right)}^{-1}\) (in this example, using the \(h^{-1}\) notation causes confusion with 
+  the inverse function!).
+\end{example}
+
+\begin{example}\label{ex:endo_monoid}
+  Consider now the algebra \(\Endset{\mathbb{G}}_{\circ} = \Tuple{H, \circ}\) 
+  where \(\mathbb{G}\) and \(H\) are defined as in \Cref{ex:endo_group}, and 
+  \(\circ\colon H \times H \to H\) is function composition: 
+  \(\left(h_1 \circ h_2\right)\left(x\right) \equiv h_1\left(h_2\left(x\right)\right)\).
+  
+  \(\Endset{\mathbb{G}}_{\circ}\) is a monoid: function composition is associative, and the 
+  identity element is \(\algid_{\Endset{\mathbb{G}}_{\circ}} = \fooid \), where \(\fooid \) is the
+  identity endomorphism (i.e. \(\forall x \in G\colon \fooid\left(x\right) = x\)). 
+\end{example}
+
+\subsection{Fields}
+Many algebraic structures rely on two fundamental operations, called \emph{addition} and 
+\emph{multiplication}: two important types of such structures are \emph{rings} and \emph{fields}.
+\begin{definition}[Ring]
+  A ring is a triple \(\mathbb{O} = \Tuple{O, \oplus, \otimes}\) where \(O\) is the 
+  underlying set, \(\oplus\colon O \times O \to O\) is the \emph{addition} operation and 
+  \(\otimes\colon O \times O \to O\) is the \emph{multiplication} operation, sukh that the 
+  following properties are satisfied:
+  \begin{align*}
+    & \mathbb{O}_{\oplus} = \mathbb{O} \setminus \Set{\otimes}
+      \textnormal{ is an abelian group} \\
+    & \mathbb{O}_{\otimes} = \mathbb{O} \setminus \Set{\oplus} 
+      \textnormal{ is a monoid} \\
+    & \forall x,y,z \in O\colon x \otimes \left(y \oplus z\right) = 
+      \left(x \otimes y\right) \oplus \left(x \otimes z\right) && (\emph{left distributivity})\\
+    & \forall x,y,z \in O\colon \left(y \oplus z\right) \otimes x = 
+      \left(y \otimes x\right) \oplus \left(z \otimes x\right) && (\emph{right distributivity})
+  \end{align*}
+  If \(\mathbb{O}_{\otimes}\) is a commutative monoid, then \(\mathbb{O}\) is a 
+  \emph{commutative (abelian) ring}.
+  %(in this case, either one of the two distributivity properties becomes redundant).
+\end{definition}
+
+Given a ring \(\mathbb{O}\) and an element \(x \in \mathbb{O}\), 
+we denote its inverse w.r.t.\ addition as \(-x\), while maintaining the notation \(x^{-1}\) for 
+the multiplicative inverse.
+Furthermore, the identity element w.r.t.\ addition, denoted \(\algid_{\oplus}\), will also be 
+denoted as \(0\), while the identity element w.r.t.\ multiplication, denoted 
+\(\algid_{\otimes}\), will maintain its alternative notation as \(1\).
+
+\begin{definition}[Field]
+  A field is a commutative ring \(\mathbb{F} = \Tuple{F, \oplus, \otimes}\) such that
+  \(0 \neq 1\) and \(\mathbb{F}_{\otimes} \setminus \Set{0}\) is a commutative group.
+\end{definition}
+
+Fields are one of the most important and studied algebraic structures: the algebra of real numbers 
+\(\mathbb{R}\) is a field, as is the algebra of complex numbers \(\mathbb{C}\).
+\begin{remark}
+  Given the set of integers \(Z_q = \Set{0, \dots, q-1}\), we denote with \(\oplus_q\) 
+  integer sum modulo \(q\), and with \(\otimes_q\) integer multiplication modulo \(q\).
+  The algebra \(\mathbb{Z}_q = \Tuple{Z_q, \oplus_q, \otimes_q}\) is a finite ring for any 
+  \(q \in \mathbb{N}\), and it is a finite field if and only if \(q\) is prime.
+\end{remark}
+
+\begin{example}
+  Boolean circuits with \textsc{xor} and \textsc{and} gates behave like elements of the boolean 
+  field \(\mathbb{B} = \Tuple{\Set{\bot, \top}, \bitxor, \bitand} \).
+  It is easy to show that \(\mathbb{B} \cong \mathbb{Z}_2\).
+  Similarly, \(k\)-bit unsigned integers sum and multiplication work as in \(\mathbb{Z}_{2^k}\).
+\end{example}
+
+\begin{example}
+  Given an abelian group \(\mathbb{G}\), the algebra \(\mathbb{H}_{\mathbb{G}} = 
+  \Endset{\mathbb{G}} = \Endset{\mathbb{G}}_{+} \cup \Endset{\mathbb{G}}_{\circ}\) 
+  is the \emph{endomorphism ring} of \(\mathbb{G}\): \(\Endset{\mathbb{G}}_{+}\) is an abelian 
+  group, \(\Endset{\mathbb{G}}_{\circ}\) is a monoid 
+  (cfr.\ \Cref{ex:endo_group,ex:endo_monoid}), and it is easy to show that \(\circ \)
+  distributes over \(+\) both on the left and the right.
+\end{example}
+
+\subsection{Vector spaces}
+It is possible to naturally extend the underlying operations of a field over tuples of field 
+elements to obtain a \emph{vector space}.
+\begin{definition}[Vector space]
+  A vector space is a quadruple \(\mathbb{V} = \Tuple{V, \mathbb{F}, +, \odot}\) where 
+  \(V\) is the underlying vector set, \(\mathbb{F}\) is the underlying field, 
+  \(+\colon V \times V \to V\) is the \emph{vector addition} operation and 
+  \(\odot\colon \mathbb{F} \times V \to V\) is the \emph{scalar multiplication} operation, such 
+  that \(\mathbb{V}_{+} = \Tuple{V, +}\) is a commutative group, and \(\odot \) is an 
+  homomorphism between \(\mathbb{F}\) and \(\Endset{\mathbb{V}_{+}}\).
+\end{definition} 

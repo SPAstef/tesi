@@ -28,13 +28,37 @@
 %% pdfx: per generare il PDF/A per l'archiviazione. Necessario solo per la versione finale
 %\usepackage[a-1b]{pdfx}
 %% hyperref: Regola le impostazioni della creazione del PDF... pi� tante altre cose. Ricordarsi di usare l'opzione pdfa.
-\usepackage[pdfa]{hyperref}
-\hypersetup{hidelinks}
 %% tocbibind: Inserisce nell'indice anche la lista delle figure, la bibliografia, ecc.
-\usepackage{subfig}
-\usepackage{lmodern}
-\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{bm}
+\usepackage{booktabs}
+\usepackage[justification=centering]{caption}
 \usepackage{comment}
+\usepackage[T1]{fontenc}
+\usepackage[pdfa]{hyperref}
+\usepackage{cleveref}
+\usepackage{lmodern}
+\usepackage{mleftright}
+\usepackage{subfig}
+\usepackage{tikz}
+
+\mleftright{}
+\hypersetup{hidelinks}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{example}{Example}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
 %\usepackage[export]{adjustbox}
 
 %% --- Stili di pagina disponibili (comando \pagestyle) ---
@@ -48,12 +72,12 @@
 \maketitle
 
 %% Dedica (opzionale)
-\begin{dedication}
-	To <somebody\_special>,\par for being with me all the way through.
-\end{dedication}
+%\begin{dedication}
+%	To <somebody\_special>,\par for being with me all the way through.
+%\end{dedication}
 
 %% Ringraziamenti (opzionali)
-\acknowledgements{Sed vel lorem a arcu faucibus aliquet eu semper tortor. Aliquam dolor lacus, semper vitae ligula sed, blandit iaculis leo. Nam pharetra lobortis leo nec auctor. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Fusce ac risus pulvinar, congue eros non, interdum metus. Mauris tincidunt neque et aliquam imperdiet. Aenean ac tellus id nibh pellentesque pulvinar ut eu lacus. Proin tempor facilisis tortor, et hendrerit purus commodo laoreet. Quisque sed augue id ligula consectetur adipiscing. Vestibulum libero metus, lacinia ac vestibulum eu, varius non arcu. Nam et gravida velit.}
+%\acknowledgements{Sed vel lorem a arcu faucibus aliquet eu semper tortor. Aliquam dolor lacus, semper vitae ligula sed, blandit iaculis leo. Nam pharetra lobortis leo nec auctor. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Fusce ac risus pulvinar, congue eros non, interdum metus. Mauris tincidunt neque et aliquam imperdiet. Aenean ac tellus id nibh pellentesque pulvinar ut eu lacus. Proin tempor facilisis tortor, et hendrerit purus commodo laoreet. Quisque sed augue id ligula consectetur adipiscing. Vestibulum libero metus, lacinia ac vestibulum eu, varius non arcu. Nam et gravida velit.}
 
 %% Sommario (opzionale)
 \abstract{
@@ -85,14 +109,12 @@
 
 %% Parte
 %% La suddivisione in parti � opzionale; solitamente sono sufficienti i capitoli.
-\include{chapters/intro.tex}
+\input{parts/chapters/intro.tex}
 
-\part{Foundations}\label{part:foundation}
+\input{parts/foundations.tex}
 %% Capitolo
-\include{chapters/math.tex}
 \chapter{Computational Background}
 \section{Turing Machines}
-\section{}
 \chapter{Cryptographical Background}
 \section{Hash functions}
 \section{Verification Trees}
