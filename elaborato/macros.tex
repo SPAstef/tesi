@@ -1,11 +1,33 @@
 \newcommand{\Stamp}{\texttt{Stamp}}
 \newcommand{\Blocc}{\texttt{Blocc}}
-\newcommand{\abs}[1]{\left\lvert#1\right\rvert}
 \newcommand{\gengroup}[1]{\left\langle#1\right\rangle}
 \newcommand{\bitand}{\mathbin{\textnormal{\textsc{and}}}}
 \newcommand{\bitxor}{\mathbin{\textnormal{\textsc{xor}}}}
 \newcommand{\algid}{\mathrm{e}}
 \newcommand{\Endset}[1]{\mathrm{End}\left(#1\right)}
-\newcommand{\Set}[1]{\left\{#1\right\}} %chktex 21
-\newcommand{\Tuple}[1]{\left(#1\right)} %chktex 21
 \newcommand{\fooid}{\mathrm{id}}
+\newcommand{\explicit}[1]{\widehat{#1}}
+
+\DeclarePairedDelimiter{\Pipes}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\Braces}{\{}{\}} %chktex 21
+\DeclarePairedDelimiter{\Brackets}{[}{]} %chktex 9
+\DeclarePairedDelimiter{\Parens}{(}{)}   %chktex 9
+
+\newcommand{\abs}[1]{\Pipes*{#1}}
+\newcommand{\Set}[1]{\Braces*{#1}}
+\newcommand{\Tuple}[1]{\Parens*{#1}}
+\newcommand{\call}[2]{#1\Parens*{#2}}
+\newcommand{\extend}[2]{#1\Brackets*{#2}}
+
+\newcommand{\BigO}{\mathcal{O}}
+\newcommand{\SmallO}{\textit{o}}
+\newcommand{\then}{\Rightarrow}
+\newcommand{\Ptime}{\textsc{P}}
+\newcommand{\NPtime}{\textsc{NP}}
+\newcommand{\NPcomp}{\textsc{NP-complete}}
+\newcommand{\range}[2]{{{#1}\dots{#2}}}
+\newcommand{\overbar}[1]{\mkern\ 1.5mu\overline{\mkern-1.5mu#1\mkern-1.5mu}\mkern\ 1.5mu}
+
+\makeatletter
+\newcommand*{\transpose}{{\mathpalette\@transpose{}}} %chktex 21
+\newcommand*{\@transpose}[2]{\raisebox{\depth}{\(\m@th#1\intercal \)}}
