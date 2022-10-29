@@ -1,0 +1,64 @@
+\section{Problems and complexity}
+Historically, the most important class of problems that have been analyzed are so-called
+\emph{decision problems}, i.e.\ probles whose solution is a binary \emph{yes-or-no} 
+answer~\cite{Sipser2013}.
+This perfectly suits Turing machiens as we can interpret their acceptance or rejection of the input 
+string respectively as a yes and a no answer.
+
+\begin{definition}[Kleene's closure]
+  The Kleene's closure of a set \(S\) is the set \(S^* = \bigcup_{n \in \mathbb{N}}{S^n}\).
+\end{definition}
+
+As Turing machine operate over strings in \(\Sigma^*\), also called \emph{words}, they partition 
+\(\Sigma^* \) into three sets, called \emph{languages}: the language of accepted words, 
+plus the languages of rejected words and the language of hanging words.
+\begin{definition}[Turing-recognizable language]
+  A language \(L \subseteq \Sigma^*\) is recognized by some Turing machine \(\mathcal{M}\) if 
+  \(\forall w \in L\colon \call{\mathcal{M}}{w} = \top \).
+\end{definition}
+\begin{definition}[Turing-decidable language]
+  A language \(L \subseteq \Sigma^*\) is decided by some Turing machine \(\mathcal{M}\) if it is 
+  recognized by \(\mathcal{M}\) and \(\forall w \notin L\colon \call{\mathcal{M}}{w} = \bot \).
+\end{definition}
+
+We denote the language recognized by a Turing machine \(\mathcal{M}\) with \(\call{L}{\mathcal{M}}\).
+To solve an \emph{instance} \(\Pi \) of some decision problem \textsc{prob}, we first encode the 
+instance into a string \(\Encode{\Pi} \in \Sigma^*\) such that 
+\(\Encode{\Pi} \in \call{L}{\mathcal{M}}\) if and only if the answer to \(\Pi \) is `yes'.
+
+The class of recognizable languages, called \textsc{RE}, strictly includes the class of decidable 
+languages, called \textsc{DEC}~\cite{Turing1937}.
+But even decidable languages are not all equal: their \emph{computational complexity}, that is,
+the amount of some resource which is required by a Turing machine to decide membership words in 
+function of their length, can vary wildly.
+In general, we are only interested in the \emph{asymptotic behaviour} of the machine.
+\begin{definition}[Big-O notation]
+  Given two functions \(f, g\colon \mathbb{N} \to \mathbb{N}\), then \(f = \BigO{g}\) if 
+  and only if \(\exists c,n\) such that \(\forall x \ge n\) \(\call{f}{x} \le c \cdot \call{g}{x}\).
+\end{definition}
+
+We write \(f = \BigOmega{g}\) when \(g = \BigO{f}\), and we write \(f = \BigTheta{g}\) when 
+\(f = \BigO{g}\) and \(g = \BigO{f}\).
+When there exists a TM \(\mathcal{M}\) for which some complexity metric \(\Complexity \) is 
+upper-bounded at most by a polynomial function in the length \(n\) of the input word 
+(i.e.\  \(\call{\Complexity}{\mathcal{M}} = \BigO{n^c}\) for some constant \(c \in \mathbb{N}\)), 
+we say that deciding the language is \emph{feasible} w.r.t.\  \(\Complexity \). 
+On the other hand, if \(\Complexity \) is upper-bounded at least by an 
+exponential function (i.e.\  \(\call{\Complexity}{\mathcal{M}} = \BigO{c^{n}}\) for some constant 
+\(c > 1\)), we say that the problem is \emph{infeasible} w.r.t.\  \(\Complexity \).
+The standard complexity metrics are \emph{time} \(\Time \), that is the amount of transition steps 
+a TM performs before halting, and \emph{space} \(\Space \), that is the amount of tape locations 
+visited by a TM before halting\footnote{It is always the case that \(\Space \le \Time \).}.
+
+Two of the most important 
+\emph{complexity classes}\footnote{\url{https://complexityzoo.net/Complexity_Zoo}} 
+are \textsc{PTIME} (\Ptime{} for short) and \textsc{NPTIME} (\NPtime{} for short), which are the 
+classes of languages decidable respectively by a deterministic TM and a nondeterministic TM using 
+at most polynomial time.
+While we do not know if \(\Ptime \maybeequals \NPtime \), it is widely believed that 
+\(\Ptime \subset \NPtime \): for a deterministic Turing machine, deciding \NPcomplete{} problems 
+(i.e.\ the hardest problems in \NPtime{}) will generally take an exponential amount of 
+time, and there is no known way in the physical world to build non-deterministic Turing machines.
+Although quantum computers have been shown to be able to crack problems which are believed to 
+be infeasible for standard computers, like integer factorization~\cite{Shor1994}, \NPcomplete{}
+problems seem to be out of reach also for such powerful machines.

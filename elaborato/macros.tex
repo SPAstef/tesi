@@ -1,33 +1,57 @@
-\newcommand{\Stamp}{\texttt{Stamp}}
-\newcommand{\Blocc}{\texttt{Blocc}}
-\newcommand{\gengroup}[1]{\left\langle#1\right\rangle}
-\newcommand{\bitand}{\mathbin{\textnormal{\textsc{and}}}}
-\newcommand{\bitxor}{\mathbin{\textnormal{\textsc{xor}}}}
-\newcommand{\algid}{\mathrm{e}}
-\newcommand{\Endset}[1]{\mathrm{End}\left(#1\right)}
-\newcommand{\fooid}{\mathrm{id}}
-\newcommand{\explicit}[1]{\widehat{#1}}
-
-\DeclarePairedDelimiter{\Pipes}{\lvert}{\rvert}
-\DeclarePairedDelimiter{\Braces}{\{}{\}} %chktex 21
-\DeclarePairedDelimiter{\Brackets}{[}{]} %chktex 9
-\DeclarePairedDelimiter{\Parens}{(}{)}   %chktex 9
-
-\newcommand{\abs}[1]{\Pipes*{#1}}
-\newcommand{\Set}[1]{\Braces*{#1}}
-\newcommand{\Tuple}[1]{\Parens*{#1}}
-\newcommand{\call}[2]{#1\Parens*{#2}}
-\newcommand{\extend}[2]{#1\Brackets*{#2}}
-
-\newcommand{\BigO}{\mathcal{O}}
-\newcommand{\SmallO}{\textit{o}}
-\newcommand{\then}{\Rightarrow}
-\newcommand{\Ptime}{\textsc{P}}
-\newcommand{\NPtime}{\textsc{NP}}
-\newcommand{\NPcomp}{\textsc{NP-complete}}
 \newcommand{\range}[2]{{{#1}\dots{#2}}}
-\newcommand{\overbar}[1]{\mkern\ 1.5mu\overline{\mkern-1.5mu#1\mkern-1.5mu}\mkern\ 1.5mu}
+\newcommand{\overbar}[1]{\mkern 1.5mu\overline{\mkern-1.5mu#1\mkern-1.5mu}\mkern 1.5mu} %chktex 1
 
 \makeatletter
 \newcommand*{\transpose}{{\mathpalette\@transpose{}}} %chktex 21
 \newcommand*{\@transpose}[2]{\raisebox{\depth}{\(\m@th#1\intercal \)}}
+
+\DeclarePairedDelimiter{\Pipes}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\Angular}{\langle}{\rangle}
+\DeclarePairedDelimiter{\Braces}{\{}{\}} %chktex 21
+\DeclarePairedDelimiter{\Brackets}{[}{]} %chktex 9
+\DeclarePairedDelimiter{\Parens}{(}{)}   %chktex 9
+
+\newcommand{\Set}[1]{\Braces*{#1}}
+\newcommand{\Tuple}[1]{\Parens*{#1}}
+\newcommand{\Encode}[1]{\Angular*{#1}}
+\newcommand{\call}[2]{#1\Parens*{#2}}
+\newcommand{\extend}[2]{#1\Brackets*{#2}}
+\newcommand{\abs}[1]{\Pipes*{#1}}
+\newcommand{\explicit}[1]{\widehat{#1}}
+\newcommand{\id}{\mathrm{e}}
+\newcommand{\inv}[1]{\overbar{#1}}
+\newcommand{\fooid}{\mathrm{id}}
+\newcommand{\gengroup}[1]{\left\langle#1\right\rangle}
+\newcommand{\bitand}{\mathbin{\textnormal{\textsc{and}}}}
+\newcommand{\bitxor}{\mathbin{\textnormal{\textsc{xor}}}}
+\newcommand{\Endset}[1]{\mathrm{End}\left(#1\right)}
+
+
+\newcommand{\BigO}[1]{\call{\mathcal{O}}{#1}}
+\newcommand{\SmallO}[1]{\call{o}{#1}}
+\newcommand{\BigOmega}[1]{\call{\Omega}{#1}}
+\newcommand{\SmallOmega}[1]{\call{\omega}{#1}}
+\newcommand{\BigTheta}[1]{\call{\Theta}{#1}}
+\newcommand{\Complexity}{\mathsf{C}}
+\newcommand{\Time}{\mathsf{T}}
+\newcommand{\Space}{\mathsf{S}}
+
+
+\newcommand{\then}{\Rightarrow}
+
+\newcommand{\Ptime}{\textnormal{\textsc{P}}}
+\newcommand{\NPtime}{\textnormal{\textsc{NP}}}
+\newcommand{\NPcomplete}{\textnormal{\textsc{NP-complete}}}
+
+\newcommand{\Stamp}{\texttt{Stamp}}
+\newcommand{\Blocc}{\texttt{Blocc}}
+
+\newcommand{\Tape}{\mathfrak{T}}
+\newcommand{\Tapework}{\mathfrak{W}}
+\newcommand{\Tapein}{\mathfrak{I}}
+\newcommand{\Tapeout}{\mathfrak{O}}
+\newcommand{\Taperand}{\mathfrak{P}}
+\newcommand{\Tapesend}{\mathfrak{S}}
+\newcommand{\Taperec}{\mathfrak{R}}
+
+\newcommand{\maybeequals}{\mathrel{\overset{?}{=}}}

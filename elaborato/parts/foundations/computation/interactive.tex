@@ -1,0 +1,112 @@
+\section{Interactive Turing machines}
+In many scenarios, it is useful to extend Turing machines to include additional features, for 
+example to represent the ability to access some source of randomness, or to communicate with an 
+external environment to read inputs and produce outputs in an interactive manner.
+\begin{definition}[Input/Output Turing machine]
+  An input/output Turing machine is a quadruple \(\mathcal{M} = \Tuple{\Sigma, Q, q_0, \delta}\)
+  where \(\Sigma \), \(Q\) and \(q_0\) are defined as in \Cref{def:turing_machine}, and:
+  \[
+    \delta\colon {\Parens*{Q \setminus \Set{\bot, \top}} \times \Sigma^2} \to 
+    {Q \times \Sigma^2 \times \Set{\leftarrow, \rightarrow}^2}
+  \]  
+\end{definition}
+
+The additional parameters in the transition function of an input/output Turing machine (I/O TM) 
+account for two new tapes, namely the \emph{read-only input tape} \(\Tapein \) and the 
+\emph{write-only output tape} \(\Tapeout \): now, depending on the state \(q\), the input symbol 
+\(\sigma_{i}\) and the working symbol \(\sigma_{w}\), the machine overwrites \(\sigma_{w}\) with a 
+new symbol \(\sigma'_{w}\) and moves left/right on \(\Tapework \), it writes a new symbol 
+\(\sigma_{o}\) on \(\Tapeout \), where it can move only to the right, and it moves to the 
+left/right on \(\Tapein \).
+Additionally, in an I/O TM, the input string is placed on \(\Tapein \) instead of \(\Tapework \), 
+which is instead blank at the beginning of the computation.
+\begin{definition}[Probabilistic Turing machine]
+  A probabilistic Turing machine is a quadruple \(\mathcal{M} = \Tuple{\Sigma, Q, q_0, \delta}\)
+  where \(\Sigma \), \(Q\) and \(q_0\) are defined as in \Cref{def:turing_machine}, and:
+  \[
+    \delta\colon {\Parens*{Q \setminus \Set{\bot, \top}} \times \Sigma \times \Set{0, 1}} \to 
+    {Q \times \Sigma \times \Set{\leftarrow, \rightarrow}}
+  \]    
+\end{definition}
+
+In a probabilistic Turing machine (PTM), we have an additional \emph{read-only random tape} 
+\(\Taperand \) which is populated with an infinite, uniformly random sequence of \emph{coin tosses} 
+(zeros and ones), that are used by the transition function to decide what to do.
+As for the writing tape of an I/O TM, the head on \(\Taperand \) can only move to the right.
+\begin{definition}[Interactive Turing machine]
+  An interactive Turing machine is a quadruple \(\mathcal{M} = \Tuple{\Sigma, Q, q_0, \delta}\)
+  where \(\Sigma \), \(Q\) and \(q_0\) are defined as in \Cref{def:turing_machine}, and:
+  \[
+    \delta\colon {\Parens*{Q \setminus \Set{\bot, \top}} \times \Sigma^2} \to
+    {Q \times \Sigma^2 \times \Set{\leftarrow, \rightarrow}}
+  \]
+\end{definition}
+
+An interactive Turing machine (ITM) is quite similar to an I/O TM, as it also has two additional 
+tapes, called the \emph{send tape} \(\Tapesend \) and the \emph{receive tape} \(\Taperec \).
+However, unlike for the input tape \(\Tapein \) of an I/O TM, the head on \(\Taperec \) cannot move 
+backwards.
+\begin{remark}  
+  Our definition of ITM differs slightly from the standard one in the 
+  literature~\cite{GoldreichMW1991,GoldwasserMR1989}, but we find it to be more modular.
+  In any case, from now on, we will say \emph{interactive Turing machine} to actually mean an 
+ \emph{interactive, probabilistic, input/output Turing machine}.
+\end{remark}
+
+\begin{definition}[Interactive protocol]
+  An interactive protocol is a pair \(\mathcal{I} = \Tuple{\mathcal{M}, \mathcal{M'}}\)
+  where \(\mathcal{M}\) and \(\mathcal{M'}\) are interactive Turing machines such that 
+  \(\Tapein = \Tapein'\), \(\Tapesend = \Taperec' \) and \(\Taperec = \Tapesend'\), and such their 
+  state sets \(Q, Q'\) contain the special \emph{idle state} \(q_{idle} \in Q, Q'\).
+\end{definition}
+
+The computation of an interactive protocol (IP) over some string \(\overbar{\sigma}\), 
+\(\call{\mathcal{I}}{\overbar{\sigma}}\), proceeds in the following manner: 
+initially, the tapes \(\Tapesend \), \(\Taperec \), \(\Tapework \), \(\Tapework' \), \(\Tapeout \) 
+and \(\Tapeout' \) are all empty (i.e.\ filled with blank symbols), the tapes \(\Taperand \) and 
+\(\Taperand' \) are filled with random bits, and the tape \(\Tapein \) contains \(\overbar{\sigma}\).
+The ITM \(\mathcal{M}\) is said to be \emph{active} and works normally until it transitions in the 
+special state \(q_{idle}\), becoming \emph{inactive}.
+When this happens, control passes to \(\mathcal{M}'\), which becomes active and works normally 
+until it reaches its own idle state; control goes back to \(\mathcal{M}\), and the process repeats.
+When one of the two machines halts, control passes over the other one until it also halts.
+The protocol \emph{succeeds} if both machines halt in the accepting state \(\top \), and it 
+\emph{fails} if at least one of them halts in the rejecting state \(\bot \).
+To denote the final states reached by one of the machines at the end of the computation, 
+we write \(\call{\mathcal{I}_{\mathcal{M}}}{\overbar{\sigma}}\) and 
+\(\call{\mathcal{I}_{\mathcal{M}'}}{\overbar{\sigma}}\) respectively.
+\Cref{fig:interactive_protocol} depicts the fundamental structure of an interactive protocol.
+
+\begin{figure}
+  \centering
+  \begin{tikzpicture}[node distance=64pt,on grid,auto]
+    \node[state,shape=rectangle,minimum height=16pt, minimum width=48pt] (in)  {\(\Tapein = \Tapein'\)};
+    \node[state,shape=rectangle,minimum size=24pt,left =of in]   (m0)         {\(\mathcal{M}\)};
+    \node[state,shape=rectangle,minimum size=24pt,right =of in] (m1)  {\(\mathcal{M}'\)};
+    \node[state,shape=rectangle,minimum height=16pt, minimum width=48pt,above left =of m0] (p0)  {\(\Taperand \)};
+    \node[state,shape=rectangle,minimum height=16pt, minimum width=48pt,above right =of m1] (p1)  {\(\Taperand' \)};
+    \node[state,shape=rectangle,minimum height=16pt, minimum width=48pt,below left =of m0] (w0)  {\(\Tapework \)};
+    \node[state,shape=rectangle,minimum height=16pt, minimum width=48pt,below right =of m1] (w1)  {\(\Tapework' \)};
+    \node[state,shape=rectangle,minimum height=16pt, minimum width=48pt,above =of in] (s0)  {\(\Tapesend = \Taperec' \)};
+    \node[state,shape=rectangle,minimum height=16pt, minimum width=48pt,below =of in] (r0)  {\(\Taperec = \Tapesend' \)};
+    \node[state,shape=rectangle,minimum height=16pt, minimum width=48pt,left =of m0] (o0)  {\(\Tapeout \)};
+    \node[state,shape=rectangle,minimum height=16pt, minimum width=48pt,right =of m1] (o1)  {\(\Tapeout' \)};
+    \path[->]
+    (in) edge (m0)
+    (in) edge (m1)
+    (p0) edge (m0)
+    (p1) edge (m1)
+    (w0) edge (m0)
+    (m0) edge (w0)
+    (w1) edge (m1)
+    (m1) edge (w1)
+    (m0) edge (s0)
+    (s0) edge (m1)
+    (m1) edge (r0)
+    (r0) edge (m0)
+    (m0) edge (o0)
+    (m1) edge (o1)
+    ;
+  \end{tikzpicture}
+  \caption{Visualization of an interactive protocol.}\label{fig:interactive_protocol}
+\end{figure}

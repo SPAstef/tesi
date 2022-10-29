@@ -1,0 +1,386 @@
+\section{Finite algebra}\label{sec:prime_fields}
+In algebra, a \emph{tuple} consisting of one or more \emph{sets} together with one or more 
+\emph{operations} over the sets is called an \emph{algebraic structure}.
+Such structures can be organized according to a quite wide taxonomy, depending on whether 
+they satisfy certain properties or not. 
+We will denote sets by capital letters (e.g.\  \(S, T, U, \dots \)), a generic operation by a 
+circled dot \(\odot \) and algebraic structures by blackboard bold letters 
+(e.g.\  \(\mathbb{A}, \mathbb{B}, \mathbb{C}, \dots \)).
+We will also denote constants over a set by lowercase letters at the beginning of the alphabet 
+(e.g.\  \(a, b, c, \dots \)) and variables over a set by lowercase letters at the end of the 
+alphabet (e.g.\  \(x, y, z, \dots \)).
+Finally, we will often use the term algebra to mean algebraic structure, whenever we belive the 
+meaning to be clear from the context.
+\begin{remark}
+  Some symbols will be reserved to denote some common algebraic structures. 
+  In particular, \(\mathbb{B}\) will denote the boolean algebra, while \(\mathbb{N}, \mathbb{Z}, 
+  \mathbb{Q}, \mathbb{R}\) and \(\mathbb{C}\) will denote, respectively, the 
+  natural, integer, rational, real and complex numbers.
+\end{remark}
+
+We will denote the \emph{cardinality} of set \(S\) by \(\abs{S}\), and use the same notation for 
+the \emph{order} of an algebraic structure and for the \emph{arity} of an operation: for example, 
+if \(\odot \) is a binary operation, like integer 
+addition\footnote{if considered as a relation, addition would be ternary.}, then \(\abs{\odot} = 2\).
+When an algebraic structure \(\mathbb{A}\) has exactly one \emph{underlying set} \(A\), we will identify the two, e.g.\ by writing \(x \in \mathbb{A}\) to mean \(x \in A\).
+
+\begin{definition}[Finite algebra]
+  A finite algebra is an algebraic structure \(\mathbb{A}\) such that \(\abs{\mathbb{A}} \in \mathbb{N}\).
+\end{definition}
+\begin{definition}[Subalgebra]
+  An algebraic structure \(\mathbb{A} = \Tuple{A, \odot_1, \dots, \odot_n}\) is a subalgebra of an algebraic structure \(\mathbb{A}' = \Tuple{A', \odot'_1, \dots, \odot'_m}\), for some \(n \le m\), if \(A \subseteq A'\) and \(\forall i \le n\colon \odot_i \subseteq \odot'_i\).
+\end{definition}
+
+Elements of differents algebraic structures can be associated through \emph{morphisms}.
+\begin{definition}[Homomorphism]
+  Given two algebras \(\mathbb{A} = \Tuple{A, \odot_{1}, \dots, \odot_{n}}\), 
+  \(\mathbb{A}' = \Tuple{A', \odot'_{1}, \dots, \odot'_{n}}\) such that 
+  \(\forall i \le n\colon \abs{\odot_i} = \abs{\odot'_i} = a_i\), an homomorphism is a map 
+  \(h\colon A \to A'\) such that:
+  \begin{align*}
+    & \forall i \le n, \forall x_1,\dots, x_{a_{i}} \in A\colon 
+    h(\odot_{i}(x_{1}, \dots, x_{a_{i}})) = \odot'_{i}(h(x_{1}), \dots, h(x_{a_{i}})) && 
+    \textnormal{(linearity)}
+  \end{align*}
+  We say that \(\mathbb{A}\) is homomorphic to \(\mathbb{A}'\) through \(h\).
+\end{definition}
+
+\begin{definition}[Isomorphism]
+  An isomorphism is a bijective homomorphism.
+\end{definition}
+
+Given two algebras \(\mathbb{A}\) and \(\mathbb{A}'\), if they are isomorphic through some map
+\(h\), we write \(\mathbb{A} \cong_h \mathbb{A}'\), or more succintly \(\mathbb{A} \cong \mathbb{A}'\).
+
+\begin{definition}[Endomorphism, Automorphism]
+  An endomorphism is a homomorphism from an algebraic structure \(\mathbb{A}\) to itself.
+  An automorphism is an endomorphism which is also an isomorphism.
+\end{definition}
+
+\subsection{Groups}
+We will now introduce some important classes of algebraic structures equipped with one fundamental 
+operation. 
+\begin{definition}[Monoid]
+  A monoid is a pair \(\mathbb{M} = \Tuple{M, \odot} \), where \(M\) is the 
+  underlying set and \(\odot\colon M \times M \to M\) is the \emph{composition} 
+  operation, such that the following properties are satisfied: 
+  \begin{align*}
+    & \forall x,y \in M\colon x \odot \Parens*{y \odot z} = \Parens*{x \odot y} \odot z
+      && \textnormal{(\emph{associativity})} \\
+    & \exists \id \in M\colon \forall x \in M\colon x \odot \id = x
+      && \textnormal{(\emph{identity element})}
+  \end{align*}
+  \(\mathbb{M}\) is a \emph{commutative (or abelian) monoid}, if it also holds that:
+  \begin{align*}
+    & \forall x,y \in M\colon x \odot y = y \odot x && (\emph{commutativity})
+  \end{align*}
+  Finally, we can define \emph{exponentiation} as follows:
+  \begin{equation}\label{eq:exponentiation}    
+    \forall x \in \mathbb{M}, \forall k \in \mathbb{N}\colon x^{k} = 
+    \begin{cases}
+      \id & k = 0 \\
+      x^{k-1} \odot x & k > 0
+    \end{cases}
+  \end{equation}
+\end{definition}
+
+\begin{definition}[Cyclic Monoid]
+  A cyclic monoid is a monoid \(\mathbb{M} = \Tuple{M, \odot}\) which has a 
+  \emph{generator element} \(g\) such that:
+  \[\mathbb{M} = \gengroup{g} = \Tuple{\Set{g^k \mid k \in \mathbb{N}}, \odot} \]
+\end{definition}
+
+\begin{definition}[Group]
+  A group is a monoid \(\mathbb{G} = \Tuple{G, \odot} \), such that: 
+  \begin{align*}    
+    & \forall x \in G\colon \exists \inv{x} \in G\colon x \odot \inv{x} = \id
+    && \textnormal{(\emph{inverse element})}
+  \end{align*}
+  With the notion of inverse element, we can extend exponentiation as follows:
+  \[
+    \forall x \in \mathbb{G},\forall k \in \mathbb{Z}\colon x^k =
+    \begin{cases}
+      x^{k-1} \odot x & k \ge 0 \\
+      x^{k+1} \odot x^{-1} & k < 0
+    \end{cases}
+  \]
+  If \(\mathbb{G}\) is also a commutative (resp.\ cyclic) monoid, then it is a 
+  commutative (resp.\ cyclic) group.
+\end{definition}
+
+We will sometimes use the notation \(\id_{\mathbb{A}}\) to specify the algebra over which we 
+intend to pick the identity element, dropping the subscript when \(\mathbb{A}\) is clear from the 
+context.
+\begin{remark}  
+  Although we will strive, throughout this work, to be as unambiguous as possible, in 
+  some points we will likely be using a particualr symbol to denote different operations.
+  For example, \(+\) might denote addition between numbers, or polynomials, or vectors, and so on.
+  This \emph{overloading} will be done mostly in an effort to slim the notation and shift the 
+  attention from the operations themselves to the surrounding context. 
+  In any case, the semantics will always be clear from the operands and the context. 
+\end{remark}
+
+\begin{example}
+  The algebra \(\mathbb{Z} \setminus \Set{\times}\) (i.e.\ integer numbers without multiplication) 
+  is an abelian group: addition is associative and commutative, the identity element is 
+  \(\id = 0\), and every number \(x\) has an inverse \(\inv{x} = -x\) (e.g.\  \(\inv{42} = -42\)). 
+\end{example}
+
+\begin{example}\label{ex:endo_group}
+  Given a commutative group \(\mathbb{G} = \Tuple{G, \odot}\), consider the algebra 
+  \(\Endset{\mathbb{G}}_{+} = \Tuple{H, +}\), where \(H\) is the set of endomorphisms over 
+  \(\mathbb{G}\) and \(+\colon H \times H \to H\) is such that 
+  \(\forall h_1, h_2 \in H, \forall x \in G\colon \call{\Parens*{h_1 + h_2}}{x} = 
+  \call{h_1}{x} + \call{h_2}{x}\).
+
+  \(\Endset{\mathbb{G}}_{+}\) is a commutative group: \(+\) is both associative and 
+  commutative, the identity element is \(\id_{\Endset{\mathbb{G}}_{+}} = z\), where
+  \(z\) is the zero endomorphism (i.e.\  \(\forall x \in G\colon \call{z}{x} = 
+  \id_{\mathbb{G}}\)); finally, every homomorphism \(h \in H\) has an inverse 
+  \(\inv{h}\) such that \(\forall x \in G\colon \call{\inv{h}}{x} = \inv{\call{h}{x}}\).
+\end{example}
+
+\begin{example}\label{ex:endo_monoid}
+  Consider now the algebra \(\Endset{\mathbb{G}}_{\circ} = \Tuple{H, \circ}\) 
+  where \(\mathbb{G}\) and \(H\) are defined as in \Cref{ex:endo_group}, and 
+  \(\circ\colon H \times H \to H\) is defined as function composition: 
+  \(\call{\Parens*{h_1 \circ h_2}}{x} = \call{h_1}{\call{h_2}{x}}\).
+  
+  \(\Endset{\mathbb{G}}_{\circ}\) is a monoid: function composition is associative, and the 
+  identity element is \(\id_{\Endset{\mathbb{G}}_{\circ}} = \fooid \), where \(\fooid \) is the
+  identity endomorphism (i.e.\  \(\forall x \in G\colon \call{\fooid}{x} = x\)). 
+\end{example}
+
+\subsection{Fields}
+Many algebraic structures rely on two fundamental operations, called \emph{addition} and 
+\emph{multiplication}: two important types of such structures are \emph{rings} and \emph{fields}.
+\begin{definition}[Ring]
+  A ring is a triple \(\mathbb{O} = \Tuple{O, \oplus, \otimes}\) where \(O\) is the 
+  underlying set, \(\oplus\colon O \times O \to O\) is the \emph{addition} operation and 
+  \(\otimes\colon O \times O \to O\) is the \emph{multiplication} operation, such that the 
+  following properties are satisfied:
+  \begin{align*}
+    & \mathbb{O}_{\oplus} = \mathbb{O} \setminus \Set{\otimes}
+      \textnormal{ is an abelian group} \\
+    & \mathbb{O}_{\otimes} = \mathbb{O} \setminus \Set{\oplus} 
+      \textnormal{ is a monoid} \\
+    & \forall x,y,z \in O\colon x \otimes \Parens*{y \oplus z} = 
+      \Parens*{x \otimes y} \oplus \Parens*{x \otimes z} && (\emph{left distributivity})\\
+    & \forall x,y,z \in O\colon \Parens*{y \oplus z} \otimes x = 
+      \Parens*{y \otimes x} \oplus \Parens*{z \otimes x} && (\emph{right distributivity})
+  \end{align*}
+  If \(\mathbb{O}_{\otimes}\) is a commutative monoid, then \(\mathbb{O}\) is a 
+  \emph{commutative (abelian) ring}.
+  %(in this case, either one of the two distributivity properties becomes redundant).
+\end{definition}
+
+Given a ring \(\mathbb{O}\) and an element \(x \in \mathbb{O}\), its additive 
+(resp.\ multiplicative) inverse is denoted by \(\inv{x}_{\oplus}\) (resp.\  \(\inv{x}_{\otimes}\)).
+Similarly, the additive (resp.\ multiplicative) identity element is denoted by 
+\(\id_{\oplus}\) (resp.\  \(\id_{\otimes}\)).
+In numeric algebras, the additive and multiplicative inverses are typically equivalent to the 
+opposite \(-x\) and the reciprocal \(\frac{1}{x}\) (or \(x^{-1}\)) respectively, while the additive 
+and multiplicative inverses are typically equivalent to \(0\) and \(1\) respectively.
+
+\begin{definition}[Field]
+  A field is a ring \(\mathbb{F} = \Tuple{F, \oplus, \otimes}\) such that 
+  \(\id_{\oplus} \neq \id_{\otimes}\) and \(\mathbb{F}_{\otimes} \setminus \Set{\id_{\oplus}}\) 
+  is a commutative group.
+\end{definition}
+
+Fields are one of the most important and studied algebraic structures: the algebra of real numbers 
+\(\mathbb{R}\) is a field, as is the algebra of complex numbers \(\mathbb{C}\).
+Given the set of integers \(Z_q = \Set{0, \dots, q-1}\), we denote by \(\oplus_q\) integer sum 
+modulo \(q\), and by \(\otimes_q\) integer multiplication modulo \(q\).
+Furthermore, we will denote by \(\gengroup{g}_q\) the cyclic group generated by \(g\) under 
+the operation \(\otimes_q\).
+The algebra \(\mathbb{Z}_q = \Tuple{Z_q, \oplus_q, \otimes_q}\) is a finite ring 
+\(\forall q \in \mathbb{N}\), and it is a finite field if and only if \(q\) is prime.
+\begin{definition}[Discrete logartithm]
+  The discrete logartithm over some cyclic group \(\gengroup{g}\) of order \(q\) is the function:
+  \[\call{\log_g}{g^x}\colon \gengroup{g} \to \mathbb{Z}_q = x\]
+\end{definition}
+
+When the group genreator is clear from the context, we simply write \(\log \) instead of \(\log_g\).
+Typically, cyclic groups are obtained as the subset of a larger finite field 
+(see \Cref{ex:cyclic_group}). 
+\begin{example}
+  Boolean circuits with \textsc{xor} and \textsc{and} gates behave like elements of the boolean 
+  field \(\mathbb{B} = \Tuple{\Set{\bot, \top}, \bitxor, \bitand} \).
+  It is easy to show that \(\mathbb{B} \cong \mathbb{Z}_2\).
+  Similarly, \(k\)-bit unsigned integers sum and multiplication work as in \(\mathbb{Z}_{2^k}\).
+\end{example}
+
+\begin{example}
+  Given an abelian group \(\mathbb{G}\), the algebra \(\mathbb{H}_{\mathbb{G}} = 
+  \Endset{\mathbb{G}} = \Endset{\mathbb{G}}_{+} \cup \Endset{\mathbb{G}}_{\circ}\) 
+  is the \emph{endomorphism ring} of \(\mathbb{G}\): \(\Endset{\mathbb{G}}_{+}\) is an abelian 
+  group, \(\Endset{\mathbb{G}}_{\circ}\) is a monoid 
+  (cfr.\ \Cref{ex:endo_group,ex:endo_monoid}), and it is easy to show that \(\circ \)
+  distributes over \(+\) both on the left and the right.
+\end{example}
+
+\begin{example}\label{ex:cyclic_group}
+  Consider the cyclic group 
+  \(\mathbb{G} = \gengroup{2}_{23} = \Tuple{\Set{1, 2, 3, 4, 6, 8, 9, 12, 13, 16, 18}, \otimes_{23}}\)
+  which has order \(\abs{G} = 11\).
+  Let's show that \(\log = \log_2\) is an homomorphism between \(\mathbb{G}\) and 
+  \(\mathbb{Z}_{11,\oplus}\): for any two elements \(x, y \in \mathbb{G}\), 
+  we have:
+  \[
+    x \otimes_{23} y = 2^{\call{\log}{x}} \otimes_{23} 2^{\call{\log}{y}} = 
+    2^{\call{\log}{x} \oplus_{11} \call{\log}{y}}
+  \]
+  Since \(\log_2\) is a bijection, it is also an isomorphism.
+  In fact, one can show that \(\forall q \in \mathbb{N}\) and \(\forall g < q\) such 
+  that \(\call{\gcd}{g, q} = 1\) (otherwise \(\gengroup{g}_{q}\) would not be a group), then
+  \(\mathbb{G} = \gengroup{g}_{q} \cong_{\log_g} \mathbb{Z}_{\abs{\mathbb{G}},\oplus}\).
+\end{example}
+
+\subsection{Vector spaces}
+All the algebraic structures we have seen in the previous section operate on an underlying set 
+whose elements we consider to be, in some sense, atomic.
+On the other hand, many objects interact with each other exhibiting a multi-dimensional behaviour 
+(e.g.\ physical forces).
+The standard structure to deal with such objects are \emph{vector spaces}.
+\begin{definition}[Module]
+  A module is a quadruple \(\mathbb{M} = \Tuple{M, \mathbb{O}, +, \odot}\) where 
+  \(M\) is the underlying vector set, \(\mathbb{O} = \Tuple{O, \oplus, \otimes}\) is the underlying 
+  scalar ring, \(+\colon M \times M \to M\) is the \emph{module addition} operation and 
+  \(\odot\colon O \times M \to M\) is the \emph{scalar multiplication} operation, such 
+  that \(\mathbb{M}_{+} = \Tuple{M, +}\) is a commutative group and \(\odot \) is an 
+  homomorphism between \(\mathbb{O}\) and \(\Endset{\mathbb{M}_{+}}\).
+\end{definition} 
+
+\begin{definition}[Vector space]
+  A vector space is a module \(\mathbb{V} = \Tuple{V, \mathbb{F}, +, \odot}\) such that the 
+  underlying scalar ring \(\mathbb{F}\) is a field.
+\end{definition} 
+
+The most common vector space is the one of \(n\)-dimensional \emph{column vectors} over a 
+field \(\mathbb{F} = \Tuple{F, \oplus, \otimes}\) such that \(\mathbb{F}^n = 
+\Tuple{F^n, \mathbb{F}, +, \odot}\), where \(+\) is entry-wise field addition between 
+column vectors and \(\odot \) is element-wise field multiplication of scalars with column vectors.
+We will denote elements of a column vector space \(\mathbb{V}\) by bold letters 
+(e.g.\  \(\bm{u}, \bm{v}, \bm{w}, \dots \)), and elements of the dual \emph{row vector} space 
+\(\mathbb{V}^{\transpose}\) by superscripting a \(\transpose \) symbol
+(e.g.\  \(\bm{u}^{\transpose}, \bm{v}^{\transpose}, \bm{w}^{\transpose}, \dots \)). 
+Finally, we denote the \(i\)th element of a column vector \(\bm{v}\) by \(\bm{v}_i\).
+\begin{definition}[Dot product]
+  Given a field \(\mathbb{F} = \Tuple{F, \oplus, \otimes}\) and an \(n\)-dimensional vector space 
+  \(\mathbb{V} = \Tuple{V, \mathbb{F}, +, \odot}\), the dot product operation is the map:
+  \[
+    \bm{v} \cdot \bm{w}\colon \mathbb{V} \times \mathbb{V} \to \mathbb{F} = 
+    \bigoplus_{i = 1}^{n}{\bm{v}_i \otimes \bm{w}_i}
+  \]
+\end{definition}
+
+Another important vector space is the one of \(\Parens*{n \times m}\)-dimensional \emph{matrices} 
+over some base field \(\mathbb{F}\): 
+\(\mathbb{F}^{n \times m} = \Tuple{{\Parens*{F^n}}^m, \mathbb{F}, +, \odot}\), where \(+\) is 
+element-wise field addition between matrices, and \(\odot \) is element-wise field multiplication 
+of scalars with matrices.
+We will denote elements of a matrix space \(\mathbb{M}\) by bold capital letters 
+(e.g.\  \(\bm{A}, \bm{B}, \bm{C}, \dots \)), we denote the \(i\)th row of a matrix \(\bm{M}\) by 
+\(\bm{M}_{i}\), 
+and the \(j\)th element of the \(i\)th row with \(\bm{M}_{i,j}\).
+
+From now on, for vectors we will only deal with column vector space extensions of the kind 
+\(\mathbb{F}^n\) and row vector space extensions of the kind 
+\(\Parens*{\mathbb{F}^m}^{\transpose}\) for some base field \(\mathbb{F}\) and some 
+\(n, m \in \mathbb{N}\).
+Similarly, we will only deal with matrix space extensions of the kind \(\mathbb{F}^{n \times m}\).
+Therefore, the \(i\)th column of a matrix will always be an element of 
+\(\mathbb{F}^{n} \cong \mathbb{F}^{n \times 1}\), and the \(j\)th row of a matrix will always be an
+element of \(\Parens*{\mathbb{F}^m}^{\transpose} \cong \mathbb{F}^{1 \times m}\).
+
+\begin{definition}[Transpose matrix]
+  The transpose of a matrix \(\bm{M} \in \mathbb{F}^{n \times m}\) is the matrix:
+  \[\bm{M}^{\transpose} \mid 
+  \forall i \le n, \forall j \le m\colon \bm{M}^{\transpose}_{i,j} = \bm{M}_{j,i}\]
+\end{definition}
+
+Therefore, given a matrix \(\bm{M}\), we can denote the \(i\)th column by 
+\(\bm{M}^{\transpose}_{i}\).
+
+\begin{definition}[Matrix concatenation]
+  Given two matrices \(\bm{A} \in \mathbb{F}^{n \times m_1}\) and 
+  \(\bm{B} \in \mathbb{F}^{n \times m_2}\), their row-wise concatenation is the matrix 
+  \(\bm{C} = 
+  \begin{pmatrix*}
+    \bm{A} & \bm{B}
+  \end{pmatrix*}
+    \in \mathbb{F}^{n \times \Parens*{m_1 + m_2}}\), such that:
+  \[\forall i \le n\colon \Parens*{\forall j \le m_1 \colon \bm{C}_{i,j} = \bm{A}_{i,j}} \wedge 
+  \Parens*{\forall j \le m_2\colon \bm{C}_{i,j} = \bm{B}_{i,j}}\]
+  And their column-wise concatenation is the matrix \(
+  \begin{pmatrix*}
+    \bm{A}; \bm{B}
+  \end{pmatrix*} =
+  {\begin{pmatrix*}
+    \bm{A}^{\transpose} & \bm{B}^{\transpose}
+  \end{pmatrix*}}^{\transpose}
+  \).
+\end{definition}
+
+\begin{definition}[Matrix multiplication]
+  Matrix multiplication over a base field \(\mathbb{F}\) and some \(m, n_1, n_2 \in \mathbb{N}\), 
+  is the map:
+  \[
+    \bm{A}\bm{B}\colon 
+    \mathbb{F}^{n_1 \times m} \times \mathbb{F}^{m \times n_2} \to \mathbb{F}^{n_1 \times n_2} \mid 
+    \forall i \le n_1, \forall j \le n_2\colon 
+    \Parens*{\bm{A}\bm{B}}_{i,j} = \bm{A}_{i} \cdot \bm{B}^{\transpose}_{j}
+  \] 
+\end{definition}
+
+\begin{definition}[Linear map]
+   A linear map is a homomorphism between two modules.
+\end{definition}
+\begin{definition}[\(k\)-linear map]
+  Given \(k\) vector spaces \(\mathbb{V}_1, \dots, \mathbb{V}_k, \mathbb{W}\) over the same scalar 
+  field \(\mathbb{F}\), a map 
+  \(f\colon \mathbb{V}_1 \times \cdots \times \mathbb{V}_k \to \mathbb{W}\) 
+  is \(k\)-linear if, \(\forall i \in \mathbb{N}\), all the maps resulting by fixing all but the 
+  \(i\)th argument are linear maps.
+\end{definition}
+
+As we will see, bilinear (\(2\)-linear) maps are a fundamental component of modern ZK-SNARK systems.
+
+\subsection{Polynomials}
+The last fundamental object that we will need are polynomials and their relative algebras. 
+\begin{definition}[Monovariate polynomial ring]
+  A monovariate polynomial ring over a field \(\mathbb{F}\) is the triple 
+  \(\extend{\mathbb{F}}{x} = \Tuple{\extend{F}{x}, +, \cdot}\) where \(\extend{F}{x}\) is the set 
+  of monovariate polynomials with coefficients over \(F\) in the indeterminate \(x\), 
+  \(+\colon \extend{F}{x} \times \extend{F}{x} \to \extend{F}{x}\) is the \emph{polynomial addition}
+  operation and \(\cdot\colon \extend{F}{x} \times \extend{F}{x} \to \extend{F}{x}\) is the
+  \emph{polynomial multiplication} operation, such that all the properties of a ring are satisfied.
+\end{definition}
+
+We will denote polynomials by lowercase letters (e.g.\  \(p, q, r, \dots \)), and the degree of 
+some polynomial \(p\) by \(\call{\deg}{p}\).
+Given a field \(\mathbb{F}\) and its corresponding polynomial ring \(\extend{\mathbb{F}}{x}\), 
+we will denote by \(\extend{\mathbb{F}^n}{x}\) the \(n\)-dimensional module\footnote{Since 
+\(\extend{\mathbb{F}}{x}\) is a commutative ring, \(\extend{\mathbb{F}^n}{x}\) is not a vector 
+space, but we will nevertheless call its elements `vectors' for the sake of simplicity.} of 
+column vectors of polynomials over \(\mathbb{F}\), with addition and scalar product defined in the 
+standard way.
+
+Given two vectors \(\bm{x}, \bm{y} \in \mathbb{F}^n\), by using 
+\emph{Lagrange interpolation}~\cite{Waring1779}:
+\[
+  \call{L}{\bm{x}, \bm{y}}\colon \mathbb{F}^n \times \mathbb{F}^n \to \extend{\mathbb{F}}{x} = 
+  \sum_{i}{\bm{y}_i\prod_{j \neq i}{\frac{x - \bm{x}_i}{\bm{x}_i - \bm{x}_j}}}
+\]
+we can build the unique polynomial of degree \(n - 1\) which, \(\forall i \le n\) assumes 
+value \(\bm{y}_i\) at point \(\bm{x}_i\).
+We can extend the Lagrange interpolation function to a matrix space \(\mathbb{F}^{n \times m}\)
+by applying \(L\) separately to each row, as follows:
+\[
+  \call{L}{\bm{X}, \bm{Y}}\colon \mathbb{F}^{n \times m} \times \mathbb{F}^{n \times m} \to 
+  \extend{\mathbb{F}^n}{x} = 
+  \begin{pmatrix*} 
+    \call{L}{\bm{X}_1, \bm{Y}_1} & \cdots & \call{L}{\bm{X}_n, \bm{Y}_n}
+  \end{pmatrix*}
+\]

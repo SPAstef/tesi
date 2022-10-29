@@ -1,0 +1,65 @@
+\section{Interactive proof systems}
+Even though \NPcomplete{} problems are infeasible, they are \emph{efficient} to \emph{verify}: 
+given an \emph{instance} \(\Pi \) of some \NPcomplete{} problem, and an additional \emph{witness}
+string, we can build a deterministic TM that checks whether the witness \emph{proves} or 
+not that the problem admits a positive answer.
+\begin{example}
+  Consider the problem \textsc{sat} of deciding whether a propositional logic formula \(\phi \) is 
+  satisfiable, which is the most famous \NPcomplete{} problem~\cite{Cook1971}. 
+  If we had a TM \(\mathcal{M}\) with access to an \emph{oracle} that, in \(\BigO{1}\) time, 
+  provides a valid assignment for the variables in \(\phi \), it would be easy to 
+  verify that \(\phi \) is indeed satisfiable.
+  However, if the provided assignment was not valid, while \(\mathcal{M}\) would reject it, 
+  there would be still no easy way to know whether \(\phi \) is actually satisfiable or not! 
+\end{example}
+
+Now, let's say we want to prove some theorem \(\Pi \): computationally, this is equivalent to 
+deciding whether \(\Pi \) is word which belongs to the language of the valid propositions over some 
+formal system (say, the ZFC set theory~\cite{FraenkelHL1973}).
+A \emph{proof} of the theorem plays the same role of the \emph{witness} we discussed before: in 
+general, verifying a proof for a theorem is (believed to be) much easier than finding the proof in 
+the first place.
+Hence, we can extend the logical/mathematical concept of theorem to the more computational concept 
+of language: for example, by \NPtime{} theorem, we mean any language in \NPtime{}.
+
+\clearpage
+\begin{definition}[Interactive proof system~\cite{GoldwasserMR1989}]  
+  An interactive proof system for a language \(L\) is an interactive protocol 
+  \(\mathcal{I} = \Tuple{\mathcal{P}, \mathcal{V}}\), where \(\mathcal{P}\) is the \emph{prover}
+  and \(\mathcal{V}\) is the \emph{verifier}, such that:
+  \begin{align*}
+    & \forall w \in L\colon \call{\mathcal{I}_{\mathcal{V}}}{w} = \top & 
+      \textnormal{(\emph{correctness})} \\
+    & \forall w \notin L\colon \call{\mathcal{I}_{\mathcal{V}}}{w} = \bot & 
+      \textnormal{(\emph{completeness})} \\
+    & \exists k \in \mathbb{N}\colon \call{\Time}{\mathcal{V}} = \BigO{\abs{x}^k} & 
+    \textnormal{(\emph{boundness})}
+  \end{align*}
+\end{definition}
+
+In an interactive proof system (IPS), the common input tape of \(\mathcal{P}\) and \(\mathcal{V}\)
+contains some word \(w\) representing some statement: in typical scenario, the statement is 
+provided by the prover himself, who wants to convince the verifier of the truthness of such 
+statement.
+During the protocol, \(\mathcal{P}\) and \(\mathcal{V}\) exchange messages through their 
+communication tapes; at some point, \(\mathcal{P}\) sends to \(\mathcal{V}\) a candidate proof 
+\(\pi \): the verifier checks the proof and, if the proof is valid, it is always convinced of its 
+validity (correctness), hence it will accept. 
+On the other hand, if the proof happens to be wrong (e.g.\ if \(\mathcal{P}\) is trying to deceive
+\(\mathcal{V}\)), then the verifier will never be convinced by such a proof, and it will reject.
+The polynomial bound on the execution time of \(\mathcal{V}\) is necessary to force cooperation, 
+and avoid the case where \(\mathcal{V}\) simply ignores \(\mathcal{P}\) and computes the proof by 
+itself.
+\begin{definition}[Probabilistic interactive proof system~\cite{GoldwasserMR1989}]  
+  A probabilistic interactive proof system for a language \(L\) is an interactive protocol 
+  \(\mathcal{I} = \Tuple{\mathcal{P}, \mathcal{V}}\) such that, for any arbitrarily small 
+  \(\epsilon \in \mathbb{R}_{+}\):
+  \begin{align*}
+    & \forall w \in L\colon \call{\Pr}{\call{\mathcal{I}_{\mathcal{V}}}{w} = \bot} < \epsilon  & 
+      \textnormal{(\emph{probabilistic correctness})} \\
+    & \forall w \notin L\colon \call{\Pr}{\call{\mathcal{I}_{\mathcal{V}}}{w} = \top} < \epsilon & 
+      \textnormal{(\emph{probabilistic completeness})} \\
+    & \exists k \in \mathbb{N}\colon \call{\Time}{\mathcal{V}} = \BigO{\abs{x}^k} & 
+    \textnormal{(\emph{boundness})}
+  \end{align*}
+\end{definition}

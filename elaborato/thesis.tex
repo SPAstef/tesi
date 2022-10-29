@@ -40,26 +40,29 @@
 \usepackage[pdfa]{hyperref}
 \usepackage{cleveref}
 \usepackage{lmodern}
+%\usepackage{mathematica}
+%\usepackage[frak=euler]{mathalpha}
 \usepackage{mathtools}
 \usepackage{mleftright}
 \usepackage{subfig}
 \usepackage{tikz}
+\usetikzlibrary{automata,positioning,shapes.multipart}
 
 \mleftright{}
 \hypersetup{hidelinks}
 
 \theoremstyle{definition}
-\newtheorem{definition}{Definition}
-\newtheorem{example}{Example}
+\newtheorem{definition}{Definition}[chapter]
+\newtheorem{example}{Example}[chapter]
 
 \theoremstyle{plain}
-\newtheorem{theorem}{Theorem}
-\newtheorem{lemma}{Lemma}
-\newtheorem{corollary}{Corollary}
-\newtheorem{proposition}{Proposition}
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{lemma}{Lemma}[chapter]
+\newtheorem{corollary}{Corollary}[chapter]
+\newtheorem{proposition}{Proposition}[chapter]
 
 \theoremstyle{remark}
-\newtheorem{remark}{Remark}
+\newtheorem{remark}{Remark}[chapter]
 %\usepackage[export]{adjustbox}
 
 %% --- Stili di pagina disponibili (comando \pagestyle) ---
@@ -122,12 +125,10 @@
 
 %% Parte
 %% La suddivisione in parti � opzionale; solitamente sono sufficienti i capitoli.
-\input{parts/chapters/intro.tex}
+\input{parts/intro.tex}
 
 \input{parts/foundations.tex}
 %% Capitolo
-\chapter{Computational Background}
-\section{Turing Machines}
 \chapter{Cryptographical Background}
 \section{Hash functions}
 \section{Verification Trees}
