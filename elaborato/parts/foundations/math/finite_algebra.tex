@@ -22,20 +22,25 @@ We will denote the \emph{cardinality} of set \(S\) by \(\abs{S}\), and use the s
 the \emph{order} of an algebraic structure and for the \emph{arity} of an operation: for example, 
 if \(\odot \) is a binary operation, like integer 
 addition\footnote{if considered as a relation, addition would be ternary.}, then \(\abs{\odot} = 2\).
-When an algebraic structure \(\mathbb{A}\) has exactly one \emph{underlying set} \(A\), we will identify the two, e.g.\ by writing \(x \in \mathbb{A}\) to mean \(x \in A\).
+When an algebraic structure \(\mathbb{A}\) has exactly one \emph{underlying set} \(A\), we will 
+identify the two, e.g.\ by writing \(x \in \mathbb{A}\) to mean \(x \in A\).
 
 \begin{definition}[Finite algebra]
-  A finite algebra is an algebraic structure \(\mathbb{A}\) such that \(\abs{\mathbb{A}} \in \mathbb{N}\).
+  A \emph{finite algebra} is an algebraic structure \(\mathbb{A}\) such that 
+  \(\abs{\mathbb{A}} \in \mathbb{N}\).
 \end{definition}
 \begin{definition}[Subalgebra]
-  An algebraic structure \(\mathbb{A} = \Tuple{A, \odot_1, \dots, \odot_n}\) is a subalgebra of an algebraic structure \(\mathbb{A}' = \Tuple{A', \odot'_1, \dots, \odot'_m}\), for some \(n \le m\), if \(A \subseteq A'\) and \(\forall i \le n\colon \odot_i \subseteq \odot'_i\).
+  An algebraic structure \(\mathbb{A} = \Tuple{A, \odot_1, \dots, \odot_n}\) is a \emph{subalgebra} 
+  of an algebraic structure \(\mathbb{A}' = \Tuple{A', \odot'_1, \dots, \odot'_m}\), 
+  for some \(n \le m\), if \(A \subseteq A'\) and 
+  \(\forall i \le n\colon \odot_i \subseteq \odot'_i\).
 \end{definition}
 
 Elements of differents algebraic structures can be associated through \emph{morphisms}.
 \begin{definition}[Homomorphism]
   Given two algebras \(\mathbb{A} = \Tuple{A, \odot_{1}, \dots, \odot_{n}}\), 
   \(\mathbb{A}' = \Tuple{A', \odot'_{1}, \dots, \odot'_{n}}\) such that 
-  \(\forall i \le n\colon \abs{\odot_i} = \abs{\odot'_i} = a_i\), an homomorphism is a map 
+  \(\forall i \le n\colon \abs{\odot_i} = \abs{\odot'_i} = a_i\), an \emph{homomorphism} is a map 
   \(h\colon A \to A'\) such that:
   \begin{align*}
     & \forall i \le n, \forall x_1,\dots, x_{a_{i}} \in A\colon 
@@ -46,22 +51,22 @@ Elements of differents algebraic structures can be associated through \emph{morp
 \end{definition}
 
 \begin{definition}[Isomorphism]
-  An isomorphism is a bijective homomorphism.
+  An \emph{isomorphism} is a bijective homomorphism.
 \end{definition}
 
 Given two algebras \(\mathbb{A}\) and \(\mathbb{A}'\), if they are isomorphic through some map
 \(h\), we write \(\mathbb{A} \cong_h \mathbb{A}'\), or more succintly \(\mathbb{A} \cong \mathbb{A}'\).
 
 \begin{definition}[Endomorphism, Automorphism]
-  An endomorphism is a homomorphism from an algebraic structure \(\mathbb{A}\) to itself.
-  An automorphism is an endomorphism which is also an isomorphism.
+  An \emph{endomorphism} is a homomorphism from an algebraic structure \(\mathbb{A}\) to itself.
+  An \emph{automorphism} is an endomorphism which is also an isomorphism.
 \end{definition}
 
 \subsection{Groups}
 We will now introduce some important classes of algebraic structures equipped with one fundamental 
 operation. 
 \begin{definition}[Monoid]
-  A monoid is a pair \(\mathbb{M} = \Tuple{M, \odot} \), where \(M\) is the 
+  A \emph{monoid} is a pair \(\mathbb{M} = \Tuple{M, \odot} \), where \(M\) is the 
   underlying set and \(\odot\colon M \times M \to M\) is the \emph{composition} 
   operation, such that the following properties are satisfied: 
   \begin{align*}
@@ -85,13 +90,13 @@ operation.
 \end{definition}
 
 \begin{definition}[Cyclic Monoid]
-  A cyclic monoid is a monoid \(\mathbb{M} = \Tuple{M, \odot}\) which has a 
+  A \emph{cyclic monoid} is a monoid \(\mathbb{M} = \Tuple{M, \odot}\) which has a 
   \emph{generator element} \(g\) such that:
   \[\mathbb{M} = \gengroup{g} = \Tuple{\Set{g^k \mid k \in \mathbb{N}}, \odot} \]
 \end{definition}
 
 \begin{definition}[Group]
-  A group is a monoid \(\mathbb{G} = \Tuple{G, \odot} \), such that: 
+  A \emph{group} is a monoid \(\mathbb{G} = \Tuple{G, \odot} \), such that: 
   \begin{align*}    
     & \forall x \in G\colon \exists \inv{x} \in G\colon x \odot \inv{x} = \id
     && \textnormal{(\emph{inverse element})}
@@ -155,7 +160,7 @@ context.
 Many algebraic structures rely on two fundamental operations, called \emph{addition} and 
 \emph{multiplication}: two important types of such structures are \emph{rings} and \emph{fields}.
 \begin{definition}[Ring]
-  A ring is a triple \(\mathbb{O} = \Tuple{O, \oplus, \otimes}\) where \(O\) is the 
+  A \emph{ring} is a triple \(\mathbb{O} = \Tuple{O, \oplus, \otimes}\) where \(O\) is the 
   underlying set, \(\oplus\colon O \times O \to O\) is the \emph{addition} operation and 
   \(\otimes\colon O \times O \to O\) is the \emph{multiplication} operation, such that the 
   following properties are satisfied:
@@ -183,7 +188,7 @@ opposite \(-x\) and the reciprocal \(\frac{1}{x}\) (or \(x^{-1}\)) respectively,
 and multiplicative inverses are typically equivalent to \(0\) and \(1\) respectively.
 
 \begin{definition}[Field]
-  A field is a ring \(\mathbb{F} = \Tuple{F, \oplus, \otimes}\) such that 
+  A \emph{field} is a ring \(\mathbb{F} = \Tuple{F, \oplus, \otimes}\) such that 
   \(\id_{\oplus} \neq \id_{\otimes}\) and \(\mathbb{F}_{\otimes} \setminus \Set{\id_{\oplus}}\) 
   is a commutative group.
 \end{definition}
@@ -197,7 +202,8 @@ the operation \(\otimes_q\).
 The algebra \(\mathbb{Z}_q = \Tuple{Z_q, \oplus_q, \otimes_q}\) is a finite ring 
 \(\forall q \in \mathbb{N}\), and it is a finite field if and only if \(q\) is prime.
 \begin{definition}[Discrete logartithm]
-  The discrete logartithm over some cyclic group \(\gengroup{g}\) of order \(q\) is the function:
+  The \emph{discrete logartithm} over some cyclic group \(\gengroup{g}\) of order \(q\) is the 
+  function:
   \[\call{\log_g}{g^x}\colon \gengroup{g} \to \mathbb{Z}_q = x\]
 \end{definition}
 
@@ -244,7 +250,7 @@ On the other hand, many objects interact with each other exhibiting a multi-dime
 (e.g.\ physical forces).
 The standard structure to deal with such objects are \emph{vector spaces}.
 \begin{definition}[Module]
-  A module is a quadruple \(\mathbb{M} = \Tuple{M, \mathbb{O}, +, \odot}\) where 
+  A \emph{module} is a quadruple \(\mathbb{M} = \Tuple{M, \mathbb{O}, +, \odot}\) where 
   \(M\) is the underlying vector set, \(\mathbb{O} = \Tuple{O, \oplus, \otimes}\) is the underlying 
   scalar ring, \(+\colon M \times M \to M\) is the \emph{module addition} operation and 
   \(\odot\colon O \times M \to M\) is the \emph{scalar multiplication} operation, such 
@@ -253,7 +259,7 @@ The standard structure to deal with such objects are \emph{vector spaces}.
 \end{definition} 
 
 \begin{definition}[Vector space]
-  A vector space is a module \(\mathbb{V} = \Tuple{V, \mathbb{F}, +, \odot}\) such that the 
+  A \emph{vector space} is a module \(\mathbb{V} = \Tuple{V, \mathbb{F}, +, \odot}\) such that the 
   underlying scalar ring \(\mathbb{F}\) is a field.
 \end{definition} 
 
@@ -268,7 +274,7 @@ We will denote elements of a column vector space \(\mathbb{V}\) by bold letters
 Finally, we denote the \(i\)th element of a column vector \(\bm{v}\) by \(\bm{v}_i\).
 \begin{definition}[Dot product]
   Given a field \(\mathbb{F} = \Tuple{F, \oplus, \otimes}\) and an \(n\)-dimensional vector space 
-  \(\mathbb{V} = \Tuple{V, \mathbb{F}, +, \odot}\), the dot product operation is the map:
+  \(\mathbb{V} = \Tuple{V, \mathbb{F}, +, \odot}\), the \emph{dot product} operation is the map:
   \[
     \bm{v} \cdot \bm{w}\colon \mathbb{V} \times \mathbb{V} \to \mathbb{F} = 
     \bigoplus_{i = 1}^{n}{\bm{v}_i \otimes \bm{w}_i}
@@ -295,7 +301,7 @@ Therefore, the \(i\)th column of a matrix will always be an element of
 element of \(\Parens*{\mathbb{F}^m}^{\transpose} \cong \mathbb{F}^{1 \times m}\).
 
 \begin{definition}[Transpose matrix]
-  The transpose of a matrix \(\bm{M} \in \mathbb{F}^{n \times m}\) is the matrix:
+  The \emph{transpose} of a matrix \(\bm{M} \in \mathbb{F}^{n \times m}\) is the matrix:
   \[\bm{M}^{\transpose} \mid 
   \forall i \le n, \forall j \le m\colon \bm{M}^{\transpose}_{i,j} = \bm{M}_{j,i}\]
 \end{definition}
@@ -305,7 +311,7 @@ Therefore, given a matrix \(\bm{M}\), we can denote the \(i\)th column by
 
 \begin{definition}[Matrix concatenation]
   Given two matrices \(\bm{A} \in \mathbb{F}^{n \times m_1}\) and 
-  \(\bm{B} \in \mathbb{F}^{n \times m_2}\), their row-wise concatenation is the matrix 
+  \(\bm{B} \in \mathbb{F}^{n \times m_2}\), their row-wise \emph{concatenation} is the matrix 
   \(\bm{C} = 
   \begin{pmatrix*}
     \bm{A} & \bm{B}
@@ -324,8 +330,8 @@ Therefore, given a matrix \(\bm{M}\), we can denote the \(i\)th column by
 \end{definition}
 
 \begin{definition}[Matrix multiplication]
-  Matrix multiplication over a base field \(\mathbb{F}\) and some \(m, n_1, n_2 \in \mathbb{N}\), 
-  is the map:
+  \emph{Matrix multiplication} over a base field \(\mathbb{F}\) and some 
+  \(m, n_1, n_2 \in \mathbb{N}\), is the map:
   \[
     \bm{A}\bm{B}\colon 
     \mathbb{F}^{n_1 \times m} \times \mathbb{F}^{m \times n_2} \to \mathbb{F}^{n_1 \times n_2} \mid 
@@ -335,14 +341,14 @@ Therefore, given a matrix \(\bm{M}\), we can denote the \(i\)th column by
 \end{definition}
 
 \begin{definition}[Linear map]
-   A linear map is a homomorphism between two modules.
+   A \emph{linear map} is a homomorphism between two modules.
 \end{definition}
 \begin{definition}[\(k\)-linear map]
   Given \(k\) vector spaces \(\mathbb{V}_1, \dots, \mathbb{V}_k, \mathbb{W}\) over the same scalar 
-  field \(\mathbb{F}\), a map 
+  field \(\mathbb{F}\), a \emph{\(k\)-linear map} is a map
   \(f\colon \mathbb{V}_1 \times \cdots \times \mathbb{V}_k \to \mathbb{W}\) 
-  is \(k\)-linear if, \(\forall i \in \mathbb{N}\), all the maps resulting by fixing all but the 
-  \(i\)th argument are linear maps.
+  such that, \(\forall i \in \mathbb{N}\), every map obtained by fixing all but the 
+  \(i\)th argument is a linear map.
 \end{definition}
 
 As we will see, bilinear (\(2\)-linear) maps are a fundamental component of modern ZK-SNARK systems.
@@ -350,7 +356,7 @@ As we will see, bilinear (\(2\)-linear) maps are a fundamental component of mode
 \subsection{Polynomials}
 The last fundamental object that we will need are polynomials and their relative algebras. 
 \begin{definition}[Monovariate polynomial ring]
-  A monovariate polynomial ring over a field \(\mathbb{F}\) is the triple 
+  A \emph{monovariate polynomial ring} over a field \(\mathbb{F}\) is the triple 
   \(\extend{\mathbb{F}}{x} = \Tuple{\extend{F}{x}, +, \cdot}\) where \(\extend{F}{x}\) is the set 
   of monovariate polynomials with coefficients over \(F\) in the indeterminate \(x\), 
   \(+\colon \extend{F}{x} \times \extend{F}{x} \to \extend{F}{x}\) is the \emph{polynomial addition}
@@ -361,26 +367,26 @@ The last fundamental object that we will need are polynomials and their relative
 We will denote polynomials by lowercase letters (e.g.\  \(p, q, r, \dots \)), and the degree of 
 some polynomial \(p\) by \(\call{\deg}{p}\).
 Given a field \(\mathbb{F}\) and its corresponding polynomial ring \(\extend{\mathbb{F}}{x}\), 
-we will denote by \(\extend{\mathbb{F}^n}{x}\) the \(n\)-dimensional module\footnote{Since 
-\(\extend{\mathbb{F}}{x}\) is a commutative ring, \(\extend{\mathbb{F}^n}{x}\) is not a vector 
+we will denote by \(\extend{\mathbb{F}}{x}^n\) the \(n\)-dimensional module\footnote{Since 
+\(\extend{\mathbb{F}}{x}\) is a commutative ring, \(\extend{\mathbb{F}}{x}^n\) is not a vector 
 space, but we will nevertheless call its elements `vectors' for the sake of simplicity.} of 
 column vectors of polynomials over \(\mathbb{F}\), with addition and scalar product defined in the 
 standard way.
 
-Given two vectors \(\bm{x}, \bm{y} \in \mathbb{F}^n\), by using 
-\emph{Lagrange interpolation}~\cite{Waring1779}:
+Given two vectors \(\bm{x}, \bm{y} \in \mathbb{F}^n\), we can define the
+\emph{Lagrange interpolation} function~\cite{Waring1779}:
 \[
-  \call{L}{\bm{x}, \bm{y}}\colon \mathbb{F}^n \times \mathbb{F}^n \to \extend{\mathbb{F}}{x} = 
+  \call{\lagrange}{\bm{x}, \bm{y}}\colon \mathbb{F}^n \times \mathbb{F}^n \to \extend{\mathbb{F}}{x} = 
   \sum_{i}{\bm{y}_i\prod_{j \neq i}{\frac{x - \bm{x}_i}{\bm{x}_i - \bm{x}_j}}}
 \]
 we can build the unique polynomial of degree \(n - 1\) which, \(\forall i \le n\) assumes 
 value \(\bm{y}_i\) at point \(\bm{x}_i\).
 We can extend the Lagrange interpolation function to a matrix space \(\mathbb{F}^{n \times m}\)
-by applying \(L\) separately to each row, as follows:
+by applying \(\lagrange \) separately to each row, as follows:
 \[
-  \call{L}{\bm{X}, \bm{Y}}\colon \mathbb{F}^{n \times m} \times \mathbb{F}^{n \times m} \to 
-  \extend{\mathbb{F}^n}{x} = 
+  \call{\lagrange}{\bm{X}, \bm{Y}}\colon \mathbb{F}^{n \times m} \times \mathbb{F}^{n \times m} \to 
+  \extend{\mathbb{F}}{x}^n = 
   \begin{pmatrix*} 
-    \call{L}{\bm{X}_1, \bm{Y}_1} & \cdots & \call{L}{\bm{X}_n, \bm{Y}_n}
+    \call{\lagrange}{\bm{X}_1, \bm{Y}_1} & \cdots & \call{\lagrange}{\bm{X}_n, \bm{Y}_n}
   \end{pmatrix*}
 \]
