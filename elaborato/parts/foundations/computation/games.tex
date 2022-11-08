@@ -83,7 +83,6 @@ the problems of deciding the order and the membership of a matrix group~\cite{Ba
 deciding whether two graphs are not isomorphic~\cite{GoldreichMW1991}.
 
 \subsection{Arthur-Merlin games}
-
 In an interactive proof system, the coin tosses of the two parties are \emph{private}, and 
 they can exchange any kind of message.
 \begin{definition}[Arthur-Merlin games~\cite{BabaiS1984}]
@@ -101,10 +100,9 @@ he interprets it as a coin toss).
 \end{definition}
 
 While it is obvious that \(\textsc{AM} \subseteq \textsc{IP}\), the converse was also shown to 
-be true~\cite{BabaiS1984}: in particular, if we limit the number of communications between 
-Arthur and Merlin to any constant \(k \in \mathbb{N}\), it is possible to build an equivalent 
-game involving only \(2\) communications between them.
-
-
-\subsection{Zero-Knowledge Interactive Protocols}
-
+be true~\cite{BabaiS1984}: in particular, for any \emph{fixed} number \(k\) of communications 
+between Arthur and Merlin, \(\extend{\textsc{AM}}{k} = \extend{\textsc{AM}}{2}\), meaning that 
+it is possible to build an equivalent Arthur-Merlin game using only \(2\) communications.
+In fact, it was also shown that \(\textsc{IP}\) (and hence \(\textsc{AM}\)) is equal to 
+\textsc{PSPACE}, i.e.\ the class of problems solvable by a Turing machine in polynomial 
+space~\cite{Shamir1992}.

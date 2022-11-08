@@ -1,0 +1,92 @@
+\section{Zero-Knowledge Protocols}
+Suppose that two parties are executing an interactive proof system for some \textsc{NP-complete} 
+problem: the instance will be avilable on the input tape to both parties, then the prover will 
+solve the problem and it will send the witness/proof to the verifier, which will in turn check the 
+proof and decide whether to accept or not.
+In this process, the verifier gained more knowledge than just the solvability of the problem: it 
+will also know a solution!
+
+In many real-world scenarios, the prover wants to keep the witness secret:
+in fact, a prover is not really more efficient than the verifier, and the polynomial bound 
+on the latter is a purely formal need.
+What really gives power to the prover is the knowledge of some \emph{secret}, which we can 
+think of as being stored on its working tape, which can be the witness itself or some other 
+word that allows it to quickly find such a witness.
+
+Informally, two random variables \(U\) and \(V\) that map words of some language 
+\(L \subseteq \Set{0, 1}^{*}\) to words of \(\Set{0, 1}^{*}\) are 
+\emph{perfectly indistinguishable} when no unbounded Turing machine is able to tell them apart,
+are \emph{statistically indistinguishable} when no \textsc{PSPACE} Turing machine is able to 
+tell them apart, and are \emph{computationally indistinguishable} when no \textsc{PTIME} Turing 
+machine \(\mathcal{M}\) is able to tell them apart.
+By `telling apart', we mean that the distribution of the words that are accepted/rejected 
+by Turing machines respecting the imposed bounds is independent from \(U\) and \(V\): intuitively,
+this means that \(U\) and \(V\) are interchangable with each other and using one over the other 
+does not give an `edge' to \(\mathcal{M}\).
+For a more formal definition, refer to~\cite{GoldwasserM1984,GoldwasserMR1989,Yao1982}.
+\begin{example}
+  Consider the two random variables \(U, V: L \to \Set{0, 1}^{*}\) for some 
+  \(L \subseteq \Set{0, 1}^{*}\), such that, for all words \(x \in L\) and all words 
+  \(w \in \Set{0, 1}^{\abs{x}}\), it holds that:
+  \begin{align*}
+    & \call{\Pr}{\call{U}{x} = w} = 2^{-\abs{x}} &&
+    \call{\Pr}{\call{V}{x} = w} = \begin{cases}
+      0 & x = 0\dots0 \\
+      2^{-\abs{x} + 1} & x = 1\dots1 \\
+      2^{-\abs{x}} & \textrm{otherwise}
+    \end{cases}
+  \end{align*}
+  \(U\) and \(V\) have \emph{almost} the same distribution, with the \(1\dots1\) string 
+  happening twice as often in \(V\). 
+  For increasingly longer strings, no Turing machine can tell the two distributions apart by 
+  collecting a polynomial amount of samples, since 
+  \(\sum_{w}{\abs{\call{\Pr}{\call{U}{x} = w} - \call{\Pr}{\call{V}{x} = w}}} = 2^{-\abs{x}+1}\),
+  hence \(U\) and \(V\) are statistically indistinguishable.
+\end{example}
+
+\begin{definition}[Tape view]
+  A \emph{tape view} is a random variable \(\View_{\mathcal{M}}\) that models the concatenation 
+  of all the contents that are read/written by a halting Turing machine \(\mathcal{M}\) over its 
+  tapes.
+\end{definition}
+
+For a deterministic, non-probabilistic Turing machine, the tape view variable is quite pointless, 
+but it is a useful tool to model the behaviour of machines that exploit randomness, and expecially 
+for interactive protocols.
+For example, if we have a Turing machine with one tape \(\Tape \), then:
+\[
+  \call{\Pr}{\call{\View_{\mathcal{M}}}{x} = w} = 
+  \call{\Pr}{\call{\View_{\mathcal{M}, \Tape}}{x} = w} = 
+  \call{\Pr}{\call{\mathcal{M}}{x} = w}
+\]
+
+
+\begin{definition}[Approximability]
+  A random variable \(U\) is (perfectly, statistically, computationally) \emph{approximable} by a 
+  probabilistic Turing machine \(\mathcal{M}\) over some language \(L\) if \(U\) and 
+  \(\View_{\mathcal{M}}\) are (perfectly, statistically, computationally) indistinguishable.
+\end{definition}
+
+Note that for a random variable \(U\) and a halting PTM \(\mathcal{M}\) to be perfectly 
+indistinguishable over some language \(L\), it must be the case that 
+\(\forall x \in L\colon \call{\mathcal{M}}{x} = \call{\View_{\mathcal{M}}}{x} = \call{\mathcal{U}}{x}\).
+
+\begin{definition}[Zero-knowledge interactive protocol]
+  A (perfectly, statistically, computationally) \emph{Zero-knowledge interactive protocol} (ZKIP) 
+  over a language \(L \subseteq \Set{0, 1}^{*}\) is an interactive protocol 
+  \(\mathcal{I} = \Tuple{\mathcal{M}, \mathcal{M}'}\) such that, for every \(\mathcal{M'}\),
+  \(\View_{\mathcal{M'}}\) is (perfectly, statistically, computationally) approximable by a 
+  probabilistic polynomial time Turing machine \(\mathcal{M}''\) over the language 
+  \(L' = \Set{\Tuple{x, h} \mid x \in L \wedge w \in \Set{0, 1}^*}\), where the string
+  \(h\) represents the initial content of \(\Tapework'\).
+\end{definition}
+
+Naturally, a ZKIP which is also a proof system is a zero-knowledge proof system (ZKPS).
+From now on, by zero-knowledge protocol/proof system we mean a computationally 
+zero-knowledge protocol/proof system.
+The initial string \(h\) can be interpreted as the \emph{history} of previous interactions with 
+the prover, or some eavesdropped information from the interactions that the prover had with other 
+verifiers.
+A proof system being zero-knowledge basically means that, even for curious or malicious verifiers,
+and even with additional knowledge of the statement, what they can compute is nothing more than 
+what they could have computed themselves.

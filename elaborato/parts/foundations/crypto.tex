@@ -1,0 +1,20 @@
+\chapter{Cryptographical Background}
+The main application of Zero Knowledge proof systems has been, arguably unsurprisingly, in the 
+cryptography field.
+The possibility of two or more parties to cooperate and exchange information one with another in a 
+zero-knowledge manner is the fundamental idea behind many branches of cryptography such as 
+\emph{Multi Party Computation} (MPC)~\cite{Yao1982-2} and \emph{Fully Homomorphic Encryption} 
+(FHE)~\cite{ArmknechtEtAl2015}.
+
+The main application of Zero knowledge protocols has been in \emph{blockchain} infrastructures, 
+with the cryptocurrency \emph{ZCash} being the most prominent example~\cite{SassonCGGMTV2014}.
+In a public blockchain, a user (the prover) wants to convince the other users (the verifiers) that 
+he posseses some data: to this end, he exhibits a \emph{commitment}, typically a short message 
+which can be easily computed when knowing the original data, but for which it is hard to find a 
+\emph{collision}.
+In this scenario, the prover would like to be able to convince the verifiers of the validity of 
+its commitment, without having to hand them out the original data.
+
+\input{parts/foundations/crypto/hash.tex}
+\input{parts/foundations/crypto/trees.tex}
+\input{parts/foundations/crypto/snark.tex}

@@ -1,0 +1,147 @@
+\section{Secure Hash functions}
+Secure Hash functions are a fundamental tool of cryptography, as they can be used to produce 
+\(\BigO{1}\) or \(\BigO{\call{\log}{n}}\) commitments for any message of length \(\abs{n}\).
+\begin{definition}[Hash function]
+  Given some \(n \in \mathbb{N}\), an \emph{\(n\)-bit hash function} is a function 
+  \(H\colon \Set{0, 1}^{*} \to \Set{0, 1}^{n}\).
+\end{definition}
+The input of an hash function is called the \emph{message}, while its output is called the 
+\emph{digest}.
+From the definition, it is immediate to see that there are an infinite number of messages which map
+to the same digest.
+Now, a very simple hash function might be truncation (i.e.\ take the first \(n\) bits and discard 
+anything coming afterwards), but it is not of much interest for cryptography, as we require 
+additional \emph{security guarantees}.
+\begin{remark}
+  When we say that it is \emph{easy} (resp.\  \emph{hard}) to compute a function, we mean that 
+  there is (resp.\ there is not) a probabilistic Turing machine which can compute such function in
+  at most polynomial time.
+  In particular, a \emph{one-way function} is an easily computable function \(f\) whose inverse is 
+  hard to compute, and a \emph{trapdoor function} is a one-way function whose inverse becomes easy 
+  to compute given some additional knowledge, called the \emph{key}.
+\end{remark}
+
+\begin{definition}[Cryptographic hash function~\cite{AlKuwariDB2011}]
+	Given \(n \in \mathbb{N}\), an \emph{\(n\)-bit cryptographic hash function (CHF)} is a \(n\)-bit 
+  hash function which satisfies the following properties:
+	\begin{itemize}
+		\item \textbf{Collision resistance}: It is hard to find two messages \(m_1, m_2\) such
+		      that \(\call{H}{m_1} = \call{H}{m_2}\).
+		\item \textbf{Preimage resistance}: Given some digest \(d\), it is hard to find a
+		      message \(m\) such that \(\call{H}{m} = d\) (\(H\) is a one-way function).
+		\item \textbf{Second preimage resistance}: Given some message \(m_1\), it is hard to
+		      find a message \(m_2\) such that \(\call{H}{m_1} = \call{H}{m_2}\).
+	\end{itemize}
+\end{definition}
+
+Note that second preimage resistance implies first preimage resistance (if given any \(m_1\) 
+we can find a colliding \(m_2\), we can do it also without being given \(m_1\)), and in turn 
+preimage resistance implies second preimage resistance (if given any \(d\) we can find a colliding 
+\(m\), then given any \(m'\) we can compute \(d\) and find the collision).
+
+With high probability, a perfect \(n\)-bit CHF provides \(n/2\) bits of security
+for collision resistance, meaning that even an optimal adversary needs at least \(\BigO{2^{n/2}}\) 
+time to find a collision, while for preimage resistance it provides \(n\) bits of security.
+A CHF can be built by applying some known secure construction to functions which are
+simpler to devise.
+\begin{definition}[Padding function]
+	An \(n\)-bit \emph{padding function} is a function 
+	\(\Pad\colon \Set{0, 1}^{*} \to \Parens{\Set{0, 1}^n}^{*}\).
+\end{definition}
+\begin{definition}[Pseudorandom permutation]
+	Given \(l \in \mathbb{N}\), an \(l\)-bit \emph{pseudorandom permutation} is a permutation 
+	\(P\colon \Set{0, 1}^l \to \Set{0, 1}^l\) which is indistinguishable from an uniform random 
+	distribution.
+\end{definition}
+\begin{definition}[Keyed permutation]
+	Given \(l, n \in \mathbb{N}\), an \emph{\(l/n\)-bit keyed permutation} is
+	a function \(F\colon \Set{0, 1}^l \times \Set{0, 1}^n \to \Set{0, 1}^l\) which is a permutation 
+  on its first parameter.
+\end{definition}
+\begin{definition}[Block cipher]
+  A \emph{block cipher} is a trapdoor pseudorandom keyed permutation.
+\end{definition}
+\begin{definition}[One-way compression function]
+	Given \(l_1, n, l_2 \in \mathbb{N}\) such that \(l_1 + n > l_2\), an 
+	\emph{\(l_1/n/l_2\)-bit one-way compression function (OWCF)} is a one-way function 
+	\(F\colon \Set{0, 1}^{l_1} \times \Set{0, 1}^{n} \to \Set{0, 1}^{l_2}\).
+\end{definition}
+
+A \emph{pseudorandom keyed permutation} (PKP) is typically built by iterating a 
+``somewhat pseudorandom'' keyed permutation \(F\) for an adequate number of \emph{rounds}, until 
+inverting the function becomes hard.
+A block cipher can be built from a PKP by following some secure construction scheme, 
+like the Feistel-Luby-Rackoff construction~\cite{MenezesOV2001}.
+A OWCF can also be derived from a PKP or a block cipher, by applying a secure construction scheme, 
+like the Davies-Meyer construction~\cite{Preneel2005}.
+Finally, CHF can again be derived either by a OWCF, for exaple through the Merkle-Damg\r{a}rd 
+construction~\cite{Merkle1979}, or directly from a pseudorandom permutation, like in the sponge 
+construction~\cite{BertoniDPA2007, Tiwari2017}.
+\begin{proposition}[Feistel-Luby-Rackoff construction~\cite{MenezesOV2001}]
+	Given an \(l/n\)-bit pseudorandom keyed permutation \(P\), some message
+  \(m = \Tuple{m_1, m_2}\) such that \(m_1, m_2 \in \Set{0, 1}^l\), a number of rounds 
+  \(r > 3\), and a set of keys \(k_1, \dots, k_{r} \in \Set{0, 1}^n\), then the function \(E_{r}\) 
+	is a \(2l/n\) block cipher, where:
+  \[
+		 \call{E_{i}}{m, k_i} = \Tuple{x_i, y_i} = 
+		\begin{cases}
+			\Tuple{m_1, m_2}                                       & i = 0 \\
+			\Tuple{y_{i-1}, x_{i-1} \oplus \call{P}{y_{i-1}, k_i}} & 1 \le i \le r
+		\end{cases}
+	\]
+\end{proposition}
+
+\begin{proposition}[Davies-Meyer construction~\cite{Preneel2005}]
+	Given an \(l/n\)-bit pseudorandom keyed permutation \(P\), some number of blocks \(b \in \mathbb{N}\), 
+  some \emph{initial value} \(v \in \Set{0, 1}^l\), and some message 
+	\(m = \Tuple{m_1, \dots, m_b}\) such that each \(m_i \in \Set{0, 1}^{n}\), then the function 
+	\(F_{b}\) is an \(l/{bn}/l\) one-way compression function, where:
+  \[
+		\call{F_{i}}{v, m} =
+		\begin{cases}
+			v                                													& i = 0 \\
+			\call{P}{\call{F_{i-1}}{v, m}, m_i} \oplus \call{F_{i-1}}{v, m} & 1 \le i \le b \\
+		\end{cases}
+	\]
+\end{proposition}
+
+\begin{proposition}[Merkle-Damg\r{a}rd construction~\cite{Merkle1979}]
+	Given an \(l/n/l\)-bit one way compression function \(F\), some initial value 
+	\(v \in \Set{0, 1}^{l}\), some message \(m \in \Set{0, 1}^*\), a padding extension length \(k\) 
+	and an \(n\)-bit padding function \(\Pad \) such that, 
+	\(\forall x, y \in \Set{0, 1}^{*}\):
+	\begin{align*}
+    & \abs{\call{\Pad}{x}} = \abs{x} + \Parens*{-\abs{x} \bmod n} + kn \\
+		& \abs{x} = \abs{y} \implies \abs{\call{\Pad}{x}} = \abs{\call{\Pad}{y}} \\
+    & \abs{x} \neq \abs{y} \implies 
+			\call{\Pad}{x}_{\abs{\call{\Pad}{x}}} \neq \call{\Pad}{y}_{\abs{\call{\Pad}{y}}}
+  \end{align*}
+	then the function \(H_{\abs{\call{\Pad}{m}}}\) is an \(l\)-bit cryptographic hash function, 
+	where:
+	\[
+		\call{H_{i}}{m} =
+		\begin{cases}
+			v                                               & i = 0   \\
+			\call{F}{\call{H_{i-1}}{m}, \call{\Pad}{m}_{i}} & 1 \le i \le \abs{\call{\Pad}{m}}
+		\end{cases}
+	\]
+\end{proposition}
+
+\begin{proposition}[Sponge construction~\cite{BertoniDPA2007}]
+	Given an \(l\)-bit pseudorandom permutation \(P\), a message \(m \in \Set{0, 1}^{*}\), a 
+	\emph{rate} \(r\) and a \emph{capacity} \(c\) such that \(r + c = l\), an initial value 
+	\(v \in \Set{0, 1}^b\) and an \(r\)-bit padding function \(\Pad \), the 
+	function \(H_{\abs{\call{\Pad}{m}}}\) is an \(r-bit\) cryptographic hash function, where:
+	\begin{align*}
+		& \call{S_{i}}{m} = 
+		\begin{cases}
+			v & i = 0 \\
+			\call{P}{\call{S_{i-1}}{m} \oplus \call{\Pad}{m}_i} & 1 \le i \le \abs{\call{\Pad}{m}}
+		\end{cases} \\
+		& \call{H_{i}}{m} = \call{S_{i}}{m}_{1,\dots,r}
+	\end{align*}
+\end{proposition}
+
+The sponge construction is particularly interesting as it is very flexible: given a pseudorandom 
+permutation, it can be used to build pseudorandom keyed permutations, cryptographic hash functions, 
+random number generators and authenticated encryptions~\cite{BertoniDPA2012}.

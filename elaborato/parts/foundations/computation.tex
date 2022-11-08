@@ -10,7 +10,7 @@ Among several equivalent models~\cite{Davis2004}, Turing machines became the sta
 computation.
 \begin{definition}[Turing machine~\cite{Papadimitriou1994}]\label{def:turing_machine}
   A Turing machine is a quadruple \(\mathcal{M} = \Tuple{\Sigma, Q, q_0, \delta}\), where 
-  the \emph{alphabet} \(\Sigma \) is a set of symbols such that \(\sqcup \in \Sigma\), the 
+  the \emph{alphabet} \(\Sigma \) is a set of symbols such that \(\sqcup \in \Sigma \), the 
   \emph{state set} \(Q\) is a set of symbols such that \(\Set{\bot, \top} \subseteq Q\), 
   \(q_0 \in Q\) is the \emph{initial state}, and 
   \(\delta\colon {\Parens*{Q \setminus \Set{\bot, \top}} \times \Sigma} \to 
@@ -42,3 +42,4 @@ It can also happen that the computation does not terminate: in such cases, we wr
 \input{parts/foundations/computation/interactive.tex}
 \input{parts/foundations/computation/complexity.tex}
 \input{parts/foundations/computation/games.tex}
+\input{parts/foundations/computation/zkp.tex}
