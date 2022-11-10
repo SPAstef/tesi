@@ -597,3 +597,105 @@ editor    = {van Tilborg, Henk C. A.},
 	author   = {Shafi Goldwasser and Silvio Micali},
 	abstract = {A new probabilistic model of data encryption is introduced. For this model, under suitable complexity assumptions, it is proved that extracting any information about the cleartext from the cyphertext is hard on the average for an adversary with polynomially bounded computational resources. The proof holds for any message space with any probability distribution. The first implementation of this model is presented. The security of this implementation is proved under the interactability assumptin of deciding Quadratic Residuosity modulo composite numbers whose factorization is unknown.}
 }
+
+@article{BrassardCC1988,
+	title    = {Minimum disclosure proofs of knowledge},
+	journal  = {Journal of Computer and System Sciences},
+	volume   = {37},
+	number   = {2},
+	pages    = {156-189},
+	year     = {1988},
+	issn     = {0022-0000},
+	doi      = {https://doi.org/10.1016/0022-0000(88)90005-0},
+	url      = {https://www.sciencedirect.com/science/article/pii/0022000088900050},
+	author   = {Gilles Brassard and David Chaum and Claude Crépeau},
+	abstract = {Protocols are given for allowing a “prover” to convince a “verifier” that the prover knows some verifiable secret information, without allowing the verifier to learn anything about the secret. The secret can be probabilistically or deterministically verifiable, and only one of the prover or the verifier need have constrained resources. This paper unifies and extends models and techniques previously put forward by the authors, and compares some independent related work.}
+}
+
+@inproceedings{BenorGGHKMR1990,
+	author    = {Ben-Or, Michael
+	             and Goldreich, Oded
+	             and Goldwasser, Shafi
+	             and H{\aa}stad, Johan
+	             and Kilian, Joe
+	             and Micali, Silvio
+	             and Rogaway, Phillip},
+	editor    = {Goldwasser, Shafi},
+	title     = {Everything Provable is Provable in Zero-Knowledge},
+	booktitle = {Advances in Cryptology --- CRYPTO' 88},
+	year      = {1990},
+	publisher = {Springer New York},
+	address   = {New York, NY},
+	pages     = {37--56},
+	abstract  = {Assuming the existence of a secure probabilistic encryption scheme, we show that every language that admits an interactive proof admits a (computational) zero-knowledge interactive proof. This result extends the result of Goldreich, Micali and Wigderson, that, under the same assumption, all of NP admits zero-knowledge interactive proofs. Assuming envelopes for bit commitment, we show tht every language that admits an interactive proof admits a perfect zero-knowledge interactive proof.},
+	isbn      = {978-0-387-34799-8}
+}
+
+@misc{GrothO2006,
+	author       = {Jens Groth and Rafail Ostrovsky},
+	title        = {Cryptography in the Multi-string Model},
+	howpublished = {Cryptology ePrint Archive, Paper 2006/407},
+	year         = {2006},
+	note         = {\url{https://eprint.iacr.org/2006/407}},
+	url          = {https://eprint.iacr.org/2006/407}
+}
+
+@inproceedings{FeigeLS1990,
+	author    = {Feige, U. and Lapidot, D. and Shamir, A.},
+	booktitle = {Proceedings [1990] 31st Annual Symposium on Foundations of Computer Science},
+	title     = {Multiple non-interactive zero knowledge proofs based on a single random string},
+	year      = {1990},
+	volume    = {},
+	number    = {},
+	pages     = {308-317 vol.1},
+	doi       = {10.1109/FSCS.1990.89549}
+}
+
+@article{BlumSMP1991,
+	author   = {Blum, Manuel and De Santis, Alfredo and Micali, Silvio and Persiano, Giuseppe},
+	title    = {Noninteractive Zero-Knowledge},
+	journal  = {SIAM Journal on Computing},
+	volume   = {20},
+	number   = {6},
+	pages    = {1084-1118},
+	year     = {1991},
+	doi      = {10.1137/0220068},
+	url      = {https://doi.org/10.1137/0220068},
+	eprint   = {https://doi.org/10.1137/0220068},
+	abstract = {This paper investigates the possibility of disposing of interaction between prover and verifier in a zero-knowledge proof if they share beforehand a short random string.Without any assumption, it is proven that noninteractive zero-knowledge proofs exist for some number-theoretic languages for which no efficient algorithm is known.If deciding quadratic residuosity (modulo composite integers whose factorization is not known) is computationally hard, it is shown that the NP-complete language of satisfiability also possesses noninteractive zero-knowledge proofs. }
+}
+
+@inproceedings{Damgard1993,
+	author    = {Damg{\aa}rd, Ivan},
+	editor    = {Rueppel, Rainer A.},
+	title     = {Non-Interactive Circuit Based Proofs and Non-Interactive Perfect Zero-knowledge with Preprocessing},
+	booktitle = {Advances in Cryptology --- EUROCRYPT' 92},
+	year      = {1993},
+	publisher = {Springer Berlin Heidelberg},
+	address   = {Berlin, Heidelberg},
+	pages     = {341--355},
+	abstract  = {In the first part of this paper, we present a non-interactive zero-knowledge proof system for Circuit Satisfiability. With this protocol, we can prove an arbitrary NP-statement non-interactively without using Karp-reductions to 3-SAT or Graph Hamiltonicity. The proof system is based on the quadratic residuosity problem and allows processing of XOR and NOT gates at virtually no cost. It is significantly more efficient than previously known non-interactive proof systems. In the second part, we present protocols based on the existence of collision intractable hash functions, leading to a statistical zero-knowledge non-interactive argument with preprocessing for any NP-statement. Under the certified discrete log assumption, the protocol is perfect zero-knowledge. In the preprocessing, the parties need only exchange messages of length independent of the theorem to be proved later. This is the first protocol with such efficient preprocessing that does not need to assume oblivious transfer. Finally we present a perfect zero-knowledge non-interactive protocol based on discrete logarithms that may potentially remove the need for preprocessing.},
+	isbn      = {978-3-540-47555-2}
+}
+
+@inproceedings{Stam2008,
+	author    = {Stam, Martijn},
+	editor    = {Wagner, David},
+	title     = {Beyond Uniformity: Better Security/Efficiency Tradeoffs for Compression Functions},
+	booktitle = {Advances in Cryptology -- CRYPTO 2008},
+	year      = {2008},
+	publisher = {Springer Berlin Heidelberg},
+	address   = {Berlin, Heidelberg},
+	pages     = {397--412},
+	abstract  = {Suppose we are given a perfect n{\thinspace}+{\thinspace}c-to-n bit compression function f and we want to construct a larger m{\thinspace}+{\thinspace}s-to-s bit compression function H instead. What level of security, in particular collision resistance, can we expect from H if it makes r calls to f? We conjecture that typically collisions can be found in 2(nr{\thinspace}+{\thinspace}cr{\thinspace}−{\thinspace}m)/(r{\thinspace}+{\thinspace}1) queries. This bound is also relevant for building a m{\thinspace}+{\thinspace}s-to-s bit compression function based on a blockcipher with k-bit keys and n-bit blocks: simply set c{\thinspace}={\thinspace}k, or c{\thinspace}={\thinspace}0 in case of fixed keys.},
+	isbn      = {978-3-540-85174-5}
+}
+
+@misc{MaurerRH2003,
+	author       = {Ueli Maurer and Renato Renner and Clemens Holenstein},
+	title        = {Indifferentiability, Impossibility Results on Reductions, and Applications to the Random Oracle Methodology},
+	howpublished = {Cryptology ePrint Archive, Paper 2003/161},
+	year         = {2003},
+	note         = {\url{https://eprint.iacr.org/2003/161}},
+	url          = {https://eprint.iacr.org/2003/161}
+}

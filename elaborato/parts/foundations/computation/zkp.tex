@@ -1,17 +1,14 @@
 \section{Zero-Knowledge Protocols}
-Suppose that two parties are executing an interactive proof system for some \textsc{NP-complete} 
-problem: the instance will be avilable on the input tape to both parties, then the prover will 
-solve the problem and it will send the witness/proof to the verifier, which will in turn check the 
-proof and decide whether to accept or not.
+Suppose that two parties are executing an IARK system for some hard problem: the instance is places 
+on the shared input tape, and also suppose that the secret in possession of the prover is simply 
+a witness for the instance. 
+All the prover has to do is send the witness to the verifier, which will in turn check it and 
+decide whether to accept or not.
 In this process, the verifier gained more knowledge than just the solvability of the problem: it 
-will also know a solution!
-
-In many real-world scenarios, the prover wants to keep the witness secret:
-in fact, a prover is not really more efficient than the verifier, and the polynomial bound 
-on the latter is a purely formal need.
-What really gives power to the prover is the knowledge of some \emph{secret}, which we can 
-think of as being stored on its working tape, which can be the witness itself or some other 
-word that allows it to quickly find such a witness.
+also learned a solution, and not just any solution, but exactly the one available to the prover,
+which should have been a secret.
+To address this issue, researchers started exploring the field of so-called zero-knowledge 
+proofs~\cite{GoldwasserMR1989,GoldreichMW1991}.
 
 Informally, two random variables \(U\) and \(V\) that map words of some language 
 \(L \subseteq \Set{0, 1}^{*}\) to words of \(\Set{0, 1}^{*}\) are 
@@ -22,8 +19,7 @@ machine \(\mathcal{M}\) is able to tell them apart.
 By `telling apart', we mean that the distribution of the words that are accepted/rejected 
 by Turing machines respecting the imposed bounds is independent from \(U\) and \(V\): intuitively,
 this means that \(U\) and \(V\) are interchangable with each other and using one over the other 
-does not give an `edge' to \(\mathcal{M}\).
-For a more formal definition, refer to~\cite{GoldwasserM1984,GoldwasserMR1989,Yao1982}.
+does not give an `edge' to \(\mathcal{M}\)~\cite{GoldwasserM1984,GoldwasserMR1989,Yao1982}.
 \begin{example}
   Consider the two random variables \(U, V: L \to \Set{0, 1}^{*}\) for some 
   \(L \subseteq \Set{0, 1}^{*}\), such that, for all words \(x \in L\) and all words 
@@ -76,17 +72,58 @@ indistinguishable over some language \(L\), it must be the case that
   over a language \(L \subseteq \Set{0, 1}^{*}\) is an interactive protocol 
   \(\mathcal{I} = \Tuple{\mathcal{M}, \mathcal{M}'}\) such that, for every \(\mathcal{M'}\),
   \(\View_{\mathcal{M'}}\) is (perfectly, statistically, computationally) approximable by a 
-  probabilistic polynomial time Turing machine \(\mathcal{M}''\) over the language 
+  Turing machine \(\mathcal{M}''\) over the language 
   \(L' = \Set{\Tuple{x, h} \mid x \in L \wedge w \in \Set{0, 1}^*}\), where the string
   \(h\) represents the initial content of \(\Tapework'\).
 \end{definition}
 
-Naturally, a ZKIP which is also a proof system is a zero-knowledge proof system (ZKPS).
-From now on, by zero-knowledge protocol/proof system we mean a computationally 
-zero-knowledge protocol/proof system.
-The initial string \(h\) can be interpreted as the \emph{history} of previous interactions with 
-the prover, or some eavesdropped information from the interactions that the prover had with other 
-verifiers.
+Naturally, a ZKIP which is also a proof system is a zero-knowledge proof system (ZKPS); similarly, 
+if it is an interactive argument of knowledge system then it is a zero-knowledge interactive 
+argument of knowledge system (ZK-IARK).
+From now on, by zero-knowledge we mean computational zero-knowledge, as assuming a polynomial-time 
+bounded adversary is an acceptable restriction in the real world.
+The initial string \(h\) of a ZKIP can be interpreted as the \emph{history} of previous 
+interactions with the prover, or some eavesdropped information from the interactions that the 
+prover had with other verifiers.
+
 A proof system being zero-knowledge basically means that, even for curious or malicious verifiers,
-and even with additional knowledge of the statement, what they can compute is nothing more than 
-what they could have computed themselves.
+and even with additional knowledge on the behaviour of the prover, what can be computed is nothing 
+more than what could have been computed in polynomial time, hence within the imposed computational 
+power limits, without communicating with the prover.
+While it is obvious that every problem solvable in probabilistic polynomial time 
+(\textsc{PP}) has a zero-knowledge proof system (the prover does nothing and the verifier computes 
+the solution by himself), it was proven that also all problems in \textsc{NP} have a 
+ZKPS~\cite{GoldreichMW1991}. 
+By assuming the existance of secure probabilistic encryption, it was finally shown that also 
+all Arthur-Merlin games, and hence all problems in \textsc{IP}, have a ZKPS~\cite{BenorGGHKMR1990}.
+
+\subsection{Non interactive Zero-Knowledge}
+In many scenarios, especially ones involving multiple parties, interaction can be a problem as
+the communication cost of bidirectional \(n\)-to-\(n\) grows quadratically.
+Such cases are actually the ones in which zero-knowledge systems are being most used: every party
+is both a prover and a verifier, and the number of parties might be huge.
+
+For this reason, researches explored the possibility of having zero 
+knowledge \emph{non-interactive} proof systems (ZK-NPS) or argument of knowledge systems (ZK-NARK).
+The most prominent and widely used technique to achieve non-interaction is the 
+\emph{Common Reference String} (CRS) model~\cite{BlumFM1988} (sometimes also called 
+\emph{common random string} model).
+
+The main idea of the CRS model is that, before engaging in the protocol, the prover and 
+the verifier have both obtained access to a shared string of random bits. 
+In the simplest case, the string is generated by a \emph{trusted third party}, although in 
+practice this is not really a viable solution as the whole point of zero-knowledge is when dealing 
+with untrusted parties, so methods have been proposed to generate the CRS by a \emph{majority vote}
+between \(n\) authorities, which can be untrusted if picked singularly, but are assumed to be 
+honest in their majority~\cite{GrothO2006}.
+In fact, it was shown that it is possible, without losing zero-knowledge, to re-use multiple times 
+a single CRS both by a single~\cite{BlumSMP1991} or multiple~\cite{FeigeLS1990} provers, although 
+only for ZK-NARKs and not for ZK-NPSs.
+
+The first zero-knowledge systems (both interactive and non) were tailor-made for specific 
+problems, such as the quadratic residuosity problem \textsc{qr} or the hamiltonian path problem 
+\textsc{hampath}.
+It was not long after that researchers started devising constructions to prove arbitrary NP 
+statements embedded in the form of boolean circuits~\cite{Damgard1993}.
+This allows one to setup a ZK-NARK protocol for any NP problem without having to go through 
+polynomial-time reductions~\cite{Sipser2013}. 

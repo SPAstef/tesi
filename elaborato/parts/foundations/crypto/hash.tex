@@ -21,6 +21,18 @@ additional \emph{security guarantees}.
   to compute given some additional knowledge, called the \emph{key}.
 \end{remark}
 
+\begin{remark}\label{rem:xor_vs_add}
+	The \(\oplus \) symbol used in this chapter can have different meanings: in the literature, 
+	it is mostly used to denote bitwise \textsc{xor}. Since a message/string over \(\Set{0, 1}^{*}\) 
+	can be considered as a vector over \(\mathbb{Z}_{2}^n\), bitwise \textsc{xor} is the same as 
+	vector addition.
+	However, there are instances, particularly in ZK systems, where messages are interpreted as 
+	elements of some prime field \(\mathbb{Z}_p\): in such cases, \(\oplus \) will denote addition
+	modulo \(p\), as defined in \Cref{chap:math}.
+	However, such cases will be explicitly specified, so we decided to keep the ambiguity to be 
+	coherent with the literature.
+\end{remark}
+
 \begin{definition}[Cryptographic hash function~\cite{AlKuwariDB2011}]
 	Given \(n \in \mathbb{N}\), an \emph{\(n\)-bit cryptographic hash function (CHF)} is a \(n\)-bit 
   hash function which satisfies the following properties:
@@ -39,9 +51,10 @@ we can find a colliding \(m_2\), we can do it also without being given \(m_1\)),
 preimage resistance implies second preimage resistance (if given any \(d\) we can find a colliding 
 \(m\), then given any \(m'\) we can compute \(d\) and find the collision).
 
-With high probability, a perfect \(n\)-bit CHF provides \(n/2\) bits of security
-for collision resistance, meaning that even an optimal adversary needs at least \(\BigO{2^{n/2}}\) 
-time to find a collision, while for preimage resistance it provides \(n\) bits of security.
+A perfect \(n\)-bit CHF provides \(n/2\) bits of security for collision resistance 
+(birthday paradox), meaning that every possible adversary is expected to need at least 
+\(\BigO{2^{n/2}}\) time to find a collision, 
+while for preimage resistance it provides \(n\) bits of security.
 A CHF can be built by applying some known secure construction to functions which are
 simpler to devise.
 \begin{definition}[Padding function]
@@ -66,6 +79,10 @@ simpler to devise.
 	\emph{\(l_1/n/l_2\)-bit one-way compression function (OWCF)} is a one-way function 
 	\(F\colon \Set{0, 1}^{l_1} \times \Set{0, 1}^{n} \to \Set{0, 1}^{l_2}\).
 \end{definition}
+Since many compression functions exploit their second component (the key), rather than
+the first component to compress a message, we will call \(n\)-to-\(m\)(-bit) compression function 
+any compression function which, in any way, reduces an input of length \(n\) to an output of 
+length \(m\).
 
 A \emph{pseudorandom keyed permutation} (PKP) is typically built by iterating a 
 ``somewhat pseudorandom'' keyed permutation \(F\) for an adequate number of \emph{rounds}, until 
