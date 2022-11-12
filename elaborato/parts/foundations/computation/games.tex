@@ -24,14 +24,14 @@ of language: for example, by \NPtime{} theorem, we mean any language in \NPtime{
 
 \clearpage
 \begin{definition}[\textsc{NP} proof system~\cite{GoldwasserMR1989}]  
-  A \emph{\textsc{NP} proof system} for a language \(L\) is an interactive protocol 
+  An \textsc{NP} \emph{proof system} for a language \(L\) is an interactive protocol 
   \(\mathcal{I} = \Tuple{\mathcal{P}, \mathcal{V}}\), where \(\mathcal{P}\) is the \emph{prover}
   and \(\mathcal{V}\) is the \emph{verifier}, such that:
   \begin{align*}
     & \forall w \in L\colon \call{\mathcal{I}_{\mathcal{V}}}{w} = \top & 
-      \textnormal{(\emph{soundness})} \\
-    & \forall w \notin L\colon \call{\mathcal{I}_{\mathcal{V}}}{w} = \bot & 
       \textnormal{(\emph{completeness})} \\
+    & \forall w \notin L\colon \call{\mathcal{I}_{\mathcal{V}}}{w} = \bot & 
+      \textnormal{(\emph{soundness})} \\
     & \exists k \in \mathbb{N}\colon \call{\Time}{\mathcal{V}} = \BigO{\abs{x}^k} & 
     \textnormal{(\emph{boundness})}
   \end{align*}
@@ -44,7 +44,7 @@ such statement.
 During the protocol, \(\mathcal{P}\) and \(\mathcal{V}\) exchange messages through their 
 communication tapes; at some point, \(\mathcal{P}\) sends to \(\mathcal{V}\) a candidate proof 
 \(\pi \): the verifier checks the proof and, if the proof is valid, it is always convinced of its 
-validity (soundness), hence it will accept. 
+validity, hence it will accept. 
 On the other hand, if the proof happens to be wrong (e.g.\ if \(\mathcal{P}\) is trying to deceive
 \(\mathcal{V}\)), then the verifier will never be convinced by such a proof, and it will reject.
 The polynomial bound on the execution time of \(\mathcal{V}\) is necessary to force cooperation, 
@@ -52,13 +52,13 @@ and avoid the case where \(\mathcal{V}\) simply ignores \(\mathcal{P}\) and comp
 itself.
 \begin{definition}[Interactive proof system~\cite{GoldwasserMR1989}]  
   An \emph{interactive proof system} (IPS) for a language \(L\) is an interactive protocol 
-  \(\mathcal{I} = \Tuple{\mathcal{P}, \mathcal{V}}\) such that, for any arbitrarily small 
-  \(\epsilon \in \mathbb{R}_{+}\):
+  \(\mathcal{I} = \Tuple{\mathcal{P}, \mathcal{V}}\) such that, for any arbitrarily big bound
+  \(c \in \mathbb{R}_{+}\):
   \begin{align*}
-    & \forall w \in L\colon \call{\Pr}{\call{\mathcal{I}_{\mathcal{V}}}{w} = \bot} < \abs{w}^{\epsilon}  
-      & \textnormal{(\emph{statistical soundness})} \\
-    & \forall w \notin L\colon \call{\Pr}{\call{\mathcal{I}_{\mathcal{V}}}{w} = \top} < \abs{w}^{\epsilon} 
+    & \forall w \in L\colon \call{\Pr}{\call{\mathcal{I}_{\mathcal{V}}}{w} = \bot} < \abs{w}^{-c}  
       & \textnormal{(\emph{statistical completeness})} \\
+    & \forall w \notin L\colon \call{\Pr}{\call{\mathcal{I}_{\mathcal{V}}}{w} = \top} < \abs{w}^{-c} 
+      & \textnormal{(\emph{statistical soundness})} \\
     & \exists k \in \mathbb{N}\colon \call{\Time}{\mathcal{V}} = \BigO{\abs{x}^k} & 
     \textnormal{(\emph{verifier boundness})}
   \end{align*}

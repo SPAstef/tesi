@@ -33,6 +33,8 @@ same prover, so this method would not work, and we need a better solution.
 	\end{enumerate}
 \end{definition}
 
+The set of the sibling nodes visited in the path from a leaf of the tree to the root, including the 
+leaf itself, is the \emph{authentication path} of the leaf.
 By using Merkle trees, the prover only needs to send to the verifier, as a commitment for
 some message \(m_i\) among \(n = 2^h\) messages, the contents of the co-path from the leaf 
 containing \(m_i\) to the root, in addition plus the hash of \(m_i\): this requires
@@ -47,72 +49,45 @@ It is immediate to generalize the notion of binary Merkle tree to arbitrary arit
 \end{proposition}
 
 \begin{example}\label{ex:merkle_tree}
-	Consider the sequence of messages \(S = \Tuple{3, 4, 7, 7}\) and the compression function 
-	\(\call{C}{x, y}: \Tuple{x, y} \mapsto xy \bmod 13\) (for ease of exposition, we work over 
-	integers instead of bit strings, but the two can be readily converted into one another).
+	Consider the sequence of pre-hashed messages \(S = \Tuple{3, 4, 7, 7}\) and the 
+	compression function 
+	\(\call{C}{x, y}: \Tuple{x, y} \mapsto \Parens*{xy \bmod 13} + 1\) (for ease of exposition, 
+	we work over integers instead of bit strings, but the two can be readily converted into one 
+	another).
 	\Cref{fig:merkle_tree} shows the contents of the associated Merkle Tree.
+	Note that the real message is not stored in the Merkle Tree, but only the `first level' of hashes.
+	The authentication path of the leaf labelled with \(3\) consists of the tuple \(\Tuple{3, 4, 11}\):
+	by computing \(\call{H}{3, 4} = 13\) and then \(\call{H}{13, 11} = 1\) we can verify that the 
+	commitment is respected.
 \end{example}
 \begin{figure}
 	\centering
-		\begin{tikzpicture}[sibling distance=32pt, level distance=32pt]
-			\tikzset{edge from parent/.style={draw, <-, edge from parent path=
-					{(\tikzparentnode) -- (\tikzchildnode)}}}
-			\Tree 
-			[
-				.\node[draw,circle]{3};
-				[
-					.\node[draw,rectangle]{C};
-					[
-						.\node[draw,circle]{12};
-						[
-							.\node[draw,rectangle]{C};
-							[
-								.\node[draw,circle]{3};
-%								[
-%									.\node[draw,rectangle]{C};
-%									[
-%										.\node[]{42};
-%									]
-%								]
-							]
-							[
-								.\node[draw,circle]{4};
-%								[
-%									.\node[draw,rectangle]{C};
-%									[
-%										.\node[]{69};
-%									]
-%								]
-							]
-						]
-					] 
-					[
-						.\node[draw,circle]{10};
-						[
-							.\node[draw,rectangle]{C};
-							[
-								.\node[draw,circle]{7};
-%								[
-%									.\node[draw,rectangle]{C};
-%									[
-%										.\node[]{07};
-%									]
-%								]
-							]
-							[
-								.\node[draw,circle]{7};
-%								[
-%									.\node[draw,rectangle]{C};
-%									[
-%										.\node[]{33};
-%									]
-%								]
-							]
-						]
-					]
-				]
-			]
-			\end{tikzpicture}
+	\begin{tikzpicture}[node distance={32pt}, node/.style = {draw, circle},on grid=true]
+		\node[node] (x1) {\(3\)};
+		\node[node,draw=none] (n1) [right of=x1] {};
+		\node[node] (x2) [right of=n1] {\(4\)};
+		\node[node,shape=rectangle] (c1) [above of=n1] {\(C\)};
+		\node[node,draw=none] (n2) [right of=x2] {};
+		\node[node] (x3) [right of=n2] {\(7\)};
+		\node[node,draw=none] (n3) [right of=x3] {};
+		\node[node] (x4) [right of=n3] {\(7\)};
+		\node[node,shape=rectangle] (c2) [above of=n3] {\(C\)};
+		\node[node] (x5) [above of=c1] {\(13\)};
+		\node[node,draw=none] (n3) [above of=n2] {};
+		\node[node,draw=none] (n4) [above of=n3] {};
+		\node[node] (x6) [above of=c2] {\(11\)};
+		\node[node,shape=rectangle] (c3) [above of=n4] {\(C\)};
+		\node[node] (x7) [above of=c3] {\(1\)};
+		\draw[->] (x1) to (c1);
+		\draw[->] (x2) to (c1);
+		\draw[->] (x3) to (c2);
+		\draw[->] (x4) to (c2);
+		\draw[->] (c1) to (x5);
+		\draw[->] (c2) to (x6);
+		\draw[->] (x5) to (c3);
+		\draw[->] (x6) to (c3);
+		\draw[->] (c3) to (x7);
+	\end{tikzpicture}
 	\caption{Merkle tree of \Cref{ex:merkle_tree}.}\label{fig:merkle_tree}
 \end{figure}
 
@@ -166,6 +141,9 @@ of the message.
 	\end{enumerate}
 \end{definition}
 
+The authentication path of the ABR is similar to the one of the Merkle tree, but also includes 
+the middle nodes encountered during the traversal.
+
 \begin{proposition}[Security of ABR mode of hash~\cite{AndreevaBR2021}]
 	Given a one-way \(2n\)-to-\(n\) compression function \(C\), the ABR over \(C\) is a cryptographic 
 	hash function.
@@ -194,5 +172,55 @@ scenarios.
 
 It is worth of notice that, while the ABR hash mode achieves collision resistance, it does not 
 achieve \emph{indifferentiability} (a weaker notion of indistinguishability between Turing 
-machines~\cite{MaurerRH2003}), hence a modified construction, called ABR+, was also proposed, at 
-the cost of reduced compactness (however still higher than a Merkle tree).
+machines~\cite{MaurerRH2003}), hence a modified construction, called ABR+, was also proposed, 
+although it does not achieve perfect compactness.
+\begin{figure}
+	\centering
+	\begin{tikzpicture}[node distance={32pt}, node/.style = {draw, circle},on grid=true]
+		\node[node] (x1) {\(3\)};
+		\node[node,draw=none] (n1) [right of=x1] {};
+		\node[node] (x2) [right of=n1] {\(4\)};
+		\node[node,shape=rectangle] (c1) [above of=n1] {\(C\)};
+		\node[node,draw=none] (n2) [right of=x2] {};
+		\node[node] (x3) [right of=n2] {\(7\)};
+		\node[node,draw=none] (n3) [right of=x3] {};
+		\node[node] (x4) [right of=n3] {\(7\)};
+		\node[node,shape=rectangle] (c2) [above of=n3] {\(C\)};
+		\node[node,draw=none] (n4) [above of=n2] {};
+		\node[node] (x8) [above of=n4] {\(10\)};
+		\node[node] (x5) [above of=c1] {\(13\)};
+		\node[node] (x6) [above of=c2] {\(11\)};
+		\node[node,draw=none] (n5) [above of=x8] {};
+		\node[node,shape=rectangle] (c3) [above of=n5] {\(C\)};
+		\node[node,shape=rectangle] (a1) [below left of=c3] {\(\oplus \)};
+		\node[node,shape=rectangle] (a2) [below right of=c3] {\(\oplus \)};
+		\node[node,shape=rectangle] (a3) [above of=c3] {\(\oplus \)};
+		\node[node] (x7) [above of=a3] {\(10\)};
+		\draw[->] (x1) to (c1);
+		\draw[->] (x2) to (c1);
+		\draw[->] (x3) to (c2);
+		\draw[->] (x4) to (c2);
+		\draw[->] (c1) to (x5);
+		\draw[->] (c2) to (x6);
+		\draw[->] (x5) to (a1);
+		\draw[->] (x6) to (a2);
+		\draw[->] (x8) to (a1);
+		\draw[->] (x8) to (a2);
+		\draw[->] (a1) to (c3);
+		\draw[->] (a2) to (c3);
+		\draw[->] (c3) to (a3);
+		\draw[->] (x5) [bend left] to (a3);
+		\draw[->] (a3) to (x7);
+	\end{tikzpicture}
+	\caption{ABR of \Cref{ex:abr}.}\label{fig:abr}
+\end{figure}
+\begin{example}\label{ex:abr}
+	Consider the same compression function \(C\) of \Cref{ex:merkle_tree}, and consider the 
+	sequence of pre-hashed messages \(S' = \Tuple{3, 4, 7, 7, 10}\), in this case we interpret 
+	\(x \oplus y \equiv \Parens*{x + y \bmod 13} + 1\).
+	\Cref{fig:abr} shows the resulting ABR\@.
+	The authentication path of the node labelled with \(3\) consists of the tuple 
+	\(\Tuple{3, 4, 10, 11}\): by computing \(\call{H}{3, 4} = 13\) and then 
+	\(\call{H}{13 \oplus 10, 11 \oplus 10} \oplus 13 = 10\) we can verify that the commitment is 
+	respected.
+\end{example}

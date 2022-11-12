@@ -296,13 +296,13 @@ denoted \(y\) as it represents the output of the circuit.
 	\(\Parens*{\bm{A}\bm{s}}\Parens*{\bm{B}\bm{s}} = \bm{C}\bm{s}\).
 \end{example}
 
-\subsection{Quadratic Arithmetic Programs}
+\subsection{Quadratic Arithmetic Programs}\label{subsec:qap}
 The size of a solution for a R1CS grows linearly in the number of multiplication gates of
 the corresponding arithmetic circuit.
 This is an issue, as such solution is not \emph{compact}: by compact, we mean that its size 
 should be constant (i.e.\ independent of the circuit's size) or at most logarithmic (i.e.\ 
 upper-bounded by a logarithmic function in the circuit's size).
-\begin{definition}[Quadratic Arithmetic Program]
+\begin{definition}[Quadratic Arithmetic Program~\cite{GennaroGPR2012}]
 	Given some \(m,n \in \mathbb{N}\), a
 	\emph{\(m/n\) Quadratic Arithmetic Program (QAP)} over \(\mathbb{F}\) is a quadruple
 	\(\mathcal{Q} = \Tuple{t, \bm{v}, \bm{w}, \bm{y}}\) where \(t \in \extend{\mathbb{F}}{x}\) is 

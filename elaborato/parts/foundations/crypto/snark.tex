@@ -1,4 +1,96 @@
 \section{ZK-SNARK systems}
+As we saw in \Cref{subsec:nizk}, researchers were able to construct ZK-NARK systems whose 
+verification complexity was linear in the size of the problem instance, which is provided as a 
+boolean circuit.
+Furthermore, in the CRS model, by using a block cipher, it is also possible to have 
+\emph{publicly verifiable} constructions~\cite{LapidotS1991}, meaning that \emph{any} verifier, 
+not just the one that engages the protocol, is able to check the proof, which is encrypted with a 
+\emph{proving key}, by using a public \emph{verification key}.
+
+\begin{proposition}[Fiat-Shamir heuristic~\cite{FiatS1987}]
+  Suppose a probabilistic I/O TM \(\mathcal{P}\) with access to a CHF \(H\) wants to prove its 
+  knowledge of the discrete logarithm \(x = \call{\log}{y}\) for some value 
+  \(y \in \mathbb{Z}_p\), where \(p\) is a large prime number.
+  Then \(\mathcal{P}\) can sample a random value \(v\) from \(\Taperand \), compute the digest 
+  \(d = \call{H}{p, y, p^v}\), the result \(r = {v - dx} \bmod \Parens*{p - 1}\), and finally 
+  output the quadruple \(\Tuple{p, y, p^v, r}\).
+  Any \textnormal{\textsc{PTIME}} TM \(\mathcal{V}\) with access to \(\Tuple{p, y, p^v, r}\) 
+  and \(H\) can recompute \(d\) and check whether \(p^v = p^{r}y^{d}\)
+  (If \(\mathcal{P}\) is not cheating, then \(p^{r}y^{d} = p^{v - dx}\Parens*{p^{x}}^d = 
+  p^{v - dx}p^{dx} = p^{v - dx + dx} = p^v\)).
+  Assuming that the discrete logarithm is hard and that true CHF exist, if equality holds 
+  \(\mathcal{V}\) is convinced that \(\mathcal{P}\) knows \(x\) but is not able to retrieve it 
+  except with negligible probability.
+\end{proposition}
+
+\begin{definition}[Succint proof]
+  A \emph{succint proof} for a statement \(\sigma \) over a language \(L \subseteq \Set{0, 1}^*\) 
+  is a proof \(\pi \) such that \(\abs{\pi} = \BigO{\call{\log}{\abs{\sigma}}}\).
+\end{definition}
+
+Similarly, one can define the notion of succint argument of knowledge, and in particular, a 
+succint ZK-NARK system is called a ZK-SNARK system.
+\begin{definition}[Probabilistically checkable proof system~\cite{BabaiFLS1991,FeigeGLSS1991}]
+  A \emph{probabilistically checkable proof system} (PCP system) is an interactive proof system 
+  \(\Tuple{\mathcal{P, V}}\) such that for any proof \(\pi \) provided by \(\mathcal{P}\):
+  \(\exists k\colon \call{\Time}{\mathcal{V}} = \BigO{\call{\log^k}{\abs{\pi}}}\).
+\end{definition}
+
+In a PCP system, the prover \(\mathcal{P}\) constructs a proof \(\pi \) of size polynomial in the 
+length of the original statement \(\sigma \); since the verifier \(\mathcal{V}\) is 
+polylogarithmically bound to the size of the proof, it can only query a small portion of it, 
+however, it is enough to get statistical completeness and soundness.
+
+In~\cite{Kilian1992}, the author uses Merkle trees to have the prover commit to a proof \(\pi \), 
+(the bits of \(\pi \) are the leaves and the root, whcih has constant size, is sent to the verifier). 
+The verifier then queries a certain number of authentication paths, which have length
+\(\BigO{\call{\log}{\abs{\pi}}}\), and decides whether to accept or reject.
+In this sense, the protocol is therefore succint.
+In~\cite{Micali2000}, the construction was extended and, by applying the Fiat-Shamir heuristic, it 
+is possible to make the protocol non-interactive.
+
+One of the first \emph{succint} ZK-NARK (ZK-SNARK) systems that didn't make explicit use of 
+PCPs was devised in~\cite{Groth2010}, but had one important drawback: while the size of the proof 
+is constant, the size of the CRS, and the computation that the prover has to perform is 
+\emph{quadratic} in the size of the input circuit
+(this bound wass slightly improved in~\cite{Lipmaa2011}).
+
+However, by first transforming the circuit into \emph{quadratic span programs} (QSPs), 
+the boolean equivalent of QAPs (\Cref{subsec:qap}), it was possible to reduce both the size of the 
+CRS and the prover's computational complexity to linear, while still having succint proofs.
+Since all these constructions make use of encryption based on the hardness of finding the discrete
+logarithm of a number over a big finite field, dealing with boolean circuits and QSPs is not 
+very efficient; although both polynomially sized boolean and arithmetic circuits are equivalent to 
+\textsc{PTIME} Turing machines~\cite{PippengerF1979}, working over arithmetic programs, and hence 
+using R1CSs~\cite{CramerD1998} and QAPs over QSPs, can greatly reduce the constant factors involved 
+in such constructions, although this depends on the kind of input problem (numeric problems 
+can exploit arithmetic circuits much better than, say, propositional problems).
+
 \subsection{Pinocchio}
+An important application of ZK-SNARK systems is in \emph{verifiable computation}.
+Consider a client (say, a mobile phone) that wants to delegate to a server (say, a cloud provider) 
+some computation, for which several inputs are required: some are provided by the client, 
+and some by the server:
+\begin{itemize}
+  \item The client does not trust the server, so we would need a proof system, but since the server 
+        is not computationally unbounded, an \emph{argument of knowledge} system will suffice.
+  \item The server might have to interact with many clients or, similarly, many different clients
+        might require the same computation, the system must be \emph{non-interactive}.
+  \item Verifying the computation must be cheaper than performing it, otherwise the client wouldn't 
+        have to ask the server in the first place, the system must provide \emph{succint} proofs.
+  \item The server has too interests in to the client that the computation was correct, say to 
+        avoid legal liability, but it is not willing to share its own inputs, so our system must
+        be \emph{zero-knowledge}.
+\end{itemize}
+Clearly, among the various constructions we saw up to now, ZK-SNARK systems are the only one that 
+can reasonably fulfill all these requirements.
+However, all the constructions we saw, due to the high overheads involved 
+(generating the CRS, building the QSP/QAP, generating the proof, etc.), were not efficient enough 
+to make the whole process faster than just letting the client perform the computations by itself.
+
+The first construction that was efficient enough to be practically usable was 
+\emph{Pinocchio}~\cite{ParnoGHR2013}.
+
+
 \subsection{Groth16}
 \subsection{PLONK}
