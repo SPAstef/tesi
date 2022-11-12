@@ -75,12 +75,15 @@ competitor hash functions and a hash-agnostic variable-arity Merkle Tree circuit
 \texttt{C++} project which we then used to compare their real-world performance for same-level 
 security gaurantees in various scenarios.
 
-\section*{Structure of the thesis}
-This work is organized in two parts: Part~\ref{part:foundation} contains the background of 
-the work, presenting all the mathematical, computational and cryprographical tools and concepts 
-required to understand the theory, the history and the applications of ZKFCPs.
-In Part~\ref{part:zk-hash}, we begin with a review of state of the art ZKFCPs,
-we then present the GTDS algebraic framework, its instantiation in the form of the \Blocc\ block 
-cipher and the \Stamp\ hash function and we conclude with an implementation analysis and 
-experimental comparison between the current SoTA and the GTDS constructions. 
-
+\section*{Structure of this thesis}
+This work is organized as follows: \Cref{chap:math} presents the mathematical background for 
+both current ZK-SNARK systems and our hash function.
+\Cref{chap:computation} presents the computational background of ZK-SNARK systems, and their origin.
+\Cref{chap:crypto} presents the cryptographical background of ZK-SNARK systems, their latest 
+evolutions and their most important real-world applications.
+In \Cref{chap:arion}, we review the history and the state of the art concerning ZK-friendly hash 
+functions; we present the GTDS framework and its instantiation in the form of the \Arion{} block 
+cipher and the \ArionHash{} hash function; and we study the implementation and performance 
+of the latter by comparing it to the state of the art. 
+Finally, in \Cref{chap:conclusions}, we draw our conclusion and explore future directions of the 
+work.
