@@ -53,16 +53,17 @@ One of the first \emph{succint} ZK-NARK (ZK-SNARK) systems that didn't make expl
 PCPs was devised in~\cite{Groth2010}, but had one important drawback: while the size of the proof 
 is constant, the size of the CRS, and the computation that the prover has to perform is 
 \emph{quadratic} in the size of the input circuit
-(this bound wass slightly improved in~\cite{Lipmaa2011}).
+(this bound was slightly improved in~\cite{Lipmaa2011}).
 
 However, by first transforming the circuit into \emph{quadratic span programs} (QSPs), 
-the boolean equivalent of QAPs (\Cref{subsec:qap}), it was possible to reduce both the size of the 
-CRS and the prover's computational complexity to linear, while still having succint proofs.
+the boolean equivalent of QAPs (\Cref{subsec:qap}), it was shown that it is possible to reduce both 
+the size of the CRS and the prover's computational complexity to linear, while still having succint 
+proofs~\cite{GennaroGPR2012}.
 Since all these constructions make use of encryption based on the hardness of finding the discrete
 logarithm of a number over a big finite field, dealing with boolean circuits and QSPs is not 
 very efficient; although both polynomially sized boolean and arithmetic circuits are equivalent to 
 \textsc{PTIME} Turing machines~\cite{PippengerF1979}, working over arithmetic programs, and hence 
-using R1CSs~\cite{CramerD1998} and QAPs over QSPs, can greatly reduce the constant factors involved 
+using QAPs over QSPs, can greatly reduce the constant factors involved 
 in such constructions, although this depends on the kind of input problem (numeric problems 
 can exploit arithmetic circuits much better than, say, propositional problems).
 
@@ -82,15 +83,199 @@ and some by the server:
         avoid legal liability, but it is not willing to share its own inputs, so our system must
         be \emph{zero-knowledge}.
 \end{itemize}
-Clearly, among the various constructions we saw up to now, ZK-SNARK systems are the only one that 
-can reasonably fulfill all these requirements.
-However, all the constructions we saw, due to the high overheads involved 
-(generating the CRS, building the QSP/QAP, generating the proof, etc.), were not efficient enough 
-to make the whole process faster than just letting the client perform the computations by itself.
+Clearly, among the various systems we saw up to now, ZK-SNARKs are the only one that can reasonably 
+fulfill all of the requirements above.
+However, all the constructions we saw, due to the high overheads involved in generating the CRS, 
+building the QSP/QAP, generating the proof, and even verifying it, were (much) slower than native 
+execution by the client.
 
-The first construction that was efficient enough to be practically usable was 
+The first construction that was efficient enough to be usable in practice, and that in many cases
+broke the `native execution' barrier for verification time, was 
 \emph{Pinocchio}~\cite{ParnoGHR2013}.
+\begin{definition}[Bilinear map~\cite{BonehF2001}]
+  A \emph{bilinear map} (w.r.t.\ exponentiation) over two groups \(\mathbb{G}\) and \(\mathbb{G}'\) 
+  is a map \(B\colon \mathbb{G} \times \mathbb{G} \to \mathbb{G}_T\) such that
+  \(\forall a, b \in \mathbb{Z}\colon \call{B}{x^a, y^b} = \call{B}{x, y}^{ab}\).
+\end{definition}
 
+\begin{example}\label{ex:bilinear_map}
+  Recall \Cref{ex:cyclic_group}.
+  Consider a group \(\mathbb{G} = \gengroup{g}\), and define 
+  \(B\colon \mathbb{G} \times \mathbb{G} \to \mathbb{Z}_{\abs{\mathbb{G}}}\) such that 
+  \(\call{B}{x, y} = g^{\call{\log}{x}\call{\log}{y}}\). The map \(B\) is bilinear 
+  w.r.t.\ exponentiation, since:
+  \[
+    \forall a,b \in \mathbb{Z}\colon \call{B}{x^a, y^b} = g^{\call{\log}{x^a}\call{\log}{y^b}} = 
+    g^{a\call{\log}{x}b\call{\log}{y}} = \Parens*{g^{\call{\log}{x}\call{\log}{y}}}^{ab}
+    = \call{B}{x, y}^{ab}
+  \]
+\end{example}
 
-\subsection{Groth16}
-\subsection{PLONK}
+The two main ingredients of Pinocchio are QAPs and bilinear maps.
+Given in input an arithmetic formula \(\varphi \) over some field \(\mathbb{F} \cong \gengroup{g}\) 
+equipped with a bilinear map \(B\colon \gengroup{g} \times \gengroup{g} \to \mathbb{F}\) defined as 
+in \Cref{ex:bilinear_map}, the Pinocchio protocol is organized in three phases: the 
+\emph{setup phase}, the \emph{prover phase}, and the \emph{verifier phase}.
+
+\subsubsection*{Setup phase}
+In the setup phase, any of the parties derives the explicit formula \(\explicit{\varphi}\), 
+the circuit \(\mathcal{G}\) of \(\explicit{\varphi}\), the R1CS \(\mathcal{C}\) of \(\mathcal{G}\) 
+and finally the \(m/n\) QAP \(\mathcal{Q} = \Tuple{t, \bm{v}, \bm{w}, \bm{y}}\) of \(\mathcal{C}\).
+Recall that \(m = \abs{\bm{v}} = \abs{\bm{w}} = \abs{\bm{y}} = \abs{\mathcal{G}_{\otimes}}\)\footnote{
+  As we will see, it is possible to reduce this number in some special cases by exploiting the 
+  structure of R1CS constraints.
+  Also note that the original protocol as in~\cite{ParnoGHR2013} does not make explicit use of 
+  R1CS, but we want to stress its importance as it is the standard way to represent arithmetic 
+  circuits in \texttt{libsnark}~\cite{SassonCTV2013}.
+  }, 
+that \(n = \call{\deg}{t} = m + 1 + \abs{\mathcal{G}_{in}}\), and that 
+\(\forall i\colon \call{\deg}{\bm{v}_i} = \call{\deg}{\bm{w}_i} = \call{\deg}{\bm{y}_i} = n - 1\).
+The QAP (and eventually all the other componenets) are made public.
+
+Either via a trusted third party or an ensamble of authorities~\cite{GrothO2006}, we generate 
+a CRS \(\overbar{\sigma}\), which has length 
+\(\abs{\overbar{\sigma}} = 8\Ceil*{\call{\log}{\abs{\mathbb{F}}}}\) and interpret every 
+\(\Ceil*{\call{\log}{\abs{\mathbb{F}}}}\)-bit subsequence as elements of \(\mathbb{F}\): 
+\[\overbar{\sigma} = \Tuple{r_v, r_w, s, \alpha_v, \alpha_w, \alpha_y, \beta, \gamma}\]
+
+Finally, after fixing \(r_y = r_{v}r_{w}\), we build the \emph{proving key} and the 
+\emph{verification key}:
+\begin{align*}
+  & \ProverKey = 
+  \begin{pmatrix*}
+    \Set{g^{r_{v}\call{\bm{v}_j}{s}}}, &
+    \Set{g^{r_{w}\call{\bm{w}_j}{s}}}, &
+    \Set{g^{r_{y}\call{\bm{y}_j}{s}}}, \\
+    \Set{g^{r_{v}\alpha_v\call{\bm{v}_j}{s}}}, &
+    \Set{g^{r_{w}\alpha_w\call{\bm{w}_j}{s}}}, &
+    \Set{g^{r_{y}\alpha_y\call{\bm{y}_j}{s}}}, \\
+    \Set{g^{s^k}}, &
+    \Set{g^{r_{v}{\beta}\call{\bm{v}_j}{s}}g^{r_{w}{\beta}\call{\bm{w}_j}{s}}g^{r_{y}{\beta}\call{\bm{y}_j}{s}}}
+  \end{pmatrix*} \\
+  & \VerifierKey = \Tuple{
+    g, 
+    g^{\alpha_v}, 
+    g^{\alpha_w}, 
+    g^{\alpha_y}, 
+    g^{\gamma}, 
+    g^{\beta\gamma}, 
+    g^{r_{y}\call{t}{s}},
+    \Set{g^{r_{v}\call{\bm{v}_i}{s}}}, 
+    \Set{g^{r_{w}\call{\bm{w}_i}{s}}}, 
+    \Set{g^{r_{y}\call{\bm{y}_i}{s}}}
+  }
+\end{align*}
+where \(i\) ranges over \(\Iinterval*{0}{\abs{G_{in}}}\), \(j\) ranges over 
+\(\Iinterval*{\abs{\mathcal{G}_{in}}}{n-1}\), and \(k\) ranges over \(\Iinterval*{1}{n}\).
+
+It is important to remark that \(\overbar{\sigma}\) must be deleted immediately after generating 
+the two keys, as it can be exploited to tamper the protocol 
+(in jargon, we say that it is \emph{toxic waste}).
+
+\subsubsection*{Prover phase}
+After fixing the input vector \(\bm{x}\), the prover creates a circuit input for \(\mathcal{G}\), 
+computes the induced evaluation and extracts the assignment \(\mathcal{A}\).
+From \(\mathcal{A}\), the prover derives the associated solution \(\bm{c}\) of \(\mathcal{C}\),
+and computes the polynomials 
+\(p = \Parens*{\bm{vc}}\Parens*{\bm{wc}} - \Parens*{\bm{yc}}\) and \(h = p/t\).
+Now, to build a short proof \(\pi \), the prover should sum the contributions of all the 
+left input, right input, and output polynomials:
+\begin{align*}
+  & v_{\otimes} = \sum_{i=\abs{\mathcal{G}_{in}}}^{n-1}{\bm{c}_{i}\call{\bm{v}_{i}}{s}} &&
+  w_{\otimes} = \sum_{i=\abs{\mathcal{G}_{in}}}^{n-1}{\bm{c}_{i}\call{\bm{w}_{i}}{s}} &&
+  y_{\otimes} = \sum_{i=\abs{\mathcal{G}_{in}}}^{n-1}{\bm{c}_{i}\call{\bm{y}_{i}}{s}}
+\end{align*}
+and obtain the proof:
+\[
+  \pi = \Tuple{
+    g^{r_{v}v_{\otimes}}, 
+    g^{r_{w}w_{\otimes}}, 
+    g^{r_{y}y_{\otimes}}, 
+    g^{\call{h}{s}},
+    g^{r_{v}\alpha_{v}v_{\otimes}}, 
+    g^{r_{w}\alpha_{w}w_{\otimes}}, 
+    g^{r_{y}\alpha_{y}y_{\otimes}}, 
+    g^{r_{v}{\beta}v_{\otimes}}g^{r_{w}{\beta}w_{\otimes}}g^{r_{y}{\beta}y_{\otimes}}
+    }
+\]
+Although \(r_v\), \(r_w\) or \(r_y\) have been deleted, and finding the discrete logarithm is hard,
+by using \(\ProverKey \), it is possible to compute:
+\begin{align}\label{eq:compute_proof}
+  & g^{r_{v}v_{\otimes}} = 
+  \prod_{i=\abs{\mathcal{G}_{in}}}^{n - 1}{\Parens*{g^{r_{v}\call{v_{i}}{s}}}^{\bm{c}_{i}}} &&
+  & g^{r_{w}w_{\otimes}} = 
+  \prod_{i=\abs{\mathcal{G}_{in}}}^{n - 1}{\Parens*{g^{r_{w}\call{w_{i}}{s}}}^{\bm{c}_{i}}} &&
+  & g^{r_{y}y_{\otimes}} = 
+  \prod_{i=\abs{\mathcal{G}_{in}}}^{n - 1}{\Parens*{g^{r_{y}\call{y_{i}}{s}}}^{\bm{c}_{i}}}
+\end{align}
+and similarly for the other values (except for \(g^{\call{h}{s}}\) which can be computed directly).
+Finally, the prover publishes the pair \(\Tuple{\call{\phi}{\bm{x}}, \pi}\).
+
+\subsubsection*{Verifier phase}
+At this point, any potential verifier with access to \(\VerifierKey \) and to the bilinear map 
+\(B\) can check the alleged proof.
+First, the verifier should check whether \(p = ht\), which, as we noted in \Cref{subsec:qap}, it is 
+statistically equivalent to checking whether \(\call{p}{s} = \call{h}{s}\call{t}{s}\).
+In the spirit of \Cref{eq:compute_proof}, using \(\VerifierKey \), the verifier can compute the 
+input/output contributions \(g^{r_{v}v_{I/O}}\), \(g^{r_{w}w_{I/O}}\) and \(g^{r_{y}y_{I/O}}\).
+Clearly, for any arbitrary \(k \in \mathbb{F} \setminus \Set{0}\), we have that 
+\(\call{p}{s} = \call{h}{s}\call{t}{s} \iff k^{\call{p}{s}} = k^{\call{h}{s}\call{t}{s}}\) (we 
+``work in the exponent'').
+If we fix \(k = \call{B}{g^{r_v}, g^{r_w}}\), with some algebraic effort the previous 
+equation can be transformed into the equivalent one:
+\[
+  \call{B}{g^{r_{v}v_{I/O}}g^{r_{v}v_{\otimes}}, g^{r_{w}w_{I/O}}g^{r_{w}w_{\otimes}}} =
+  \call{B}{g^{r_{y}\call{t}{s}}, g^{\call{h}{s}}}\call{B}{g^{r_{y}y_{I/O}}g^{r_{y}y_{\otimes}}, g}
+\]
+
+Even if the divisibility check passes, it might still be the case that the alleged 
+proof was not built using the polynomials in \(\mathcal{Q}\).
+To address this eventuality, the verifier checks whether:
+\begin{align*}
+  &  \call{B}{g^{r_{v}\alpha_{v}v_{\otimes}}, g} = \call{B}{g^{r_{v}v_{\otimes}}, g^{\alpha_v}}
+  && \call{B}{g^{r_{w}\alpha_{w}w_{\otimes}}, g} = \call{B}{g^{r_{w}w_{\otimes}}, g^{\alpha_w}}
+  && \call{B}{g^{r_{y}\alpha_{y}y_{\otimes}}, g} = \call{B}{g^{r_{y}y_{\otimes}}, g^{\alpha_y}}
+\end{align*}
+
+Finally, the prover might have used the correct polynomials, but didn't use the same 
+coefficients \(\bm{c}_i\) when building \(v_{\otimes}\), \(w_{\otimes}\) and \(y_{\otimes}\).
+This last concern is resolved by checking whether:
+\[
+  \call{B}{g^{r_{v}{\beta}v_{\otimes}}g^{r_{w}{\beta}w_{\otimes}}g^{r_{y}{\beta}y_{\otimes}}, g^{\gamma}} =
+  \call{B}{g^{r_{v}v_{\otimes}}g^{r_{w}w_{\otimes}}g^{r_{y}y_{\otimes}}, g^{\beta\gamma}}
+\]
+
+The protocol as described is not zero-knowledge, but it is quite simple to make it so:
+the verification key is extended to include \(g^{r_{v}\alpha_{v}\call{t}{s}}\), 
+\(g^{r_{v}\beta{v}\call{t}{s}}\), and then the prover generates a random value \(\delta_v\) and 
+replaces each polynomial \(\bm{v}_i\) with \(\bm{v}_i + \delta_{v}t\). 
+The same thing is done for \(\bm{w}\) and \(\bm{y}\): the validity of the checks performed by the 
+verifier is not affected by this change, but it can be shown that the scheme is now 
+statistically zero-knowledge.
+
+It is immediate to see that the proving key \(\ProverKey \) contains 
+\(8\abs{\mathcal{G}_{\otimes}} + \abs{\mathcal{G}_{in}} + 1\) field elements, the verification 
+key \(\VerifierKey \) contains \(3\abs{\mathcal{G}_{in}} + 7\) field elements (\(6\) more in the 
+zero-knowledge setting), and the proof \(\pi \) contains \(8\) field elements, meaning that its size
+is independent from the input circuit.
+
+\subsection{\texttt{libsnark}}
+In the last ten years, new improvements were put forward to reduce the size of the messages and 
+the complexity of the computation, especially on the prover's side~\cite{Lipmaa2013} (for example, 
+in~\cite{Groth2016} the size of the proof was reduced to just \(3\) field elements).
+Furthermore, much effort has been put into making working implementations of ZK-SNARK 
+systems, such as \texttt{libsnark}\footnote{\url{https://github.com/scipr-lab/libsnark}, you can also find 
+a nice empirical comparison of the various protocols.}, a
+C\texttt{++}~\cite{Stroustrup2013} library which implements and refines several ZK-SNARK 
+protocols~\cite{DanezisFGK2014,GrothM2017,BackesBFR2014}, although the core component is based 
+mostly on~\cite{SassonCTV2013,SassonCGTV2013} and~\cite{Groth2016}, which are in spirit very 
+similar to the Pinocchio protocol, improving on the QAP (and QSP) model 
+of~\cite{GennaroGPR2012}.
+
+In \texttt{libsnark}, if we want to implement some function \(f\) which can be expressed as an 
+arithmetic expression \(\varphi \) (i.e.\ no variable-length loops or recursion), we must provide 
+both the arithmetic circuit and the associated R1CS\@.
+In simple cases, deriving the R1CS from the arithmetic circuit might seem trivial, but there are 
+instances where having them separate allows for some quite nice optimizations\footnote{One could 
+argue that a \emph{smart} compiler should be able to perform such optimizations automatically, 
+however, the one that we are aware of only perform the trivial translations.}.
