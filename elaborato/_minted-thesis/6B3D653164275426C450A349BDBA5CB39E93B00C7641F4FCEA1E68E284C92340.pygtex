@@ -1,0 +1,5 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{+w}{  }\PYG{n}{libsnark}\PYG{o}{::}\PYG{n}{pb\PYGZus{}variable}\PYG{+w}{ }\PYG{n}{input\PYGZus{}var}\PYG{p}{;}
+\PYG{+w}{  }\PYG{n}{libsnark}\PYG{o}{::}\PYG{n}{pb\PYGZus{}variable}\PYG{+w}{ }\PYG{n}{output\PYGZus{}var}\PYG{p}{;}
+\PYG{+w}{  }\PYG{n}{FooGadget}\PYG{+w}{ }\PYG{n}{gadget}\PYG{p}{\PYGZob{}}\PYG{n}{board}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{input\PYGZus{}var}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{output\PYGZus{}var}\PYG{p}{\PYGZcb{};}
+\end{Verbatim}

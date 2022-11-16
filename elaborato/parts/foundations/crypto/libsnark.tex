@@ -1,0 +1,167 @@
+\section{\texttt{libsnark}}
+In the last ten years, new improvements were put forward to reduce the size of the messages and 
+the complexity of the computation, especially on the prover's side~\cite{Lipmaa2013} (for example, 
+in~\cite{Groth2016} the size of the proof was reduced to just \(3\) field elements).
+Furthermore, much effort has been put into making working implementations of ZK-SNARK 
+systems, such as \texttt{libsnark}\footnote{\url{https://github.com/scipr-lab/libsnark}, you can 
+also find a nice empirical comparison of the various protocols.}, 
+a C\texttt{++}~\cite{Stroustrup2013} library which implements and refines several ZK-SNARK 
+protocols~\cite{DanezisFGK2014,GrothM2017,BackesBFR2014,SassonCGTV2013}, although the core 
+component (pre-processing ZK-SNARK, or PPZK-SNARK) is based mostly on the Pinocchio protocol and 
+on~\cite{SassonCTV2013,Groth2016}, which are all extensions and improvements of the QAP (and QSP) 
+model of~\cite{GennaroGPR2012}.
+
+In order to implement some function \(f\) which can be expressed as an 
+arithmetic expression \(\varphi \) (i.e.\ no variable-length loops or recursion) in 
+\texttt{libsnark}, we must provide both the arithmetic circuit and the associated R1CS\@.
+In many cases, deriving the R1CS from the arithmetic circuit is quite trivial, but there are 
+instances where having them separate allows for some quite nice optimizations.
+Although there has been work on \emph{compilers} that translate high-level code to R1CS 
+constraints~\cite{EberhardtT2018,BellesBDM2022}, as it is often the case, this comes at a cost 
+of flexibility.
+Intuitively, we can divide the usage of \texttt{libsnark} in same three phases of the Pinocchio 
+system (or really any other SNARK).
+
+\subsubsection*{Preprocessing phase}
+The first thing to do in \texttt{libsnark} is choosing, at compile time (or \emph{a priori}, in a 
+theoretical interpretation), which bilinear group to use for the protocol. 
+The standard choice is BN254~\cite{BarretoN2005}, but there are also other groups available, such 
+as BLS12\footnote{\url{https://electriccoin.co/blog/new-snark-curve/}}~\cite{BonehLS2001}.
+It is important to note that all these groups are paired to a prime field.
+After choosing the group, we setup the \emph{protoboard} which, as the 
+name suggests, it is the object where one places the components of the circuit:
+\begin{lstlisting}[language=C++]
+  libsnark::protoboard<Field> board;
+  board.set_input_sizes(PUBLIC_N);
+\end{lstlisting}
+The template argument \texttt{Field} specifies the underlying field, and \texttt{PUBLIC\_N} 
+specifies the number of output (i.e.\ public) variables in the circuit.
+On the protoboard, we allocate \emph{variables} that will carry the input/intermediate/output
+values of the circuit evaluation, together with an annotation (for debug).
+However, it is usually much more convenient to only declare the input and output variables, and 
+delegate the wiring to \emph{gadgets} which act as composable black-boxes:
+\begin{lstlisting}[language=C++]
+  libsnark::pb_variable<Field> output_var;
+  libsnark::pb_variable<Field> input_var;
+
+  output_var.allocate(board, "out");
+  input_var.allocate(board, "in");
+  FooGadget gadget{board, input_var, output_var};
+\end{lstlisting}
+Note that the first \texttt{PUBLIC\_N} variables allocated will be considered public, while the 
+remaining ones will be private.
+A typical gadget must provide two methods: one to generate the R1CS constraints, and one to 
+compute the circuit evaluation given a circuit input, which will be used in the proving phase.
+First, we generate the constraints:
+\begin{lstlisting}[language=C++]
+  gadget.generate_r1cs_constraints();
+\end{lstlisting}
+Internally, \texttt{gadget} allocates the required intermediate variables and constrains their 
+linear combinations. 
+A linear combination can be expressed quite naturally:
+\begin{lstlisting}[language=C++] 
+  libsnark::pb_linear_combination<Field> lc = a1*x1 + ... + an*xn;
+\end{lstlisting}
+An R1CS constraint of the type \(\bm{ab} = \bm{c}\) is expressed as:
+\begin{lstlisting}[language=C++]
+  libsnark::r1cs_constraint<Field> constraint{lc_a, lc_b, lc_c};
+  board.add_r1cs_constraint(constraint);
+\end{lstlisting}
+Once all the constraints have been specified, the last thing to do is to convert the R1CS to a 
+QAP and get the keys \(\ProverKey \) and \(\VerifierKey \).
+The whole process is done transparently by the library:
+\begin{lstlisting}[language=C++]
+  auto keypair = libsnark::r1cs_ppzksnark_generator(board.get_constraint_system());
+\end{lstlisting}
+Now the constraint system and \(\VerifierKey \) can be made public, while \(\ProverKey \) is only 
+known by the prover. 
+
+\subsubsection*{Proving phase}
+To generate a (valid) proof, the prover has to first provide a circuit input and compute the 
+induced evaluation. 
+At the highest level, this is done by setting the values of the input variables and letting the 
+gadget generate the intermediate and the output values:
+\begin{lstlisting}[language=C++]
+  Field x; // some field element
+  board.val(input_var) = x;
+  gadget.generate_r1cs_witness(circuit_inputs);
+\end{lstlisting}
+Now, he can generate the proof, which is done transparently by the library by using the 
+proving key and the primary (i.e.\ public) and auxiliary (i.e.\ private) inputs:
+\begin{lstlisting}[language=C++]
+  auto proof = libsnark::r1cs_ppzksnark_prover(keypair.pk, board.primary_input(), board.auxiliary_input());
+\end{lstlisting}
+Finally, the prover can make public the primary inputs of the protoboard together with the
+proof.
+
+\subsubsection*{Verification phase}
+At this point, the verifier has to check the proof by using the public key, and there are two 
+kinds of choices regarding how to perform such verification: 
+\begin{itemize}
+  \item \emph{weak} vs.\  \emph{strong} verification: in the former case, it is ok for the prover 
+        to only provide some of the primary inputs, which will be zero-padded. 
+        In the latter case, this is not considered acceptable.
+  \item \emph{offline} vs.\  \emph{online} verification: in the former case, the verification key 
+        is used `as is', in the latter, it is processed to get faster verification times when used 
+        multiple times.
+\end{itemize}
+In any case, the whole thing is managed transparently by the library.
+For example, if we choose strong, online verification:
+\begin{lstlisting}[language=C++]
+  auto proc_vk = libsnark::r1cs_ppzksnark_verifier_process_vk(keypair.vk);
+  bool halt = libsnark::r1cs_ppzksnark_online_verifier_strong_IC(proc_vk, board.primary_input(), proof);
+\end{lstlisting}
+The verifier will accept the proof if \texttt{halt} is \texttt{true}, while it will reject if it 
+is \texttt{false}.
+
+\begin{example}
+  Consider the R1CS in \Cref{ex:r1cs}.
+  \Cref{lst:libsnark_example} shows the implementation of the corresponding gadget in 
+  \texttt{libsnark}.
+\end{example}
+
+\begin{algorithm}
+  \centering
+  \begin{lstlisting}[caption={The \texttt{libsnark} gadget corresponding to the 
+    arithmetic formula in \Cref{ex:arithmetic_formula}.}\label{lst:libsnark_example},language=C++]
+    #include <libsnark/gadgetlib1/gadget.hpp>
+
+    using namespace libsnark; // don't do this in real code please
+
+    template<typename FieldT>
+    class FooGadget : public gadget<FieldT>
+    {
+        using Var = pb_variable<FieldT>;
+
+        const Var x1, x2, y;
+        Var t1, t2, t3;
+
+        FooGadget(protoboard<FieldT> &board, 
+                  const std::string &ann,
+                  const Var &x1, 
+                  const Var &x2, 
+                  const Var &y) : 
+            gadget<FieldT>{board, ann}, x1{x1}, x2{x2}, y{y}
+        {
+            t1.allocate(board, "t1");
+            t2.allocate(board, "t2");
+            t3.allocate(board, "t3");
+        }
+
+        void generate_r1cs_constraints()
+        {
+            board.add_r1cs_constraint(r1cs_constraint<FieldT>{x1, x1, t1});
+            board.add_r1cs_constraint(r1cs_constraint<FieldT>{t1, x1, 8 + 9*x2 + t2});
+            board.add_r1cs_constraint(r1cs_constraint<FieldT>{x2, t2, y});
+        }
+
+        void generate_r1cs_witness()
+        {
+            board.val(t1) = board.val(x1) * board.val(x1);
+            board.val(t2) = board.val(t1) * board.val(x1) + 4*board.val(x2) + 5;
+            board.val(y)  = board.val(x2) * board.val(t2);
+        }
+    };
+  \end{lstlisting}
+\end{algorithm}
+

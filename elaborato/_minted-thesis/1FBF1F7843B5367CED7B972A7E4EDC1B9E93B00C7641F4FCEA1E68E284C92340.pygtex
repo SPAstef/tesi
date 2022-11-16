@@ -1,0 +1,3 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{+w}{  }\PYG{n}{libsnark}\PYG{o}{::}\PYG{n}{pb\PYGZus{}linear\PYGZus{}combination}\PYG{o}{\PYGZlt{}}\PYG{n}{Field}\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{n}{lc}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{a1}\PYG{o}{*}\PYG{n}{x1}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{err}{\PYGZbs{}}\PYG{n}{dots}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{n}{an}\PYG{o}{*}\PYG{n}{xn}\PYG{p}{;}
+\end{Verbatim}

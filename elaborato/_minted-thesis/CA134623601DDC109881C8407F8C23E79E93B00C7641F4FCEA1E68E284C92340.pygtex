@@ -1,0 +1,4 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{+w}{  }\PYG{n}{libsnark}\PYG{o}{::}\PYG{n}{protoboard}\PYG{o}{\PYGZlt{}}\PYG{n}{Field}\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{n}{board}\PYG{p}{;}
+\PYG{+w}{  }\PYG{n}{board}\PYG{p}{.}\PYG{n}{set\PYGZus{}input\PYGZus{}sizes}\PYG{p}{(}\PYG{n}{PUBLIC\PYGZus{}N}\PYG{p}{);}
+\end{Verbatim}

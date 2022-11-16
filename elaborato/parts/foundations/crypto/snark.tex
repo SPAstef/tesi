@@ -258,24 +258,3 @@ It is immediate to see that the proving key \(\ProverKey \) contains
 key \(\VerifierKey \) contains \(3\abs{\mathcal{G}_{in}} + 7\) field elements (\(6\) more in the 
 zero-knowledge setting), and the proof \(\pi \) contains \(8\) field elements, meaning that its size
 is independent from the input circuit.
-
-\subsection{\texttt{libsnark}}
-In the last ten years, new improvements were put forward to reduce the size of the messages and 
-the complexity of the computation, especially on the prover's side~\cite{Lipmaa2013} (for example, 
-in~\cite{Groth2016} the size of the proof was reduced to just \(3\) field elements).
-Furthermore, much effort has been put into making working implementations of ZK-SNARK 
-systems, such as \texttt{libsnark}\footnote{\url{https://github.com/scipr-lab/libsnark}, you can also find 
-a nice empirical comparison of the various protocols.}, a
-C\texttt{++}~\cite{Stroustrup2013} library which implements and refines several ZK-SNARK 
-protocols~\cite{DanezisFGK2014,GrothM2017,BackesBFR2014}, although the core component is based 
-mostly on~\cite{SassonCTV2013,SassonCGTV2013} and~\cite{Groth2016}, which are in spirit very 
-similar to the Pinocchio protocol, improving on the QAP (and QSP) model 
-of~\cite{GennaroGPR2012}.
-
-In \texttt{libsnark}, if we want to implement some function \(f\) which can be expressed as an 
-arithmetic expression \(\varphi \) (i.e.\ no variable-length loops or recursion), we must provide 
-both the arithmetic circuit and the associated R1CS\@.
-In simple cases, deriving the R1CS from the arithmetic circuit might seem trivial, but there are 
-instances where having them separate allows for some quite nice optimizations\footnote{One could 
-argue that a \emph{smart} compiler should be able to perform such optimizations automatically, 
-however, the one that we are aware of only perform the trivial translations.}.

@@ -1,0 +1,3 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{+w}{  }\PYG{k}{auto}\PYG{+w}{ }\PYG{n}{keypair}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{libsnark}\PYG{o}{::}\PYG{n}{r1cs\PYGZus{}ppzksnark\PYGZus{}generator}\PYG{o}{\PYGZlt{}}\PYG{n}{ppT}\PYG{o}{\PYGZgt{}}\PYG{p}{(}\PYG{n}{pb}\PYG{p}{.}\PYG{n}{get\PYGZus{}constraint\PYGZus{}system}\PYG{p}{());}
+\end{Verbatim}

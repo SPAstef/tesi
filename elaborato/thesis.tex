@@ -29,6 +29,7 @@
 %\usepackage[a-1b]{pdfx}
 %% hyperref: Regola le impostazioni della creazione del PDF... pi� tante altre cose. Ricordarsi di usare l'opzione pdfa.
 %% tocbibind: Inserisce nell'indice anche la lista delle figure, la bibliografia, ecc.
+\usepackage{algorithm}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsthm}
@@ -39,15 +40,21 @@
 \usepackage[inline]{enumitem}
 \usepackage[T1]{fontenc}
 \usepackage[pdfa]{hyperref}
-\usepackage{cleveref}
 \usepackage{lmodern}
+\usepackage{listings}
 %\usepackage{mathematica}
 %\usepackage[frak=euler]{mathalpha}
 \usepackage{mathtools}
+%\usepackage{minted}
 \usepackage{mleftright}
+%\usepackage{sourcecodepro}
 \usepackage{stmaryrd}
 \usepackage{subfig}
 \usepackage{tikz}
+\usepackage{cleveref}
+
+\lstset{basicstyle=\footnotesize\ttfamily,breaklines=true}
+%\setminted{fontsize=\footnotesize}
 \usetikzlibrary{automata,positioning,shapes.multipart}
 
 \mleftright{}
