@@ -1,4 +1,4 @@
-\section{\texttt{libsnark}}
+\section{\texttt{libsnark}}\label{sec:libsnark}
 In the last ten years, new improvements were put forward to reduce the size of the messages and 
 the complexity of the computation, especially on the prover's side~\cite{Lipmaa2013} (for example, 
 in~\cite{Groth2016} the size of the proof was reduced to just \(3\) field elements).
@@ -25,9 +25,12 @@ system (or really any other SNARK).
 \subsubsection*{Preprocessing phase}
 The first thing to do in \texttt{libsnark} is choosing, at compile time (or \emph{a priori}, in a 
 theoretical interpretation), which bilinear group to use for the protocol. 
-The standard choice is BN254~\cite{BarretoN2005}, but there are also other groups available, such 
-as BLS12\footnote{\url{https://electriccoin.co/blog/new-snark-curve/}}~\cite{BonehLS2001}.
-It is important to note that all these groups are paired to a prime field.
+To obtain bilinear groups that are paired to an underlying prime field, the typical construction 
+makes use of elliptic curves: for example, the curve/group BN254~\cite{BarretoN2005}, which is the 
+standard curve used \texttt{libsnark}, or the curve
+BLS12\footnote{\url{https://electriccoin.co/blog/new-snark-curve/}}~\cite{BonehLS2001}, which 
+will also be of interest to us.
+
 After choosing the group, we setup the \emph{protoboard} which, as the 
 name suggests, it is the object where one places the components of the circuit:
 \begin{lstlisting}[language=C++]
@@ -123,24 +126,18 @@ is \texttt{false}.
 \begin{algorithm}
   \centering
   \begin{lstlisting}[caption={The \texttt{libsnark} gadget corresponding to the 
-    arithmetic formula in \Cref{ex:arithmetic_formula}.}\label{lst:libsnark_example},language=C++]
-    #include <libsnark/gadgetlib1/gadget.hpp>
-
-    using namespace libsnark; // don't do this in real code please
-
+    R1CS in \Cref{ex:r1cs}.}\label{lst:libsnark_example},language=C++]
     template<typename FieldT>
     class FooGadget : public gadget<FieldT>
     {
-        using Var = pb_variable<FieldT>;
-
-        const Var x1, x2, y;
-        Var t1, t2, t3;
+        const pb_variable<FieldT> x1, x2, y;
+        pb_variable<FieldT> t1, t2, t3;
 
         FooGadget(protoboard<FieldT> &board, 
                   const std::string &ann,
-                  const Var &x1, 
-                  const Var &x2, 
-                  const Var &y) : 
+                  const pb_variable<FieldT> &x1, 
+                  const pb_variable<FieldT> &x2, 
+                  const pb_variable<FieldT> &y) : 
             gadget<FieldT>{board, ann}, x1{x1}, x2{x2}, y{y}
         {
             t1.allocate(board, "t1");

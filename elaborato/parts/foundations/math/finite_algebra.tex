@@ -207,9 +207,33 @@ The algebra \(\mathbb{Z}_q = \Tuple{Z_q, \oplus_q, \otimes_q}\) is a finite ring
   \[\call{\log_g}{g^x}\colon \gengroup{g} \to \mathbb{Z}_q = x\]
 \end{definition}
 
-When the group genreator is clear from the context, we simply write \(\log \) instead of \(\log_g\).
+When the group generator is clear from the context, we simply write \(\log \) instead of \(\log_g\).
 Typically, cyclic groups are obtained as the subset of a larger finite field 
 (see \Cref{ex:cyclic_group}). 
+
+\begin{definition}[Euler totient]
+  The \emph{Euler totient} is the function 
+  \[\call{\totient}{x}\colon \mathbb{N} \to \mathbb{N} = \abs{\Set{y \mid \Parens*{y < x} \land \Parens*{\call{\gcd}{x, y} = 1}}}\]
+\end{definition}
+
+For any prime number \(p\), it is easy to see that \(\call{\totient}{p} = p - 1\), while for 
+a composite number, its totient is the product of the totients of its factors.
+
+\begin{theorem}[Euler's theorem]
+  \(\forall x,y \in \mathbb{N}\colon \call{\gcd}{x, y} = 1 \implies x^{\call{\totient}{y}} \bmod y = 1\).
+\end{theorem}
+
+It is important to remark that, when we need to invert the exponentiation \(x^y\) over a prime 
+field \(\mathbb{Z}_p\), we must consider the inverse in its underlying multiplicative group, which 
+has order \(\totient{\abs{F}}\). 
+The multiplicative inverse \(z\) of \(y\) modulo \(p\) does not invert the exponentiation since, 
+by Euler's theorem, \(\Parens*{x^{y}}^{z} = x^{yz} = x^{kp + 1} = x^{k + 1} \neq x^{y \otimes z} = x\).
+Instead, if we use the inverse \(w\) of \(y\) modulo \(\call{\totient}{p}\), we have that 
+\(x^{yw} = x^{k\call{\totient}{p} + 1} = x\).
+Unfortunately, both \(z\) and \(w\) can be denoted by \(1/y\) in the standard literature, with the 
+semantic depending on the context (when talking about exponentiations, we always intend the 
+second meaning).
+
 \begin{example}
   Boolean circuits with \textsc{xor} and \textsc{and} gates behave like elements of the boolean 
   field \(\mathbb{B} = \Tuple{\Set{\bot, \top}, \bitxor, \bitand} \).

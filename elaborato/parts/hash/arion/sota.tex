@@ -1,0 +1,106 @@
+\section{State of the art}\label{sec:sota}
+The standard compression function used in Merkle trees is usually one of the SHA-2 or SHA-3 
+functions~\cite{Dang2015}: this is certainly the most sensible choice in a \emph{native} 
+environment, as SHA is specifically designed to be fast in both software and 
+hardwaare~\cite{DaddaMO2004,MichailAKTG2012} implementations, and is the most studied hash function 
+from a security standpoint (e.g.\ for SHA-2 see~\cite{KhovratovichRS2012,GuoLRW2010,DobraunigEM2016}).
+
+However, when working with arithmetic circuits over a prime field \(\mathbb{F}_p\), SHA has a lot 
+of issues: the underlying operations being performed are bitwise XOR, bitwise AND, 
+bit shifts/rotations and additions modulo \(2^{32}\).
+While shifts and rotations come at no cost, as they basically consist in a renaming of the circuit 
+wires/variables, bitwise operations and addition which is not modulo \(p\) have to be simulated 
+bit-by-bit, and the overhead introduced in such a translation is huge.
+For example, for SHA-256, over a bilinear group like BN254 for which 
+\(\abs{\mathbb{F}_p} \approx 2^{256}\), we would need \(256\) input variables each holding a
+\(256\)-bit integer to simulate the behaviour of every single bit during the SHA computation; 
+clearly, this is decisely suboptimal.
+
+\begin{example}
+  Suppose we are given two strings \(a, b \in \Set{0, 1}^{n}\), and we want to compute 
+  \(a \bitxor b\).
+  By interpreting them as vectors \(\bm{v}, \bm{w} \in \mathbb{F}_{p}^{n}\), we can simulate 
+  bitwise XOR by computing, \(\forall i \le n\):
+  \[\bm{v}_{i} \bitxor \bm{w}_{i} = \bm{v}_{i} + \bm{w}_{i} - 2\bm{v}_{i}\bm{w}_{i}\]
+  that is, every XOR operation requires one multiplication gate.
+  Similarly, bitwise AND and non-native addition also require multiplications to be simulated.
+  Furthermore, we must guarantee that the values \(\bm{v}_i\) and \(\bm{w}_i\) are boolean, as 
+  in principle they could assume any value in \(\mathbb{F}_p\), so we must also add constraints of 
+  the kind \(\bm{v}_{i}\Parens*{\bm{v}_i - 1} = 0\).
+\end{example}
+
+\subsection{MiMC}
+In an effort to find secure cryptographic designs that could be efficient in zero-knowledge 
+settings, called \emph{zk-friendly} designs, researchers began to study the properties of 
+permutations that make use of a low number of multiplications 
+(\emph{multiplicative complexity})~\cite{AlbrechtRSTZ2016}.
+
+One of the first constructions over finite fields was the \emph{Minimal Multiplicative Complexity}
+(MiMC) family of cryptographic permutations~\cite{AlbrechtGRRT2016}.
+The idea of MiMC, reprising an older proposal~\cite{NybergK1995}, is to use a very simple 
+polynomial permutation as its core component, and by repeating it for an adequate number of rounds,
+obtain a secure construction.
+\begin{definition}[MiMC keyed permutation]
+  Given a finite field \(\mathbb{F}_p\), a number of rounds 
+  \(r = \Ceil*{\frac{\call{\log}{p}}{\call{\log}{3}}}\), some constants 
+  \(c_1, \dots, c_r \in \mathbb{F}_p\) and a set of functions 
+  \(f_1, \dots, f_r\colon \mathbb{F}_p \times \mathbb{F}_p \to \mathbb{F}_p\) such that 
+  \(\forall i \le r\colon \call{f_i}{x, k} = x^3 + k + c_i\), the \emph{MiMC keyed permutation}
+  is defined as:
+  \[
+    \call{E_{MiMC}}{x, k}\colon \mathbb{F}_p \times \mathbb{F}_p \to \mathbb{F}_p = 
+    \call{\Parens*{f_r \compose \dots \compose f_1}}{x, k} + k
+  \]
+\end{definition}
+
+The MiMC keyed permutation is also called MiMC-\(n/n\). 
+By applying the Feistel construction on the MiMC permutation, one obtains the Feistel MiMC function, 
+or MiMC-\(2n/n\).
+Finally, by applying the sponge construction, one can obtain the MiMC hash function.
+In alternative, it is also possible to build an hash function using first the Davies-Meyer 
+construction to obtain a one-way compression function, and then the Merkle-Damg\"{a}rd construction
+to obtain an hash function.
+
+There are some important observations to be made on the MiMC construction.
+First, the round permutation uses a low degree polynomial, but it is repeated for a high number of 
+rounds: for example, if the size of the underlying field is \(\approx 2^{256}\), the number of 
+rounds will be \(r = 162\). 
+Note that \(x^3\) might not actually induce a permutation over \(\mathbb{F}_p\), as in general 
+\(3\) is not coprime with \(\call{\totient}{p}\) (in fact, in the underlying fields of both BN254 
+and BLS12, \(3\) is a factor of \(p - 1\)).
+In such cases, one should modify the definition to consider the smallest prime number \(d\) such 
+that \(\call{\gcd}{d, \call{\totient}{p}} = 1\), and reduce the number of rounds to
+\(r = \Ceil*{\frac{\call{\log}{p}}{\call{\log}{d}}}\).
+
+A second observation is that \(r\) must be chosen to thwart many different types of cryptanalysis 
+techniques: since the MiMC permutation corresponds to the 
+polynomial \(p = \Parens*{x^3 + k + c_1}\dots\Parens*{x^3 + k + c_r}\) 
+(which has degree \(\call{\deg}{p} = 3^r\)), in addition to the traditional \emph{brute-force}, 
+\emph{meet-in-the-middle}~\cite{DiffieH1977}, \emph{differential}~\cite{BihamS1991} and 
+\emph{linear}~\cite{Matsui1994} attacks, one must also consider \emph{algebraic attacks}, 
+which exploit the inherent nature of this type of constructions.
+
+In fact, traditional attacks don't tend to pose a major threat to these kinds of constructions:
+brute force is clearly too expensive and meet-in-the-middle is also infeasible both due to the high 
+number of rounds and to the huge degree of the inverse permutation (usually \(1/3 \gg 3\)).
+The permutation \(x^3\) is not approximable by a linear function~~\cite{AbdelraheemABL2012}, 
+hence linear attacks are not a threat, and since it can be easily shown that any arbitrary input 
+difference \(\delta_{in} \) propagates to any arbitrary output difference \(\delta_{out} \) with a 
+probability of at most \({2}/{2^n}\), differential attacks are also ineffective~\cite{Nyberg1994}.
+
+On the side of algebraic cryptanalysis, one might attempt an \emph{interpolation attack}, which 
+uses Lagrange interpolation to find a polynomial \(\tilde{p}\) which behaves like a keyless version 
+of \(p\)~\cite{JakobsenK1997}.
+This attack's complexity depends solely on \(\call{\deg}{p}\) (in fact, an interpolation can be 
+computed in \(\BigO{n\call{\log}{n}}\), where \(n = \call{\deg}{p}\)~\cite{Stoss1985}), hence we 
+must be sure that the degree of \(p\) also grows exponentially round by round (as it is the case).
+Another kind of algebraic attack is the \emph{GCD attack}: by using two plaintext/ciphertext pairs,
+once can compute their greatest common divisor which will allow to easily retrieve the secret key.
+Again, computing the GCD depends almost linearly on the degree of the polynomial, hence one must 
+again be sure that the degree grows exponentially.
+
+\subsubsection*{MiMC vs.\ SHA-256}
+
+\subsection{Poseidon}
+\subsection{Griffin}
+\subsection{Other designs}

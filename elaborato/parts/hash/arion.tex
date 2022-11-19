@@ -1,0 +1,41 @@
+\chapter{\ArionHash{}: a ZK-friendly hash function}\label{chap:arion}
+
+One of the most important applications of zero-knowledge verifiable computation lies in digital 
+currency transactions over the blockchain infrastructure.
+An example of ZK-SNARK applied in the real world is the ZCash cryptocurrency~\cite{SassonCGGMTV2014}, 
+which is inspired by the more famous Bitcoin~\cite{NarayananBFMG2016}, and was devised by some of 
+the authors of \texttt{libsnark} (which frames the zero-knowledge backend of the currency).
+
+As we discussed in \Cref{sec:tree_hash}, the fundamental component of a block chain is the 
+Merkle tree, which uses one-way compression functions in order to produce the binding 
+commitment.
+In a digital currency scenario, the leaves of the Merkle tree consist of the details of some 
+transaction, typical informations include the ID of the sender, the ID of the recipient, and the 
+amount of currency to be transferred. 
+Without a zero-knowledge framework in place, when one wants to verify whether an user did abide to 
+their commitment, the only possible solution is to ask the user to disclose his transaction, 
+together with the authentication path, and check that the tree commitment is respected. 
+When using currencies like Bitcoin or Ethereum\footnote{\url{https://ethereum.org/}}, anyone 
+can see the details of every single transaction being performed on the relative 
+blockchain, meaning that there is no privacy whatsoever\footnote{For example, on 
+\url{https://etherscan.io/} you can see the transactions on the Ethereum blockchain. %It is 
+%curious how privacy has often been foisted as a feature of mainstream cryptocurrencies while, 
+%on the contrary, any bank offers much more privacy!
+}.
+However, if we translate the Merkle tree computation in an equivalent circuit, it is possible to 
+apply a zero-knowledge scheme that allows a verifier to be sure (with overwhelming probability) 
+of the validity of a transaction without actually having to see it!
+Since a Merkle tree applies over and over the underlying compression function, the problem of 
+creating a circuit for the former immediately reduces to the problem of creating a circuit for the 
+latter.
+
+In \Cref{sec:sota} we will review the evolution of the state of the art concerning zero-knowledge 
+friendly compression functions.
+Then, in \Cref{sec:gtds}, we present a new algebraic framework to represent cryptographic 
+primitives, the \emph{Generalized Triangular Dynamic System}, and apply it to construct the 
+\Arion{} block cipher and the \ArionHash{} hash function.
+Finally, in \Cref{sec:arion} we analyze the implementation of \ArionHash{} in the \texttt{libsnark}
+framework and compare it to the state of the art, showing extremely competitive results.
+\input{parts/hash/arion/sota.tex}
+\input{parts/hash/arion/gtds.tex}
+\input{parts/hash/arion/perf.tex}

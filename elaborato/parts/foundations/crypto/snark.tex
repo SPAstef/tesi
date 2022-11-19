@@ -1,4 +1,4 @@
-\section{ZK-SNARK systems}
+\section{ZK-SNARK systems}\label{sec:zk-snark}
 As we saw in \Cref{subsec:nizk}, researchers were able to construct ZK-NARK systems whose 
 verification complexity was linear in the size of the problem instance, which is provided as a 
 boolean circuit.
@@ -92,11 +92,16 @@ execution by the client.
 The first construction that was efficient enough to be usable in practice, and that in many cases
 broke the `native execution' barrier for verification time, was 
 \emph{Pinocchio}~\cite{ParnoGHR2013}.
-\begin{definition}[Bilinear map~\cite{BonehF2001}]
-  A \emph{bilinear map} (w.r.t.\ exponentiation) over two groups \(\mathbb{G}\) and \(\mathbb{G}'\) 
-  is a map \(B\colon \mathbb{G} \times \mathbb{G} \to \mathbb{G}_T\) such that
+\begin{definition}[Bilinear group~\cite{BonehF2001}]
+  A \emph{bilinear group} is a group \(\mathbb{G}\) and \(\mathbb{G}'\) 
+  such that there is bilinear map (w.r.t.\ exponentiation) 
+  \(B\colon \mathbb{G} \times \mathbb{G} \to \mathbb{G}_T\) such that 
   \(\forall a, b \in \mathbb{Z}\colon \call{B}{x^a, y^b} = \call{B}{x, y}^{ab}\).
 \end{definition}
+
+The definition of maps linear w.r.t.\ exponentiation is a useful trick to avoid the need to 
+introduce the notion of \emph{elliptic curve}~\cite{Silverman2009}, which is out of the scope 
+of this thesis.
 
 \begin{example}\label{ex:bilinear_map}
   Recall \Cref{ex:cyclic_group}.

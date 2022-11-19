@@ -1,3 +1,0 @@
-\begin{Verbatim}[commandchars=\\\{\}]
-\PYG{+w}{  }\PYG{n}{gadget}\PYG{p}{.}\PYG{n}{generate\PYGZus{}r1cs\PYGZus{}constraints}\PYG{p}{();}
-\end{Verbatim}

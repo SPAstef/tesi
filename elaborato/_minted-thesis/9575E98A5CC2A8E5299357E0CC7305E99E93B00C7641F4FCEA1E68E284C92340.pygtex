@@ -1,4 +1,0 @@
-\begin{Verbatim}[commandchars=\\\{\}]
-\PYG{+w}{  }\PYG{n}{libsnark}\PYG{o}{::}\PYG{n}{r1cs\PYGZus{}constraint}\PYG{o}{\PYGZlt{}}\PYG{n}{Field}\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{n}{constraint}\PYG{p}{\PYGZob{}}\PYG{n}{lc\PYGZus{}a}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{lc\PYGZus{}b}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{lc\PYGZus{}c}\PYG{p}{\PYGZcb{};}
-\PYG{+w}{  }\PYG{k}{this}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{board}\PYG{p}{.}\PYG{n}{add\PYGZus{}r1cs\PYGZus{}constraint}\PYG{p}{(}\PYG{n}{constraint}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{// must be added to the protoboard}
-\end{Verbatim}
