@@ -1,9 +1,10 @@
 \section{State of the art}\label{sec:sota}
 The standard compression function used in Merkle trees is usually one of the SHA-2 or SHA-3 
 functions~\cite{Dang2015}: this is certainly the most sensible choice in a \emph{native} 
-environment, as SHA is specifically designed to be fast in both software and 
-hardwaare~\cite{DaddaMO2004,MichailAKTG2012} implementations, and is the most studied hash function 
-from a security standpoint (e.g.\ for SHA-2 see~\cite{KhovratovichRS2012,GuoLRW2010,DobraunigEM2016}).
+environment (i.e.\ no zero-knowledge), as SHA is specifically designed to be fast in both software 
+and hardware~\cite{DaddaMO2004,MichailAKTG2012} implementations, and is the most studied hash 
+function from a security standpoint (e.g.\ for SHA-2 
+see~\cite{KhovratovichRS2012,GuoLRW2010,DobraunigEM2016}).
 
 However, when working with arithmetic circuits over a prime field \(\mathbb{F}_p\), SHA has a lot 
 of issues: the underlying operations being performed are bitwise XOR, bitwise AND, 
@@ -29,39 +30,39 @@ clearly, this is decisely suboptimal.
   the kind \(\bm{v}_{i}\Parens*{\bm{v}_i - 1} = 0\).
 \end{example}
 
-\subsection{MiMC}
+\subsection{\Mimc}
 In an effort to find secure cryptographic designs that could be efficient in zero-knowledge 
 settings, called \emph{zk-friendly} designs, researchers began to study the properties of 
 permutations that make use of a low number of multiplications 
 (\emph{multiplicative complexity})~\cite{AlbrechtRSTZ2016}.
 
 One of the first constructions over finite fields was the \emph{Minimal Multiplicative Complexity}
-(MiMC) family of cryptographic permutations~\cite{AlbrechtGRRT2016}.
-The idea of MiMC, reprising an older proposal~\cite{NybergK1995}, is to use a very simple 
+(\Mimc) family of cryptographic permutations~\cite{AlbrechtGRRT2016}.
+The idea of \Mimc{}, reprising an older proposal~\cite{NybergK1995}, is to use a very simple 
 polynomial permutation as its core component, and by repeating it for an adequate number of rounds,
 obtain a secure construction.
-\begin{definition}[MiMC keyed permutation]
+\begin{definition}[\Mimc{} keyed permutation]
   Given a finite field \(\mathbb{F}_p\), a number of rounds 
   \(r = \Ceil*{\frac{\call{\log}{p}}{\call{\log}{3}}}\), some constants 
   \(c_1, \dots, c_r \in \mathbb{F}_p\) and a set of functions 
   \(f_1, \dots, f_r\colon \mathbb{F}_p \times \mathbb{F}_p \to \mathbb{F}_p\) such that 
-  \(\forall i \le r\colon \call{f_i}{x, k} = x^3 + k + c_i\), the \emph{MiMC keyed permutation}
+  \(\forall i \le r\colon \call{f_i}{x, k} = x^3 + k + c_i\), the \emph{\Mimc{} keyed permutation}
   is defined as:
   \[
-    \call{E_{MiMC}}{x, k}\colon \mathbb{F}_p \times \mathbb{F}_p \to \mathbb{F}_p = 
+    \call{E_{\Mimc}}{x, k}\colon \mathbb{F}_p \times \mathbb{F}_p \to \mathbb{F}_p = 
     \call{\Parens*{f_r \compose \dots \compose f_1}}{x, k} + k
   \]
 \end{definition}
 
-The MiMC keyed permutation is also called MiMC-\(n/n\). 
-By applying the Feistel construction on the MiMC permutation, one obtains the Feistel MiMC function, 
-or MiMC-\(2n/n\).
-Finally, by applying the sponge construction, one can obtain the MiMC hash function.
+The \Mimc{} keyed permutation is also called \Mimc-\(n/n\). 
+By applying the Feistel construction on the \Mimc{} permutation, one obtains Feistel \Mimc, 
+or \Mimc-\(2n/n\).
+Finally, by applying the sponge construction, one can obtain the \Mimchash{} hash function.
 In alternative, it is also possible to build an hash function using first the Davies-Meyer 
 construction to obtain a one-way compression function, and then the Merkle-Damg\"{a}rd construction
 to obtain an hash function.
 
-There are some important observations to be made on the MiMC construction.
+There are some important observations to be made on the \Mimc{} construction.
 First, the round permutation uses a low degree polynomial, but it is repeated for a high number of 
 rounds: for example, if the size of the underlying field is \(\approx 2^{256}\), the number of 
 rounds will be \(r = 162\). 
@@ -73,7 +74,7 @@ that \(\call{\gcd}{d, \call{\totient}{p}} = 1\), and reduce the number of rounds
 \(r = \Ceil*{\frac{\call{\log}{p}}{\call{\log}{d}}}\).
 
 A second observation is that \(r\) must be chosen to thwart many different types of cryptanalysis 
-techniques: since the MiMC permutation corresponds to the 
+techniques: since the \Mimc{} permutation corresponds to the 
 polynomial \(p = \Parens*{x^3 + k + c_1}\dots\Parens*{x^3 + k + c_r}\) 
 (which has degree \(\call{\deg}{p} = 3^r\)), in addition to the traditional \emph{brute-force}, 
 \emph{meet-in-the-middle}~\cite{DiffieH1977}, \emph{differential}~\cite{BihamS1991} and 
@@ -99,8 +100,175 @@ once can compute their greatest common divisor which will allow to easily retrie
 Again, computing the GCD depends almost linearly on the degree of the polynomial, hence one must 
 again be sure that the degree grows exponentially.
 
-\subsubsection*{MiMC vs.\ SHA-256}
+\subsubsection*{\Mimc{} vs.\ SHA}
+Performing computations over large prime fields is extremely expensive, as addition and 
+multiplication cannot be performed by a single CPU intruction, but must be emulated (multiplication 
+in particular is extremely costly, even with clever implementations like the Montgomery 
+form~\cite{Montgomery1985}): for example, on an x86 architecture, a standard software 
+implementation of SHA-256 is more than \(100\) times faster than \Mimc{} over the BN254 curve 
+(implemented using \texttt{libff}\footnote{https://github.com/scipr-lab/libff}, the underlying 
+arithmetic library of \texttt{libsnark}) to compress a 512 bit input to a 256 bit output.
+However, when translated into an arithmetic circuit, SHA-256 requires about \(25000\) 
+multiplications, while \Mimc{} requires only \(640\), making it about \(40\) times (furthermore, 
+designing and optimizing the SHA-256 circuit is much harder than for \Mimc{}). 
 
 \subsection{Poseidon}
+After the design of \Mimc{}, a natural question that followed was whether it was possible to increase
+the complexity of the round function and reduce the number of rounds without compromising on 
+security.
+In particular, researchers started exploring the design of \emph{algebraic frameworks} that could 
+abstract from the details involved in the construction of a specific primitive, by still providing 
+security guarantees for their instantiatios.
+
+In~\cite{GrassiLRRS2019}, the authors present the \Hades{} design, a generalization
+of the \emph{substitution-permutation network} (SPN) approach used in many famous cryptographic 
+primitives such as AES~\cite{DaemenR1999}.
+In fact, the \Hades{} design has the same three main steps of the classic SPN, where the 
+message and the key are interpreted as vectors in \(\mathbb{F}_{p}^t\) for some prime field 
+\(\mathbb{F}_p\) and some arbitrary \(t \in \mathbb{N}\):
+\begin{enumerate}
+  \item \emph{AddKey}: add the key to the message.
+  \item \emph{SubWords}: apply a substitution function \(S\colon \mathbb{F}_{p} \to \mathbb{F}_{p}\) 
+        to the elements of the message (\emph{non-linear layer}).
+  \item \emph{MixLayer}: apply a permutation function \(M\colon \mathbb{F}_{p}^t \to \mathbb{F}_{p}^t\) 
+        to the message (\emph{linear layer}).
+\end{enumerate}
+The substitution function \(S\) is defined as \(\call{S}{x} = x^d\), where \(d\) is the smallest 
+integer such that \(\call{\gcd}{d, p} = 1\), while the permutation function \(M\) is defined as 
+\(\call{M}{\bm{x}} = \bm{Mx}\), where \(\bm{M}\) is a \emph{maximum distance separable} (MDS) 
+matrix (i.e.\ the determinant of all its submatrices are non-zero, this for example minimizes the 
+effectiveness of differential attacks~\cite{MacwilliamsS1977,RijmenD1996}).
+
+The peculiarity of \Hades{} is that only the first and last few rounds apply the substitution
+function to all elements: the middle rounds are \emph{partial}, meaning that \(S\) is only applied 
+to some of the elements of the message.
+This allows to use the first and last part of the construction as an argument for dealing with 
+classical attacks, while also considering the middle rounds when dealing with algebraic attacks.
+Additionally, in the design of \Hades{}, new kind of algebraic attacks were 
+considered~\cite{BeyneEtAl2020}, the most important of which is certainly the 
+\emph{Gr\"{o}bner basis attack} 
+(a generalization of the concept of gaussian elimination~\cite{CoxLO2015,Lazard1983}).
+In a Gr\"{o}bner attack, we view the function under attack as a system of polynomial equations 
+for which we want to find a solution.
+This kind of attack, and in particular its probabilistic version~\cite{FaugereGHR2014}, is 
+(at the moment of this writing) the most efficient known attack against algebraic constructions 
+(note however that the security of \Hades{} was only proven against the deterministic 
+version).
+
+A family of hash functions that builds on the \Hades{} design is \Poseidon~\cite{GrassiKRRS2021}.
+\begin{definition}[\Poseidon{} permutation]
+  Given a finite field \(\mathbb{F}_p\), a number of branches \(t \in \mathbb{N}\), a number of 
+  full rounds \(r_f \in \mathbb{N}\), a number of partial rounds \(r_{P} \in \mathbb{N}\), 
+  an MDS matrix \(\bm{M} \in \mathbb{F}_{p}^{t \times t}\), and some constants 
+  \(\bm{c}_{1}, \dots, \bm{c}_{r} \in \mathbb{F}_{p}^{t}\), where \(r = 2r_f + r_P\), let the 
+  \emph{full SBOX function} be:
+  \[
+    \call{S_{f}}{\bm{x}}\colon \mathbb{F}_{p}^{t} \to \mathbb{F}_{p}^{t} = 
+    {\begin{pmatrix}
+      \bm{x}_{1}^{d} & \cdots & \bm{x}_{t}^{d}
+    \end{pmatrix}}^{\transpose}
+  \]
+  and the \emph{partial SBOX function} be:
+  \[
+    \call{S_{P}}{\bm{x}}\colon \mathbb{F}_{p}^{t} \to \mathbb{F}_{p}^{t} = 
+    {\begin{pmatrix}
+      \bm{x}_{1}^{d} & \bm{x}_{2} & \cdots & \bm{x}_{t}
+    \end{pmatrix}}^{\transpose}
+  \]
+  where \(d\) is the smallest prime number such that \(\call{\gcd}{x, \call{\totient}{p}} = 1\).
+  Then, let the full \(i\)th round function be 
+  \(\call{f_{i}}{\bm{x}}\colon \mathbb{F}_{p}^{t} \to \mathbb{F}_{p}^{t} = 
+  \bm{M}\call{S_{f}}{\bm{x} + \bm{c}_{i}}\)
+  and the partial \(i\)th round function be
+  \(\call{P_{i}}{\bm{x}}\colon \mathbb{F}_{p}^{t} \to \mathbb{F}_{p}^{t} = 
+  \bm{M}\call{S_{P}}{\bm{x} + \bm{c}_{i}}\).
+  The \emph{\Poseidon{} permutation} is the function:
+  \[
+    P_{\Poseidon} = 
+    f_{r} \compose \cdots \compose f_{r_f + r_P + 1} \compose 
+    P_{r_f + r_P} \compose \cdots \compose P_{r_f + 1} \compose 
+    f_{r_f} \compose \cdots \compose f_{1}
+  \]
+\end{definition}
+
+The \Poseidon{} permutation can be easily used in a sponge construction to obtain a
+one-way compression function.
+For example, by setting \(t = 3\), we immediately obtain a \(2/1\) compression function, 
+or by setting \(t = 5\) we get a \(4/1\) compression function.
+For the same level of security \(s\), the \Poseidon-\(s\) arithmetic circuit is much cheaper than 
+\Mimc{} in terms of multiplications. 
+For reference, the \Poseidon-\(128\) \(2/1\) compression function requires \(276\) 
+multiplications, compared to the \(640\) required by \Mimc{}.
+
+Furthermore, \Poseidon{} was also designed with other systems other than the more traditional 
+ZK-SNARK constructions in mind such as \(\Plonk \)~\cite{GabizonWC2019}, 
+Bulletproofs~\cite{BunzBBPWM2017} and ZK-STARKs~\cite{SassonBHR2018} 
+(\emph{transparent} ZK-SNARKs, i.e.\ they do not require a trusted setup phase).
+For example, in the \(\Plonk \) system the cost of the ZK-SNARK construction depends also 
+on the number of additions, while in ZK-STARKs it depends on the \emph{depth} of the circuit.
+These systems, which are much more recent, do not have consolidated libraries which support them, 
+and their analysis is out of the scope of this work.
+
 \subsection{Griffin}
+Many new designs were proposed in the last few years, such as 
+\textsc{Ciminion}~\cite{DobraunigGGK2021}, which exploits \emph{Toffoli gates}~\cite{Toffoli1980} 
+to improve the construction, and \textit{Rescue}~\cite{AlyABDS2019}, which uses inverse 
+exponentiations (i.e.\  \(x^{1/d}\)) in the substitution layer.
+
+An extremely recent design is \Griffin~\cite{GrassiHRSWW2022}, which deviates from the
+established SPN approach by instead using an extension of the Feistel construction, called the 
+\emph{\Horst{} scheme}: instead of the mapping 
+\(\Tuple{x, y} \mapsto \Tuple{x, y \oplus \call{F}{x}}\) for some function \(F\) over the 
+underlying field \(\mathbb{F}_p\), it uses the mapping 
+\(\Tuple{x, y} \mapsto \Tuple{x, y \otimes \call{G}{x} \oplus \call{F}{x}}\), where \(G\) is an 
+additional function such that \(\forall x \in \mathbb{F}_p\colon \call{G}{x} \neq 0\), in order 
+to maintain invertibility (note that if \(\forall x\colon \call{G}{x} = 1\), the \Horst{} scheme
+degenerates into the Feistel construction).
+
+A quirk of \Griffin{} is the matrix used in the linear layer (which is basically the same of 
+\Poseidon): it is a \(t \times t\) MDS circulant matrix, where \(t\) is the number of branches, 
+but is well-defined only when \(t = 3\) or \(t \equiv 0 \pmod{4}\).
+
+\begin{definition}[Griffin permutation]
+  Given a finite field \(\mathbb{F}_p\), a number of branches \(t \in \mathbb{N}\) such that 
+  \(t = 3\) or \(t \equiv 0 \pmod{4}\), a number of rounds \(r \in \mathbb{N}\), some constants 
+  \(\bm{c}_{1}, \dots, \bm{c}_{r} \in \mathbb{F}_{p}^{t}\), some pairwise-distinct 
+  constants \(\gamma_3, \dots, \gamma_t \in \mathbb{F}_{p}\), and some constants 
+  \(\alpha_3, \beta_3, \dots, \alpha_t, \beta_t \in \mathbb{F}_{p}\) such that 
+  \(\forall i \in \Iinterval*{3}{t}\colon \alpha_i \neq \beta_i\) and 
+  \(\alpha_{i}^{2} - 4\beta_{i}\) is a quadratic non-residue modulo \(p\), 
+  let the linear functions \(L_3, \dots, L_t\) be such that:
+  \[\call{L_i}{x, y, z}\colon \mathbb{F}_p^3 \to \mathbb{F}_p = \gamma_{i}x + y + z\]
+  Furthermore, let the \emph{nonlinear layer} be the function:
+  \[
+    \call{S}{\bm{x}}_i\colon \mathbb{F}_{p}^{t} \to \mathbb{F}_{p}^{t} = \bm{y}_i =
+    \begin{cases}
+      x_{1}^{1/d}                                                         & i = 1         \\
+      x_{2}^{d}                                                           & i = 2         \\
+      x_{i}\Parens*{\call{L_i}{\bm{y}_0, \bm{y}_1, 0}^{2} + 
+      \alpha_{i}\call{L_i}{\bm{y}_0, \bm{y}_1, 0} + \beta_i}              & i = 3         \\
+      x_{i}\Parens*{\call{L_i}{\bm{y}_0, \bm{y}_1, \bm{x}_{i-1}}^{2} + 
+      \alpha_{i}\call{L_i}{\bm{y}_0, \bm{y}_1, \bm{x}_{i-1}} + \beta_i}   & 4 \le i \le t
+    \end{cases}
+  \]
+  where \(d\) is the smallest prime number such that \(\call{\gcd}{x, \call{\totient}{p}} = 1\).\\
+  Finally, let the matrix \(\bm{M}_t \in \mathbb{F}_p^{t \times t}\) be:
+  \[
+    \bm{M}_t = 
+    \begin{cases}
+      \call{\circulant}{2, 1, 1} & t = 3 \\  
+      \call{\circulant}{3, 2, 1, 1} & t = 4 \\
+      \call{\diag}{\underbrace{2, \dots, 2}_{\textnormal{\(t\) times}}}
+      \call{\diag}{\underbrace{\bm{M}_{4}, \dots, \bm{M}_4}_{\textnormal{\(s\) times}}}
+      \call{\circulant}{\underbrace{\bm{I}_4, \dots, \bm{I}_4}_{\textnormal{\(s\) times}}}
+      & t = 4s
+    \end{cases}
+  \]
+  Then, the \(i\)th round function is the function 
+  \(\call{f_i}{\bm{x}}\colon \mathbb{F}_{p}^{t} \to \mathbb{F}_{p}^{t} = 
+    \bm{M}_{t}\call{S}{\bm{x}} + \bm{c}_i\), and the \emph{\Griffin{} permutation} is the function:
+  \[
+    P_{\Griffin} = f_{r} \compose \cdots \compose f_{1} \compose \bm{M}_{t}
+  \]
+\end{definition}
 \subsection{Other designs}

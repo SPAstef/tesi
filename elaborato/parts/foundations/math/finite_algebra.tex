@@ -282,12 +282,25 @@ The standard structure to deal with such objects are \emph{vector spaces}.
   homomorphism between \(\mathbb{O}\) and \(\Endset{\mathbb{M}_{+}}\).
 \end{definition} 
 
+\begin{definition}[Linear map]
+  A \emph{linear map} is a homomorphism between two modules.
+\end{definition}
+\begin{definition}[\(k\)-linear map]
+ Given \(k\) modules \(\mathbb{M}_1, \dots, \mathbb{M}_k, \mathbb{M}'\) over the same scalar 
+ ring \(\mathbb{O}\), a \emph{\(k\)-linear map} is a map
+ \(f\colon \mathbb{M}_1 \times \cdots \times \mathbb{M}_k \to \mathbb{M}'\) 
+ such that, \(\forall i \in \mathbb{N}\), every map obtained by fixing all but the 
+ \(i\)th argument is a linear map.
+\end{definition}
+
+Although \(k\)-linear maps are defined between modules, their definition can be extended to other
+algebraic structures.
+
 \begin{definition}[Vector space]
-  A \emph{vector space} is a module \(\mathbb{V} = \Tuple{V, \mathbb{F}, +, \odot}\) such that the 
-  underlying scalar ring \(\mathbb{F}\) is a field.
+  A \emph{vector space} is a module such that the underlying scalar ring is a field.
 \end{definition} 
 
-The most common vector space is the one of \(n\)-dimensional \emph{column vectors} over a 
+An important vector space is the one of \(n\)-dimensional \emph{column vectors} over a 
 field \(\mathbb{F} = \Tuple{F, \oplus, \otimes}\) such that \(\mathbb{F}^n = 
 \Tuple{F^n, \mathbb{F}, +, \odot}\), where \(+\) is entry-wise field addition between 
 column vectors and \(\odot \) is element-wise field multiplication of scalars with column vectors.
@@ -297,11 +310,22 @@ We will denote elements of a column vector space \(\mathbb{V}\) by bold letters
 (e.g.\  \(\bm{u}^{\transpose}, \bm{v}^{\transpose}, \bm{w}^{\transpose}, \dots \)). 
 Finally, we denote the \(i\)th element of a column vector \(\bm{v}\) by \(\bm{v}_i\).
 \begin{definition}[Dot product]
-  Given a field \(\mathbb{F} = \Tuple{F, \oplus, \otimes}\) and an \(n\)-dimensional vector space 
-  \(\mathbb{V} = \Tuple{V, \mathbb{F}, +, \odot}\), the \emph{dot product} operation is the map:
+  The \emph{dot product} operation over an \(n\)-dimensional vector space 
+  \(\mathbb{V} = \Tuple{V, \mathbb{F}, +, \odot}\), with \(\mathbb{F} = \Tuple{F, \oplus, \otimes}\),
+  is the map:
   \[
     \bm{v} \cdot \bm{w}\colon \mathbb{V} \times \mathbb{V} \to \mathbb{F} = 
     \bigoplus_{i = 1}^{n}{\bm{v}_i \otimes \bm{w}_i}
+  \]
+\end{definition}
+\begin{definition}[Vector rotation]
+  The \emph{right rotation} operation over an \(n\)-dimensional vector space \(\mathbb{V}\) is 
+  the map:
+  \[
+    \bm{v} \Rrot k\colon \mathbb{V} \times \mathbb{N} \to \mathbb{V} = 
+    \begin{pmatrix}
+      \bm{v}_{\Parens*{0 - k \bmod n} + 1} & \cdots & \bm{v}_{\Parens*{n - 1 - k \bmod n} + 1}
+    \end{pmatrix}^{\transpose}
   \]
 \end{definition}
 
@@ -315,10 +339,9 @@ We will denote elements of a matrix space \(\mathbb{M}\) by bold capital letters
 \(\bm{M}_{i}\), 
 and the \(j\)th element of the \(i\)th row with \(\bm{M}_{i,j}\).
 
-From now on, for vectors we will only deal with column vector space extensions of the kind 
-\(\mathbb{F}^n\) and row vector space extensions of the kind 
-\(\Parens*{\mathbb{F}^m}^{\transpose}\) for some base field \(\mathbb{F}\) and some 
-\(n, m \in \mathbb{N}\).
+In this work, we will only deal with column vector space extensions of the kind \(\mathbb{F}^n\) 
+and row vector space extensions of the kind \(\Parens*{\mathbb{F}^m}^{\transpose}\) for some 
+base field \(\mathbb{F}\) and some \(n, m \in \mathbb{N}\).
 Similarly, we will only deal with matrix space extensions of the kind \(\mathbb{F}^{n \times m}\).
 Therefore, the \(i\)th column of a matrix will always be an element of 
 \(\mathbb{F}^{n} \cong \mathbb{F}^{n \times 1}\), and the \(j\)th row of a matrix will always be an
@@ -330,52 +353,60 @@ element of \(\Parens*{\mathbb{F}^m}^{\transpose} \cong \mathbb{F}^{1 \times m}\)
   \forall i \le n, \forall j \le m\colon \bm{M}^{\transpose}_{i,j} = \bm{M}_{j,i}\]
 \end{definition}
 
-Therefore, given a matrix \(\bm{M}\), we can denote the \(i\)th column by 
-\(\bm{M}^{\transpose}_{i}\).
-
 \begin{definition}[Matrix concatenation]
-  Given two matrices \(\bm{A} \in \mathbb{F}^{n \times m_1}\) and 
-  \(\bm{B} \in \mathbb{F}^{n \times m_2}\), their row-wise \emph{concatenation} is the matrix 
-  \(\bm{C} = 
-  \begin{pmatrix*}
-    \bm{A} & \bm{B}
-  \end{pmatrix*}
-    \in \mathbb{F}^{n \times \Parens*{m_1 + m_2}}\), such that:
-  \[\forall i \le n\colon \Parens*{\forall j \le m_1 \colon \bm{C}_{i,j} = \bm{A}_{i,j}} \wedge 
-  \Parens*{\forall j \le m_2\colon \bm{C}_{i,j} = \bm{B}_{i,j}}\]
-  And their column-wise concatenation is the matrix \(
-  \begin{pmatrix*}
-    \bm{A}; \bm{B}
-  \end{pmatrix*} =
-  {\begin{pmatrix*}
-    \bm{A}^{\transpose} & \bm{B}^{\transpose}
-  \end{pmatrix*}}^{\transpose}
-  \).
+  Given a matrix \(\bm{A} \in \mathbb{F}^{n_1 \times m_1}\) and a matrix 
+  \(\bm{B} \in \mathbb{F}^{n_2 \times m_2}\), let \(n = \call{\min}{n_1, n_2}\). 
+  The \emph{row-wise concatenation} of \(\bm{A}\) and \(\bm{B}\) is the matrix
+  \(\bm{C} = \begin{pmatrix*} \bm{A} & \bm{B} \end{pmatrix*} 
+    \in \mathbb{F}^{n \times \Parens*{m_1 + m_2}}\), such that 
+  \(\forall i \le n, \forall j \le m_1\colon \bm{C}_{i,j} = \bm{A}_{i,j}\) and
+  \(\forall j \le m_2\colon \bm{C}_{i,j} = \bm{B}_{i,j}\).\\
+  Their \emph{column-wise concatenation} is the matrix 
+  \(\begin{pmatrix*} \bm{A}; \bm{B} \end{pmatrix*} =
+    {\begin{pmatrix*} \bm{A}^{\transpose} & \bm{B}^{\transpose} \end{pmatrix*}}^{\transpose}\).\\
+  Their \emph{diagonal-wise concatenation} is the matrix 
+  \(\bm{D} = \call{\diag}{\bm{A}} \in \mathbb{F}^{\Parens*{n_1+n_2} \times \Parens*{m_1 + m_2}}\) 
+  such that:
+  \begin{align*}
+    &  \forall i \le n_1, \forall j \le m_1\colon \bm{D}_{i,j} = \bm{A}_{i,j}
+    && \forall i \le n_1, \forall j \le m_2\colon \bm{D}_{i,j} = 0 \\
+    &  \forall i \le n_2, \forall j \le m_1\colon \bm{D}_{i,j} = 0
+    && \forall i \le n_2, \forall j \le m_2\colon \bm{D}_{i,j} = \bm{B}_{i,j}
+  \end{align*}
+\end{definition}
+
+\begin{definition}[Diagonal vector]
+  Given a matrix \(\bm{A} \in \mathbb{F}^{n \times m}\), its \emph{diagonal vector} is the 
+  vector \(\call{\diag}{\bm{A}} \in \mathbb{F}^{\call{\min}{n, m}} \mid 
+  \forall i \le \call{\min}{n, m}\colon \call{\diag}{\bm{A}} = \bm{A}_{i,i}\).
 \end{definition}
 
 \begin{definition}[Matrix multiplication]
   \emph{Matrix multiplication} over a base field \(\mathbb{F}\) and some 
-  \(m, n_1, n_2 \in \mathbb{N}\), is the map:
-  \[
+  \(m, n_1, n_2 \in \mathbb{N}\), is the map
+  \(
     \bm{A}\bm{B}\colon 
-    \mathbb{F}^{n_1 \times m} \times \mathbb{F}^{m \times n_2} \to \mathbb{F}^{n_1 \times n_2} \mid 
+    \mathbb{F}^{n_1 \times m} \times \mathbb{F}^{m \times n_2} \to \mathbb{F}^{n_1 \times n_2}\) 
+    such that 
+    \(
     \forall i \le n_1, \forall j \le n_2\colon 
     \Parens*{\bm{A}\bm{B}}_{i,j} = \bm{A}_{i} \cdot \bm{B}^{\transpose}_{j}
-  \] 
+  \)
 \end{definition}
 
-\begin{definition}[Linear map]
-   A \emph{linear map} is a homomorphism between two modules.
-\end{definition}
-\begin{definition}[\(k\)-linear map]
-  Given \(k\) vector spaces \(\mathbb{V}_1, \dots, \mathbb{V}_k, \mathbb{W}\) over the same scalar 
-  field \(\mathbb{F}\), a \emph{\(k\)-linear map} is a map
-  \(f\colon \mathbb{V}_1 \times \cdots \times \mathbb{V}_k \to \mathbb{W}\) 
-  such that, \(\forall i \in \mathbb{N}\), every map obtained by fixing all but the 
-  \(i\)th argument is a linear map.
+\begin{definition}[Circulant matrix]
+  A \emph{circulant matrix} over a matrix space \(\mathbb{F}^{n \times m}\) is a matrix: 
+  \[\bm{M} \in \mathbb{F}^{n \times m} \mid \forall i < n\colon \bm{M}_{i+1} = \bm{M}_i \Rrot 1\]
 \end{definition}
 
-As we will see, bilinear (\(2\)-linear) maps are a fundamental component of modern ZK-SNARK systems.
+We say that a circulant matrix is \emph{induced} by the elements in its first row, and denote 
+the circulant matrix induced by \(x_1, \dots, x_n\) by \(\call{\circulant}{x_1, \dots, x_n}\).
+We can extend the definition to allow ``circulant'' matrices where instead of rotating single 
+elements we rotate submatrices of size \(n \times m\). 
+We denote a ``circulant'' matrix induced in this way through the matrices 
+\(\bm{M}_1, \dots, \bm{M}_k \in \mathbb{F}^{n \times m}\) by 
+\(\call{\circulant}{\bm{M}_1, \dots, \bm{M}_k}\) (note that it is an element of 
+\(\mathbb{F}^{nk \times mk}\)).
 
 \subsection{Polynomials}
 The last fundamental object that we will need are polynomials and their relative algebras. 
@@ -396,17 +427,17 @@ we will denote by \(\extend{\mathbb{F}}{x}^n\) the \(n\)-dimensional module\foot
 space, but we will nevertheless call its elements `vectors' for the sake of simplicity.} of 
 column vectors of polynomials over \(\mathbb{F}\), with addition and scalar product defined in the 
 standard way.
+\begin{definition}[Lagrange interpolation~\cite{Waring1779}]
+  \emph{Lagrange interpolation} is the function:
+  \[
+    \call{\lagrange}{\bm{x}, \bm{y}}\colon \mathbb{F}^n \times \mathbb{F}^n \to \extend{\mathbb{F}}{x} = 
+    \sum_{i}{\bm{y}_i\prod_{j \neq i}{\frac{x - \bm{x}_i}{\bm{x}_i - \bm{x}_j}}}
+  \]
+\end{definition}
 
-Given two vectors \(\bm{x}, \bm{y} \in \mathbb{F}^n\), we can define the
-\emph{Lagrange interpolation} function~\cite{Waring1779}:
-\[
-  \call{\lagrange}{\bm{x}, \bm{y}}\colon \mathbb{F}^n \times \mathbb{F}^n \to \extend{\mathbb{F}}{x} = 
-  \sum_{i}{\bm{y}_i\prod_{j \neq i}{\frac{x - \bm{x}_i}{\bm{x}_i - \bm{x}_j}}}
-\]
-we can build the unique polynomial of degree \(n - 1\) which, \(\forall i \le n\) assumes 
-value \(\bm{y}_i\) at point \(\bm{x}_i\).
-We can extend the Lagrange interpolation function to a matrix space \(\mathbb{F}^{n \times m}\)
-by applying \(\lagrange \) separately to each row, as follows:
+By using interpolation, we can build the unique polynomial of degree \(n - 1\) which, 
+\(\forall i \le n\) assumes value \(\bm{y}_i\) at point \(\bm{x}_i\).
+We can extend Lagrange interpolation to a matrix space \(\mathbb{F}^{n \times m}\) as follows:
 \[
   \call{\lagrange}{\bm{X}, \bm{Y}}\colon \mathbb{F}^{n \times m} \times \mathbb{F}^{n \times m} \to 
   \extend{\mathbb{F}}{x}^n = 

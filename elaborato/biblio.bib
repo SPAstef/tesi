@@ -1319,3 +1319,163 @@ editor    = {Miller, Raymond E.
 	author   = {H.-J. Stoss},
 	abstract = {It is known that computing all coefficients of the Lagrangian interpolation polynomial, given n nodes and n values, has nonscalar complexity of order n log n. We show that the evaluation of a single coefficient or of the value of the interpolation polynomial at some new point already has complexity of order n log n. These results are consequences of a more general theorem.}
 }
+
+@article{Montgomery1985,
+	title   = {Modular multiplication without trial division},
+	author  = {Montgomery, Peter L},
+	journal = {Mathematics of computation},
+	volume  = {44},
+	number  = {170},
+	pages   = {519--521},
+	year    = {1985}
+}
+
+@misc{KellerR2020,
+	author       = {Nathan Keller and Asaf Rosemarin},
+	title        = {Mind the Middle Layer: The HADES Design Strategy Revisited},
+	howpublished = {Cryptology ePrint Archive, Paper 2020/179},
+	year         = {2020},
+	note         = {\url{https://eprint.iacr.org/2020/179}},
+	url          = {https://eprint.iacr.org/2020/179}
+}
+
+@misc{GrassiLRRS2019,
+	author       = {Lorenzo Grassi and Reinhard Lüftenegger and Christian Rechberger and Dragos Rotaru and Markus Schofnegger},
+	title        = {On a Generalization of Substitution-Permutation Networks: The HADES Design Strategy},
+	howpublished = {Cryptology ePrint Archive, Paper 2019/1107},
+	year         = {2019},
+	note         = {\url{https://eprint.iacr.org/2019/1107}},
+	url          = {https://eprint.iacr.org/2019/1107}
+}
+
+@misc{DaemenR1999,
+	title     = {AES proposal: Rijndael},
+	author    = {Daemen, Joan and Rijmen, Vincent},
+	year      = {1999},
+	publisher = {Gaithersburg, MD, USA}
+}
+
+@inbook{MacwilliamsS1977,
+	title     = {The theory of error correcting codes},
+	author    = {MacWilliams, Florence Jessie and Sloane, Neil James Alexander},
+	volume    = {16},
+	year      = {1977},
+	pages     = {294-306},
+	publisher = {Elsevier}
+}
+
+@inproceedings{RijmenD1996,
+	author    = {Rijmen, Vincent
+	             and Daemen, Joan
+	             and Preneel, Bart
+	             and Bosselaers, Antoon
+	             and De Win, Erik},
+	editor    = {Gollmann, Dieter},
+	title     = {The cipher SHARK},
+	booktitle = {Fast Software Encryption},
+	year      = {1996},
+	publisher = {Springer Berlin Heidelberg},
+	address   = {Berlin, Heidelberg},
+	pages     = {99--111},
+	abstract  = {We present the new block cipher SHARK. This cipher combines highly non-linear substitution boxes and maximum distance separable error correcting codes (MDS-codes) to guarantee a good diffusion. The cipher is resistant against differential and linear cryptanalysis after a small number of rounds. The structure of SHARK is such that a fast software implementation is possible, both for the encryption and the decryption. Our C-implementation of SHARK runs more than four times faster than SAFER and IDEA on a 64-bit architecture.},
+	isbn      = {978-3-540-49652-6}
+}
+
+@inproceedings{FaugereGHR2014,
+	author    = {Faug\`{e}re, Jean-Charles and Gaudry, Pierrick and Huot, Louise and Renault, Gu\'{e}na\"{e}l},
+	title     = {Sub-Cubic Change of Ordering for Gr\"{o}bner Basis: A Probabilistic Approach},
+	year      = {2014},
+	isbn      = {9781450325011},
+	publisher = {Association for Computing Machinery},
+	address   = {New York, NY, USA},
+	url       = {https://doi.org/10.1145/2608628.2608669},
+	doi       = {10.1145/2608628.2608669},
+	abstract  = {The usual algorithm to solve polynomial systems using Gr\"{o}bner bases consists of two steps: first computing the DRL Gr\"{o}bner basis using the F5 algorithm then computing the LEX Gr\"{o}bner basis using a change of ordering algorithm. When the B\'{e}zout bound is reached, the bottleneck of the total solving process is the change of ordering step. For 20 years, thanks to the FGLM algorithm the complexity of change of ordering is known to be cubic in the number of solutions of the system to solve.We show that, in the generic case or up to a generic linear change of variables, the multiplicative structure of the quotient ring can be computed with no arithmetic operation. Moreover, given this multiplicative structure we propose a change of ordering algorithm for Shape Position ideals whose complexity is polynomial in the number of solutions with exponent ω where 2 ≤ ω &lt; 2.3727 is the exponent in the complexity of multiplying two dense matrices. As a consequence, we propose a new Las Vegas algorithm for solving polynomial systems with a finite number of solutions by using Gr\"{o}bner basis for which the change of ordering step has a sub-cubic (i.e. with exponent ω) complexity and whose total complexity is dominated by the complexity of the F5 algorithm.In practice we obtain significant speedups for various polynomial systems by a factor up to 1500 for specific cases and we are now able to tackle some instances that were intractable.},
+	booktitle = {Proceedings of the 39th International Symposium on Symbolic and Algebraic Computation},
+	pages     = {170-177},
+	numpages  = {8},
+	keywords  = {Gr\"{o}bner basis, polynomial systems, change of ordering},
+	location  = {Kobe, Japan},
+	series    = {ISSAC '14}
+}
+
+@book{CoxLO2015,
+	doi       = {10.1007/978-3-319-16721-3},
+	url       = {https://doi.org/10.1007%2F978-3-319-16721-3},
+	year      = 2015,
+	publisher = {Springer International Publishing},
+	author    = {David A. Cox and John Little and Donal O'Shea},
+	title     = {Ideals, Varieties, and Algorithms}
+}
+
+@inproceedings{Lazard1983,
+	author    = {Lazard, D.},
+	editor    = {van Hulzen, J. A.},
+	title     = {Gr{\"o}bner bases, Gaussian elimination and resolution of systems of algebraic equations},
+	booktitle = {Computer Algebra},
+	year      = {1983},
+	publisher = {Springer Berlin Heidelberg},
+	address   = {Berlin, Heidelberg},
+	pages     = {146--156},
+	isbn      = {978-3-540-38756-5}
+}
+
+@misc{GabizonWC2019,
+	author       = {Ariel Gabizon and Zachary J.  Williamson and Oana Ciobotaru},
+	title        = {PLONK: Permutations over Lagrange-bases for Oecumenical Noninteractive arguments of Knowledge},
+	howpublished = {Cryptology ePrint Archive, Paper 2019/953},
+	year         = {2019},
+	note         = {\url{https://eprint.iacr.org/2019/953}},
+	url          = {https://eprint.iacr.org/2019/953}
+}
+
+@misc{BunzBBPWM2017,
+	author       = {Benedikt Bünz and Jonathan Bootle and Dan Boneh and Andrew Poelstra and Pieter Wuille and Greg Maxwell},
+	title        = {Bulletproofs: Short Proofs for Confidential Transactions and More},
+	howpublished = {Cryptology ePrint Archive, Paper 2017/1066},
+	year         = {2017},
+	note         = {\url{https://eprint.iacr.org/2017/1066}},
+	url          = {https://eprint.iacr.org/2017/1066}
+}
+
+@misc{BeyneEtAl2020,
+	author       = {Tim Beyne and Anne Canteaut and Itai Dinur and Maria Eichlseder and Gregor Leander and Gaëtan Leurent and María Naya-Plasencia and Léo Perrin and Yu Sasaki and Yosuke Todo and Friedrich Wiemer},
+	title        = {Out of Oddity -- New Cryptanalytic Techniques against Symmetric Primitives Optimized for Integrity Proof Systems},
+	howpublished = {Cryptology ePrint Archive, Paper 2020/188},
+	year         = {2020},
+	note         = {\url{https://eprint.iacr.org/2020/188}},
+	url          = {https://eprint.iacr.org/2020/188}
+}
+
+@misc{DobraunigGGK2021,
+	author       = {Christoph Dobraunig and Lorenzo Grassi and Anna Guinet and Daniël Kuijsters},
+	title        = {Ciminion: Symmetric Encryption Based on Toffoli-Gates over Large Finite Fields},
+	howpublished = {Cryptology ePrint Archive, Paper 2021/267},
+	year         = {2021},
+	note         = {\url{https://eprint.iacr.org/2021/267}},
+	url          = {https://eprint.iacr.org/2021/267}
+}
+
+@misc{AlyABDS2019,
+	author       = {Abdelrahaman Aly and Tomer Ashur and Eli Ben-Sasson and Siemen Dhooghe and Alan Szepieniec},
+	title        = {Design of Symmetric-Key Primitives for Advanced Cryptographic Protocols},
+	howpublished = {Cryptology ePrint Archive, Paper 2019/426},
+	year         = {2019},
+	doi          = {10.13154/tosc.v2020.i3.1-45},
+	note         = {\url{https://eprint.iacr.org/2019/426}},
+	url          = {https://eprint.iacr.org/2019/426}
+}
+
+@inproceedings{Toffoli1980,
+	author    = {Toffoli, Tommaso},
+	editor    = {de Bakker, Jaco
+	             and van Leeuwen, Jan},
+	title     = {Reversible computing},
+	booktitle = {Automata, Languages and Programming},
+	year      = {1980},
+	publisher = {Springer Berlin Heidelberg},
+	address   = {Berlin, Heidelberg},
+	pages     = {632--644},
+	abstract  = {The theory of reversible computing is based on invertible primitives and composition rules that preserve invertibility. With these constraints, one can still satisfactorily deal with both functional and structural aspects of computing processes; at the same time, one attains a closer correspondence between the behavior of abstract computing systems and the microscopic physical laws (which are presumed to be strictly reversible) that underly any concrete implementation of such systems.},
+	isbn      = {978-3-540-39346-7}
+}
