@@ -202,8 +202,8 @@ For the same level of security \(s\), the \Poseidon-\(s\) arithmetic circuit is 
 For reference, the \Poseidon-\(128\) \(2/1\) compression function requires \(276\) 
 multiplications, compared to the \(640\) required by \Mimc{}.
 
-Furthermore, \Poseidon{} was also designed with other systems other than the more traditional 
-ZK-SNARK constructions in mind such as \(\Plonk \)~\cite{GabizonWC2019}, 
+Furthermore, \Poseidon{} was designed with other systems in mind other than the traditional 
+ZK-SNARK constructions, such as \(\Plonk \)~\cite{GabizonWC2019}, 
 Bulletproofs~\cite{BunzBBPWM2017} and ZK-STARKs~\cite{SassonBHR2018} 
 (\emph{transparent} ZK-SNARKs, i.e.\ they do not require a trusted setup phase).
 For example, in the \(\Plonk \) system the cost of the ZK-SNARK construction depends also 
@@ -237,7 +237,7 @@ but is well-defined only when \(t = 3\) or \(t \equiv 0 \pmod{4}\).
   \(\bm{c}_{1}, \dots, \bm{c}_{r} \in \mathbb{F}_{p}^{t}\), some pairwise-distinct 
   constants \(\gamma_3, \dots, \gamma_t \in \mathbb{F}_{p}\), and some constants 
   \(\alpha_3, \beta_3, \dots, \alpha_t, \beta_t \in \mathbb{F}_{p}\) such that 
-  \(\forall i \in \Iinterval*{3}{t}\colon \alpha_i \neq \beta_i\) and 
+  \(\forall i \in \Iinterval{3}{t}\colon \alpha_i \neq \beta_i\) and 
   \(\alpha_{i}^{2} - 4\beta_{i}\) is a quadratic non-residue modulo \(p\), 
   let the linear functions \(L_3, \dots, L_t\) be such that:
   \[\call{L_i}{x, y, z}\colon \mathbb{F}_p^3 \to \mathbb{F}_p = \gamma_{i}x + y + z\]

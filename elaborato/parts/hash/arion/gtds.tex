@@ -68,7 +68,7 @@ SPN or Feistel constructions.
 For this reason, we introduce the \emph{Generalized Triangular Dynamical System}~\cite{RoyS2022}, 
 GTDS for short, an algebraic framework which generalizes many previous designs (such as Feistel, 
 SPN, and \Horst) and enables us to provide a systematic security analysis 
-of the constructions derived from it\footnote{The GTDS design idea is due to Matthias Steiner.}.
+of the constructions derived from it.
 In particular:
 \begin{itemize}
   \item The input is split in branches like in earlier designs.
@@ -79,7 +79,7 @@ In particular:
   \item It uses inverse exponents, but decouples them from the direct exponent. 
 \end{itemize}
 
-\begin{definition}[GTDS of \Arion]\label{def:gtds}
+\begin{definition}[GTDS of \Arion~\cite{RoyS2022}]\label{def:gtds}
   Given a prime field \(\mathbb{F}_p\), a number of branches \(t \in \mathbb{N}\), the smallest 
   integer \(d_1\) such that \(\call{\gcd}{d_1, \call{\totient}{p}} = 1\), an arbitrary 
   integer \(d_2\) such that \(\call{\gcd}{d_2, \call{\totient}{p}} = 1\), some constants 
@@ -91,9 +91,9 @@ In particular:
     & \call{h_i}{x}\colon \mathbb{F}_p \to \mathbb{F}_p = x^2 + \gamma_{i}x
   \end{align*}
   Then, the GTDS of \Arion{} is the function 
-  \(\call{F}{\bm{x}}\colon \mathbb{F}_p^t \to \mathbb{F}_p^t\) such that:
+  \(\call{F_{GTDS}}{\bm{x}}\colon \mathbb{F}_p^t \to \mathbb{F}_p^t\) such that:
   \[
-    \call{F}{\bm{x}}_i = \bm{y}_i = 
+    \call{F_{GTDS}}{\bm{x}}_i = \bm{y}_i = 
     \begin{cases}
       \bm{x}_i^{d_1}\call{g_i}{\sigma_{i+1, t}} + \call{h_i}{\sigma_{i+1, t}} & 1 \le i < t \\
       \bm{x}_i^e & i = t
@@ -113,4 +113,136 @@ If \(d_2\) were to be equal to \(d_1\), the reduction in terms of number of roun
 overcompensated by the increase of the complexity of a single round, but since \(d_2\) is only 
 used in the last branch, the tradeoff becomes more convenient, especially for bigger branch sizes.
 
-\subsection{\Arion{}}
+Of course, \(d_2\) should require an optimal number of constraints.
+Note that, since we have at our disposal intermediate results, the optimal number of oeprations 
+required to exponentiate a number is not determined by the classical \emph{binary exponentiation} 
+algorithm~\cite{Gueron2011}, but rather by \emph{addition chains}~\cite{BosC1990}.
+
+\subsection{\Arion{} and \Arionhash{}}
+Depending on our security and efficiency needs, we can instantiate the GTDS in many different 
+ways.
+We design \Arion{} and \Arionhash{}~\textbf{\cite{RoyST2023}} to work over fields of size 
+\(\approx 2^{256}\).
+In order to achieve a \emph{degree overflow} in the first round, it can be shown that \(4e\), where 
+\(e = {1}/{d_2}\), should be greaater than \(p\). 
+For BN254 and BLS12, this can be achieved by \(d_2 \in \Set{121, 123, 125, 161, 257}\).
+For example, the optimal way to compute \(x^{121}\) is:
+\begin{align*}
+  & y = \Parens*{x^{2}}^{2} && z = \Parens*{y^{2}y}^{2} && x^{121} = \Parens*{z^{2}}^{2}zx
+\end{align*}
+It is not hard to see that numbers of the type \(2^k + 1\), for \(k \in \mathbb{N}\), are the 
+most efficient to compute, and \(257\) is a particularly attractive candidate as it is also a 
+prime number, and requires the same number of multiplications to be computed as the other candidates, 
+(unfortunately, \(129 = 43 \cdot 3\) is not invertible neither in BN254 nor in BLS12).
+
+To introduce mixing between the various branches, we use an \emph{affine layer} which employs a 
+circulant matrix that has no zero entries and that is efficiently computable.
+\begin{definition}[Affine layer of \Arion]
+  The \emph{affine layer} of \Arion{} over a vector space \(\mathbb{F}_p^t\) is the function:
+  \[\call{L}{\bm{x}, \bm{c}}\colon \Parens*{\mathbb{F}_p^n}^2 \to \mathbb{F}_p^n = 
+  \call{\circulant}{1, \dots, t}\bm{x} + \bm{c}\]
+\end{definition}
+
+It is worth noting that the very simple matrix \(\call{\circulant}{1, \dots, t}\) is an MDS matrix
+for any prime field \(\mathbb{F}_p\) such that \(p \ge 2^{39}\) and for values of
+\(t \in \Iinterval{2}{12}\).
+Furthermore, computing the matrix-vector product using \(\call{\circulant}{1, \dots, t}\) can be 
+done in \(\BigO{t}\) time instead of the typical \(\BigO{t^2}\) required by a standard matrix-vector 
+multiplication algorithm, by using \Cref{alg:circ_mult}.
+\begin{algorithm}
+  \begin{algorithmic}
+    \Function{circ\_mul}{$\bm{v} \in \mathbb{F}_p^t$}
+    \State{\(\bm{w} \gets \bm{0} \in \mathbb{F}_p^t\)}
+    \State{\(\sigma \gets \sum_{i=1}^{t}{\bm{v}_i}\)}
+    \State{\(\bm{w}_1 \gets \sigma + \sum_{i=1}^{t}{\Parens*{i - 1}\bm{v}_i}\)}
+    \For{\(i \in \Iinterval{2}{t}\)}
+    \State{\(\bm{w}_i \gets \bm{w}_{i-1} - \sigma + n\bm{v}_{i-1}\)}
+    \EndFor{}
+    \State{\Return{\(\bm{w}\)}}
+    \EndFunction{}
+  \end{algorithmic}
+  \caption{Efficient evaluation of the matrix-vector product with 
+    \(\call{\circulant}{1, \dots, t}\)}\label{alg:circ_mult}
+\end{algorithm}
+
+\begin{definition}[\Arion{} keyed permutation~\textbf{\cite{RoyST2023}}]
+  Given a prime field \(\mathbb{F}_p\), a number of branches \(t \in \mathbb{N}\), a number 
+  of rounds \(r \in \mathbb{N}\), some constants \(\bm{c}_1, \dots, \bm{c}_r \in \mathbb{F}_p^t\), 
+  the \emph{\Arion{} keyed permutation} is the function \(\Arion = \Arion_r\), where:
+  \[
+    \call{\Arion_i}{\bm{x}, \bm{k}_0, \dots, \bm{k}_r}\colon 
+      \Parens*{\mathbb{F}_p^t}^{r+2} \to \mathbb{F}_p^t = \bm{y}_i =
+      \begin{cases}
+        \call{L}{\bm{x}, \bm{0}} + \bm{k}_i & i = 0 \\
+        \call{L}{\call{F_{GTDS}}{\bm{x}}, \bm{c}_i} + \bm{k}_i & 1 \le i \le r
+      \end{cases}
+  \]
+\end{definition}
+
+\begin{definition}[\Arionp{} unkeyed permutation]
+  The \emph{\Arion{} unkeyed permutation} is the function:
+  \[
+    \call{\Arionp}{\bm{x}}\colon \mathbb{F}_p^t \to \mathbb{F}_p^t = 
+      \call{\Arion}{\bm{x}, \bm{0}, \dots, \bm{0}}
+  \]
+\end{definition}
+
+We can instantiate the hash function \Arionhash{} by applying the sponge construction to 
+the \Arionp{} permutation.
+Since it has been shown that, for a pseudorandom permutation \(P\) over a vector space 
+\(\mathbb{F}_p^{t}\), a rate \(r\) and a capacity 
+\(c\) such that \(t = r + c\), the sponge construction is indifferentiable from a random 
+distribution up to \(\call{\min}{p^r, p^{c/2}}\) queries~\cite{BertoniDPV2008}, to provide 
+\(\kappa \) bits of security, we must require that \(r \ge {\kappa}/{\call{\log}{p}}\) and 
+\(c \ge {2\kappa}/{\call{\log}{p}}\).
+
+As a padding scheme for a message \(m \in \Set{0, 1}^*\) whose length is not a multiple of the rate 
+\(r\), we use \(\call{\Pad}{m} = m \concat 0^{\Parens*{-\abs{m} \bmod r}}\), and we replace the 
+initial value \(v = 0^{\Parens*{t\abs{\Encode{p}}}}\) (where \(\Encode{x}\) denotes the binary 
+encoding of an object \(x\)) with 
+\(v' = \Encode{\abs{m}} \concat 0^{\Parens*{t-1}\abs{\Encode{p}}}\).
+Note that we assume,  as basically any constructions does, that \(\abs{m} < p\), 
+which should not be a problem as typically \(p \approx 2^{256}\) and we don't expect to hash 
+messages of length \(\abs{m} > 2^{256}\).
+
+\begin{table}
+  \centering
+  \caption{Instantiation parameters of \Arion{} and \Aarion{} for \(128\) bits of security and 
+    primes \(p \geq 2^{60}\).}\label{tab:arion_instantiation}
+  \begin{tabular}[t]{  c  c  c  c  }
+      \toprule
+
+      \phantom{ }\(d_1\)\phantom{ } & \phantom{ }\(t\)\phantom{ } & \phantom{ }\Arion{} \phantom{ } & \phantom{ }\Aarion{} \phantom{ } \\
+      \midrule
+      \multicolumn{2}{  c  }{} & \multicolumn{2}{ c  }{\phantom{ }Rounds\phantom{ }} \\
+      \midrule
+      \(3\) & \(3\) & \(6\) & \(5\) \\
+      \(5\) & \(3\) & \(6\) & \(4\) \\
+
+      \(3\) & \(4\) & \(6\) & \(4\) \\
+      \(5\) & \(4\) & \(5\) & \(4\) \\
+
+      \(3\) & \(5\) & \(5\) & \(4\) \\
+      \(5\) & \(5\) & \(5\) & \(4\) \\
+
+      \(3\) & \(6\) & \(5\) & \(4\) \\
+      \(5\) & \(6\) & \(5\) & \(4\) \\
+
+      \(3\) & \(8\) & \(4\) & \(4\) \\
+      \(5\) & \(8\) & \(4\) & \(4\) \\
+      \bottomrule
+  \end{tabular}
+\end{table}
+
+In \Cref{tab:arion_instantiation} you can find the parameters for \Arion{} and 
+its aggressive variant \Aarion{}, the parameters for the respective hash functions are respectively 
+the same.
+The aggressive variants have been parametrized in a way to provide the desired security level 
+against all attacks but probabilistic Gr\"{o}bner basis attacks.
+The choice to provide them anyway was dictated by the fact that, to the best of our knowledge, none 
+of the competitor designs has been proved secure against such attacks, hence the aggressive 
+versions provide the same guarantees in terms of security as the current state of the art.
+For a detailed security analysis of \Arion, \Arionhash{} and their aggressive variants, refer 
+to~\textbf{\cite{RoyST2023}}.
+
+\subsection{Experimental results}
