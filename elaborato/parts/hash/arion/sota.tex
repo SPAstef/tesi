@@ -20,7 +20,9 @@ clearly, this is decisely suboptimal.
 \begin{example}
   Suppose we are given two strings \(a, b \in \Set{0, 1}^{n}\), and we want to compute 
   \(a \bitxor b\).
-  By interpreting them as vectors \(\bm{v}, \bm{w} \in \mathbb{F}_{p}^{n}\), we can simulate 
+  By interpreting them as vectors \(\bm{v}, \bm{w} \in \mathbb{F}_{p}^{n}\), (we interpret 
+  a string \(\sigma \) as a vector \(\bm{x}\) by setting \(\bm{x}_i = 0\) when 
+  \(\call{\sigma}{i} = 0\) and \(\bm{x}_i = 1\) when \(\call{\sigma}{i} = 1\)),we can simulate 
   bitwise XOR by computing, \(\forall i \le n\):
   \[\bm{v}_{i} \bitxor \bm{w}_{i} = \bm{v}_{i} + \bm{w}_{i} - 2\bm{v}_{i}\bm{w}_{i}\]
   that is, every XOR operation requires one multiplication gate.

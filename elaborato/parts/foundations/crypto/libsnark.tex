@@ -85,8 +85,7 @@ induced evaluation.
 At the highest level, this is done by setting the values of the input variables and letting the 
 gadget generate the intermediate and the output values:
 \begin{lstlisting}[language=C++]
-  Field x; // some field element
-  board.val(input_var) = x;
+  board.val(input_var) = x; // x is some field element
   gadget.generate_r1cs_witness(circuit_inputs);
 \end{lstlisting}
 Now, he can generate the proof, which is done transparently by the library by using the 
@@ -123,7 +122,7 @@ is \texttt{false}.
   \texttt{libsnark}.
 \end{example}
 
-\begin{algorithm}
+\begin{figure}
   \centering
   \begin{lstlisting}[caption={The \texttt{libsnark} gadget corresponding to the 
     R1CS in \Cref{ex:r1cs}.}\label{lst:libsnark_example},language=C++]
@@ -160,5 +159,5 @@ is \texttt{false}.
         }
     };
   \end{lstlisting}
-\end{algorithm}
+\end{figure}
 
