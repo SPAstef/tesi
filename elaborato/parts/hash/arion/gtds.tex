@@ -1,3 +1,116 @@
 \section{\Arion{} and \ArionHash{}}\label{sec:gtds}
-\subsection{The Generalized Dynamic Triangular System}
+The constructions that we saw in \Cref{sec:sota} are prominent examples of different 
+\emph{generations} of \emph{Arithmetization Oriented} (AO) designs.
+For example, \Mimc{} is an example of a Gen-I design: its main purpose was mostly to demonstrate 
+that it was indeed possible to to construct secure and efficient cryptographic primitives by 
+stacking simple, low-degree round functions.
+On the other hand, the \Hades{} framework, its derivative \Poseidon{} and other similar 
+constructions like \Rescue{} are examples of Gen-II designs: by tweaking the SPN and 
+Feistel constructions, their purpose was to massimely improve the efficiency over Gen-I designs.
+Finally, \Griffin{} is an example of a Gen-III design: the underlying \Horst{} scheme is neither 
+a ``pure'' Feistel nor SPN design and, by deviating from such standard constructions, its authors 
+were able to improve the efficiency even further. 
+Furthermore, in third generation designs it was shown that one does not necessarily need to use 
+round functions with a low degree, as long as the resulting constraint system is not affected 
+negatively\footnote{As it is often the case in research, the separation line is a bit blurry, 
+as \Rescue, which we said to be a Gen-II design, already used inverse exponentiations}.
+
+Other from \Griffin, there is another very recent Gen-III construction, called 
+\Anemoi~\cite{BouvierBCPSVW2022} and based on the \Flystel{} design, which has some common points 
+with the \Horst{} construction.
+A very interesting fact used in \Flystel{} was the notion of CCZ-equivalence~\cite{CarletCZ1998},
+a concept which generalizes the intuition behind the idea that there is ``no difference'' 
+between, say, using \(x^{d}\) and \(x^{\frac{1}{d}}\).
+\begin{definition}[Affine function]
+  An \emph{affine function} over an \(n\)-dimensional vector space \(\mathbb{F}^n\) is a function
+  \(\call{f}{\bm{x}}\colon \mathbb{F}^n \to \mathbb{F}^n = \bm{Mx} + q\), where 
+  \(\bm{M} \in \mathbb{F}^{n \times n}\) and \(q \in \mathbb{F}\).
+\end{definition}
+\begin{definition}[Function graph]
+  Given a set \(S\), the \emph{function graph} of a function \(f\colon S \to S\) is the pair 
+  \(\Gamma = \Tuple{S, E}\) where \(E = \Set{\Tuple{x, \call{f}{x}} \mid x \in S}\).
+\end{definition}
+\begin{definition}[Induced permutation]
+  Given a \emph{function graph} \(\Gamma = \Tuple{S, E}\) and a permutation \(P\colon S^2 \to S^2\), 
+  the \emph{induced permutation} of \(\Gamma \) by \(P\) is the function graph 
+  \(\call{P}{\Gamma} = \Tuple{S, E'}\) where \(E' = \Set{\call{P}{e} \mid e \in E}\).
+\end{definition}
+\begin{definition}[CCZ equivalence~\cite{BouvierBCPSVW2022,CarletCZ1998}]
+  Given a vector space \(\mathbb{V}\) and two functions 
+  \(f,g\colon \mathbb{V} \to \mathbb{V}\), \(f\) and \(g\) are \emph{CCZ-equivalent} if there 
+  is an affine permutation \(L\colon \mathbb{V}^2 \to \mathbb{V}^2\) such 
+  that \(\Gamma_{f} = \call{L}{\Gamma_{g}}\).
+\end{definition}
+
+Clearly, CCZ-equivalence is an equivalence relation over a vector space \(\mathbb{V}\), hence it 
+induces a partitioning of \(\mathbb{V}^2\) into equivalence classes.
+An interesting fact is that all CCZ-equivalent functions share the same linear and differential 
+properties.
+Even more importantly for our purposes is that CCZ-equivalent functions are indistinguishable under 
+constraint verification: checking the constraint system of any member of the class verifies 
+the validity of the computation of any other member.
+However, one thing that CCZ-equivalent functions do not share in general is their degree, hence we 
+can use the one with highest degree in the actual computation to provide the most strict security 
+guarantees against algebraic attacks, while using the one with the lowest degree when building
+the constraint system for the verification in the SNARK framework.
+
+In an high-level, intuitive way we can say that CCZ-equivalence allows us to ``ignore the order'' 
+in which the witnesses of a certain computation are obtained: reprising our usual example,
+the verifier does not care that the prover first must know \(x\) in order to obtain \(y = x^{1/d}\), 
+all it matters is that the prover knows both of them and that their relationship is correct.
+In fact, even more generally, there is no way to know in which order someone actually got hold of 
+the intermediate values of a computation, hence we might as well exploit this to our advantage in 
+order to reduce the complexity of the protocol.
+
+\subsection{The Generalized Triangular Dynamical System}
+As we said, the design of third generation AO cryprographic primitives diverts from the plain 
+SPN or Feistel constructions.
+For this reason, we introduce the \emph{Generalized Triangular Dynamical System}~\cite{RoyS2022}, 
+GTDS for short, an algebraic framework which generalizes many previous designs (such as Feistel, 
+SPN, and \Horst) and enables us to provide a systematic security analysis 
+of the constructions derived from it\footnote{The GTDS design idea is due to Matthias Steiner.}.
+In particular:
+\begin{itemize}
+  \item The input is split in branches like in earlier designs.
+  \item The round function offers the strength of all the incorporated designs.
+  \item It is secure against classical attacks like differential cryptanalysis.
+  \item It is secure against interpolation attacks already at the first round.
+  \item Its linear layer mixes all the branches through a circulant matrix with no zero entries.  
+  \item It uses inverse exponents, but decouples them from the direct exponent. 
+\end{itemize}
+
+\begin{definition}[GTDS of \Arion]\label{def:gtds}
+  Given a prime field \(\mathbb{F}_p\), a number of branches \(t \in \mathbb{N}\), the smallest 
+  integer \(d_1\) such that \(\call{\gcd}{d_1, \call{\totient}{p}} = 1\), an arbitrary 
+  integer \(d_2\) such that \(\call{\gcd}{d_2, \call{\totient}{p}} = 1\), some constants 
+  \(\alpha_{1}, \beta_{1}, \gamma_1, \dots, \alpha_{t - 1}, \beta_{t - 1}, \gamma_{t - 1} \in \mathbb{F}_p\) 
+  such that \(\forall i < t\colon \alpha_i^2 - 4\beta_i\) is a quadratic non-residue modulo 
+  \(p\), let \(e = {1}/{d_2}\) and, for all \(i < t\) let:
+  \begin{align*}
+    & \call{g_i}{x}\colon \mathbb{F}_p \to \mathbb{F}_p = x^2 + \alpha_{i}x + \beta_{i} \\
+    & \call{h_i}{x}\colon \mathbb{F}_p \to \mathbb{F}_p = x^2 + \gamma_{i}x
+  \end{align*}
+  Then, the GTDS of \Arion{} is the function 
+  \(\call{F}{\bm{x}}\colon \mathbb{F}_p^t \to \mathbb{F}_p^t\) such that:
+  \[
+    \call{F}{\bm{x}}_i = \bm{y}_i = 
+    \begin{cases}
+      \bm{x}_i^{d_1}\call{g_i}{\sigma_{i+1, t}} + \call{h_i}{\sigma_{i+1, t}} & 1 \le i < t \\
+      \bm{x}_i^e & i = t
+    \end{cases}
+  \]
+  where \(\sigma_{i, k} = \sum_{j=i+1}^{k}{\bm{x}_j + \bm{y}_j}\).
+\end{definition}
+
+It can be shown~\cite{RoyS2022} that the GTDS is function is invertible.
+An interesting detail which came up only in the later phases of the GTDS design is the decoupling 
+of the inverse exponentiation from the direct exponentiation, in the sense that, instead of 
+using \(x^d\) and \(x^{1/d}\), we use \(x^{d_1}\) and \(x^{1/d_2}\).
+The rationale of this choice is that some security considerations about cryptographic constructions
+over the GTDS depend on the size of \(d_2\): if it is too small, we would need more rounds to 
+achieve the desired level of security, hence increasing the circuit complexity.
+If \(d_2\) were to be equal to \(d_1\), the reduction in terms of number of rounds would be 
+overcompensated by the increase of the complexity of a single round, but since \(d_2\) is only 
+used in the last branch, the tradeoff becomes more convenient, especially for bigger branch sizes.
+
 \subsection{Security of \Arion{}}

@@ -212,7 +212,7 @@ and their analysis is out of the scope of this work.
 \subsection{Griffin}
 Many new designs were proposed in the last few years, such as 
 \textsc{Ciminion}~\cite{DobraunigGGK2021}, which exploits \emph{Toffoli gates}~\cite{Toffoli1980} 
-to improve the construction, and \textit{Rescue}~\cite{AlyABDS2019}, which uses inverse 
+to improve the construction, and \Rescue~\cite{AlyABDS2019}, which uses inverse 
 exponentiations (i.e.\  \(x^{1/d}\)) in the substitution layer.
 
 An extremely recent design is \Griffin~\cite{GrassiHRSWW2022}, which deviates from the
@@ -239,7 +239,7 @@ but is well-defined only when \(t = 3\) or \(t \equiv 0 \pmod{4}\).
   \(\alpha_{i}^{2} - 4\beta_{i}\) is a quadratic non-residue modulo \(p\), 
   let the linear functions \(L_3, \dots, L_t\) be such that:
   \[\call{L_i}{x, y, z}\colon \mathbb{F}_p^3 \to \mathbb{F}_p = \gamma_{i}x + y + z\]
-  Furthermore, let the \emph{nonlinear layer} be the function:
+  Furthermore, let the \emph{non-linear layer} be the function:
   \[
     \call{S}{\bm{x}}_i\colon \mathbb{F}_{p}^{t} \to \mathbb{F}_{p}^{t} = \bm{y}_i =
     \begin{cases}
@@ -258,17 +258,41 @@ but is well-defined only when \(t = 3\) or \(t \equiv 0 \pmod{4}\).
     \begin{cases}
       \call{\circulant}{2, 1, 1} & t = 3 \\  
       \call{\circulant}{3, 2, 1, 1} & t = 4 \\
-      \call{\diag}{\underbrace{2, \dots, 2}_{\textnormal{\(t\) times}}}
-      \call{\diag}{\underbrace{\bm{M}_{4}, \dots, \bm{M}_4}_{\textnormal{\(s\) times}}}
-      \call{\circulant}{\underbrace{\bm{I}_4, \dots, \bm{I}_4}_{\textnormal{\(s\) times}}}
+      \call{\diag}{\underbrace{2, \dots, 2}_{t}}
+      \call{\diag}{\underbrace{\bm{M}_{4}, \dots, \bm{M}_4}_{s}}
+      \call{\circulant}{\underbrace{\bm{I}_4, \dots, \bm{I}_4}_{s}}
       & t = 4s
     \end{cases}
   \]
-  Then, the \(i\)th round function is the function 
+  and the \(i\)th round function be
   \(\call{f_i}{\bm{x}}\colon \mathbb{F}_{p}^{t} \to \mathbb{F}_{p}^{t} = 
-    \bm{M}_{t}\call{S}{\bm{x}} + \bm{c}_i\), and the \emph{\Griffin{} permutation} is the function:
+    \bm{M}_{t}\call{S}{\bm{x}} + \bm{c}_i\).
+  The \emph{\Griffin{} permutation} is the function:
   \[
     P_{\Griffin} = f_{r} \compose \cdots \compose f_{1} \compose \bm{M}_{t}
   \]
 \end{definition}
-\subsection{Other designs}
+
+The quadratic non-residuosity requirement for the pairs \(\alpha_i, \beta_i\) is a condition 
+imposed in order to make sure that the non-linear layer \(S\) does not output zero from the third 
+branch onwards, unless the input is also zero.
+
+Another important observation about the non-linear layer is the usage of the inverse exponentiation.
+As we already observed when discussing \Mimc, usually \(1/d \gg d\), which means that the degree 
+of the permutation grows much faster. 
+While this also entails that computing \(x^{\frac{1}{d}}\) will be slower, from the constraint 
+system point of view there is absolutely no difference: since \(y = x^{\frac{1}{d}} \iff x = y^{d}\),
+one can simply write the constraints in reverse, introducing no extra cost in the R1CS and, 
+in turn, in the QAP\@!
+
+Similarly to \Poseidon, the \Griffin{} permutation can be very easily extended to a compression 
+function due to the embedded sponge mechanism. The fact that \(t\) must be either \(3\) or a 
+multiple of \(4\) is a bit unfortunate though, as usually one would like to use powers of \(2\) as 
+input size of a compression function: except for \(2\)-to-\(1\), \Griffin{} does not allow any 
+such instantiation, (when \(t = 4s\), we have a \(\Parens*{4s-1}\)-to-\(1\) compression function).
+
+From a performance point of view, \Griffin{} is extremely competitive: for reference, the 
+\(2\)-to-\(1\) instantiation only needs \(96\) R1CS constraints, compared to the \(276\) required 
+by \Poseidon.
+In fact, although it is a very recent design, i.e.\ it is subject to changes, \Griffin{} will be 
+our target competitor in terms of pure performance in ZK-SNARK settings.
