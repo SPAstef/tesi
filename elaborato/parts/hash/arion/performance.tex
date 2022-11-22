@@ -142,5 +142,135 @@ over their respective parameters (see \Cref{def:poseidon} and \Cref{def:griffin}
 of \Arion, \Aarion, \Anemoi, \Poseidon{} and \Griffin{} over \(\approx 256\)-bit prime fields for a 
 target \(128\) bits of security.
 
-\subsection{\texttt{libsnark} implementation and experiments}
+\subsection{Implementations and Experiments}
+In order to experiment with the cryptographic primitives and the constructions discussed 
+throughrout this thesis, we wrote the C\texttt{++} 
+\texttt{zkp-hash}\footnote{\url{https://github.com/SPAstef/zkp_hash}} library, by building on
+\texttt{libsnark}.
+In particualar, our library is meant to improve and extend \texttt{libsnark}, by providing: 
+\begin{itemize}
+  \item A native and ZK-SNARK implementation of SHA-512.
+  \item Native and ZK-SNARK implementation of \Mimchash-\(256\) and \Mimchash-\(512\).
+  \item Templates for native and Zk-SNARK implementations of \Poseidon, \Griffin{} 
+        and \Arionhash.
+  \item A template for native and ZK-SNARK fixed-size Merkle tree authentication paths with 
+        arbitrary arity and node size, for arbitrary hash functions.
+  \item A template for native and ZK-SNARK fixed-size ABR authenticatin paths with arbitrary node 
+        size over arbitrary \(2n\)/\(n\) hash functions.
+  \item Additional utilities to simplify working with \texttt{libsnark}.
+\end{itemize}
 
+We would like to discuss a bit more in detail our Merkle tree implementation, both to highlight some 
+important security considerations that might not be obvious at first, as well as an optimization 
+for its construction, which we are not aware of being applied in any other implementation.
+
+Let's consider, for the sake of simplicity, a binary Merkle tree over a field \(\mathbb{F}_p\) 
+where each node contains only one field element. 
+The circuit of the tree takes in input the value \(x\) contained in the node that the prover claims 
+to hold, together with the values \(y_1, \dots, y_{h-1}\) along the alleged authentication path, 
+and by using the sub-circuit (gadget) of the underlying compression function \(C\), it constrains 
+the middle values \(m_1, \dots, m_h\) to be:
+\begin{equation}\label{eq:bad_constraint}
+  \Parens*{m_1 = x} \land
+  \forall i < h\colon m_{i+1} =
+  \begin{cases}
+    \call{C}{m_{i}, y_{i}} & \textnormal{\(m_{i}\) is a left leaf} \\
+    \call{C}{y_{i}, m_{i}} & \textnormal{\(m_{i}\) is a right leaf}
+  \end{cases}
+\end{equation}
+where \(m_{h}\) will be the root value. 
+However, there is a big issue in this naive construction: the left/right choice is made 
+transparently and the verifier, by simply inspecting the circuit layout, would be able to know 
+the location of the prover's node and therefore its value!
+So we must \emph{embed} the choice in the circuit (in the \texttt{libsnark} implementation this is 
+left to the user, which we believe to be unnecessarily complicated and error-prone).
+
+In our construction, each node is labeled with a left-to-right bottom-to-top \(0\)-based index 
+\(n\): the leftmost leaf will have index \(n = 0\) and the root will have index \(n = 2^{h} - 2\), 
+where \(h\) is the height of the tree. 
+The index will be an additional input variable to the circuit. 
+Note that the base-\(2\) representation of the index, from the LSB to the MSB, shows the path from 
+the leaf to the root: if the \(i\)th bit of \(n\) is \(0\), it means that we are on a left node, if 
+it is \(1\) it means that we are on a right node.
+By introducing a set of \emph{selection variables} \(s_1, \dots, s_{h-1}\), a set of 
+\emph{left variables} \(l_1, \dots, l_{h-1}\) and a set of \emph{right variables} 
+\(r_0, \dots, r_{h-1}\), we can then replace \Cref{eq:bad_constraint} with the following:
+\begin{align*}
+  & n = \sum_{i=1}^{h}{s_{i}2^{i-1}} \\
+  & m_1 = x \\
+  & \forall i < h\colon
+  \begin{cases}  
+    l_i = \Parens*{1 - s_{i}}m_{i} + s_{i}y_{i} \\ 
+    r_i = s_{i}m_{i} + \Parens*{1 - s_{i}}y_{i} \\
+    m_{i+1} = \call{C}{l_i, m_i}
+  \end{cases}
+\end{align*}
+Where the \(i\)th selection variable will have to be set to the value of the \(i\)th bit of the 
+index. If any of the selection variables is set to an incorrect value, the verification will 
+fail, hence we have been able to hide the path from the verifier without compromising the 
+correctness of the construction.
+
+\subsubsection*{From binary to \(t\)-ary}
+To work with \(t\)-ary trees of height \(h\) using the \emph{minimal amount of constraints}, we 
+need to make some changes to the previous reasoning.
+The authentication path will now consist of the node \(x\) and a set of \(t-1\)-dimensional 
+vectors \(\bm{y}_1, \dots, \bm{y}_{h-1}\), where \(\bm{y}_i\) will contain the sibling nodes at 
+the \(i\)th level of the tree, and the compression function will be \(t\)-to-\(1\).
+The base-\(t\) representation of the index, from LSD to MSD, will again show the path from the leaf 
+to the root, where the \(i\)th digit will tell us which of the \(t\) children we are on.
+We introduce a set of \(t\)-dimensional selection variables \(\bm{s}_1, \dots, \bm{s}_{h-1}\), a
+a set of \(t\)-dimensional children variables \(\bm{c}_1, \dots, \bm{c}_{h-1}\), and introduce 
+the following constraints:
+\begin{align*}
+  & n = \sum_{i=1}^{h}{t^{i-1}\sum_{j=1}^{t}{j\bm{s}_{i,j}2^{t-1}}} \\
+  & \bm{c}_{1,1} = x \land \forall i \in \Iinterval{2}{t}\colon \bm{c}_{1,i} = \bm{y}_{i-1} \\
+  & \forall i < h, \forall j \le t\colon 
+  \begin{cases}
+    \bm{s}_{i,j}\Parens*{m_{i+1} - \bm{y}_{i,j}} = \bm{c}_{i,j} - \bm{y}_{i,j} \\
+    m_{i+1} = \call{C}{\bm{c}_i}
+  \end{cases}
+\end{align*}
+
+To better understand the constraints, let's focus on a single level \(i\): the vector 
+\(\bm{s}_i\) will contain all zeros except in the position dictated by the \(i\)th digit of 
+\(n\) when represented in base \(t\). 
+In an electronic jargon, we can say that the selector blocks all the signals coming from the 
+previous layer but in one position, and the dangling wires will be powered by the sibling signals 
+provided by the prover.
+To make sure that the prover cannot cheat, the \(i\)th digit of \(n\) will have to match the 
+value of the \(i\)th bit of \(\bm{s}_i\) weighted by its position \(j\).
+
+Further extending the scheme to allow for single nodes to contain multiple field elements is 
+quite straightforward.
+
+\subsubsection*{\Arion{} vs.\  \Griffin{} vs.\  \Poseidon{}}
+\begin{table}
+  \centering
+  \caption{Performance of various hash functions for generating a proof of membership in a Merkle 
+      tree accumulator over BN254. Proving times are in milliseconds.}\label{tab:runtimes}
+  \resizebox{480pt}{!}{
+      \begin{tabular}{  c | c c c | c c c | c c c | c c c  }
+          \toprule
+          & \multicolumn{12}{ c  }{Time (ms)} \\
+          \midrule
+
+          \phantom{ }Height\phantom{ } & & \Arionhash{} &  &  &  \Aarionhash{}  & & & \Griffin{} & & & \Poseidon{} & \\
+          \midrule
+          \(d = 5\) & \phantom{ }\(n = 3\) & \(n = 4\) & \(n = 8\)\phantom{ } & \phantom{ }\(n = 3\) & \(n = 4\) & \(n = 8\)\phantom{ } & \phantom{ }\(n = 3\)  & \(n = 4\)  & \(n = 8\)\phantom{ } & \phantom{ }\(n = 3\)  & \(n = 4\)  & \(n = 8\)\phantom{ }  \\
+          \midrule
+          \(4\)   & \(101\)  & \(103\)  & \(142\)  & \(73\)  & \(87\)  & \(143\)  & \(88\)  & \(99\) & \(133\) & \(186\)  & \(212\)  & \(274\)  \\
+          \(8\)   & \(211\) & \(216\) & \(294\)  & \(145\) & \(177\) & \(294\)  & \(181\) & \(209\) & \(270\) & \(386\)  & \(417\)  & \(566\)  \\
+          \(16\)  & \(392\) & \(401\) & \(554\)  & \(278\) & \(334\) & \(553\)  & \(338\) & \(387\) & \(505\) & \(745\)  & \(805\)  & \(1095\) \\
+          \(32\)  & \(730\) & \(751\) & \(1046\) & \(509\) & \(646\) & \(1047\) & \(622\) & \(727\) & \(980\) & \(1422\) & \(1550\) & \(2111\) \\
+          \bottomrule
+      \end{tabular}
+  }
+\end{table}
+
+Using our library, we compared \Arion{} with \Griffin{} and \Poseidon{}.
+The comparative result of our experiments are given in \Cref{tab:runtimes}. 
+All experiments were run on a system with an Intel Core i7--11800H CPU and 32GB RAM on a Clear Linux 
+instance, using the \texttt{g++-12} compiler with \texttt{-O3 -march=native} flags.
+Our result shows that \Arionhash{} significantly outperforms \Poseidon{} showing \(2\)x efficiency 
+improvement, and \Aarionhash{} is considerably faster than \Griffin{} for the most common
+real-world parameter choices (i.e.\ \(n = 3\) in Merkle tree hashing mode).
