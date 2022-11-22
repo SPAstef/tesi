@@ -158,7 +158,7 @@ This kind of attack, and in particular its probabilistic version~\cite{FaugereGH
 version).
 
 A family of hash functions that builds on the \Hades{} design is \Poseidon~\cite{GrassiKRRS2021}.
-\begin{definition}[\Poseidon{} permutation]
+\begin{definition}[\Poseidon{} permutation]\label{def:poseidon}
   Given a finite field \(\mathbb{F}_p\), a number of branches \(t \in \mathbb{N}\), a number of 
   full rounds \(r_f \in \mathbb{N}\), a number of partial rounds \(r_{P} \in \mathbb{N}\), 
   an MDS matrix \(\bm{M} \in \mathbb{F}_{p}^{t \times t}\), and some constants 
@@ -231,7 +231,7 @@ A quirk of \Griffin{} is the matrix used in the linear layer (which is basically
 \Poseidon): it is a \(t \times t\) MDS circulant matrix, where \(t\) is the number of branches, 
 but is well-defined only when \(t = 3\) or \(t \equiv 0 \pmod{4}\).
 
-\begin{definition}[Griffin permutation]
+\begin{definition}[Griffin permutation]\label{def:griffin}
   Given a finite field \(\mathbb{F}_p\), a number of branches \(t \in \mathbb{N}\) such that 
   \(t = 3\) or \(t \equiv 0 \pmod{4}\), a number of rounds \(r \in \mathbb{N}\), some constants 
   \(\bm{c}_{1}, \dots, \bm{c}_{r} \in \mathbb{F}_{p}^{t}\), some pairwise-distinct 

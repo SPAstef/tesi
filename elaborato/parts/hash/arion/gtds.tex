@@ -151,7 +151,7 @@ done in \(\BigO{t}\) time instead of the typical \(\BigO{t^2}\) required by a st
 multiplication algorithm, by using \Cref{alg:circ_mult}.
 \begin{algorithm}
   \begin{algorithmic}
-    \Function{circ\_mul}{$\bm{v} \in \mathbb{F}_p^t$}
+    \Function{circ\_mul}{$\bm{v} \in \mathbb{F}_p^t$} %chktex 46
     \State{\(\bm{w} \gets \bm{0} \in \mathbb{F}_p^t\)}
     \State{\(\sigma \gets \sum_{i=1}^{t}{\bm{v}_i}\)}
     \State{\(\bm{w}_1 \gets \sigma + \sum_{i=1}^{t}{\Parens*{i - 1}\bm{v}_i}\)}
@@ -244,5 +244,3 @@ of the competitor designs has been proved secure against such attacks, hence the
 versions provide the same guarantees in terms of security as the current state of the art.
 For a detailed security analysis of \Arion, \Arionhash{} and their aggressive variants, refer 
 to~\textbf{\cite{RoyST2023}}.
-
-\subsection{Experimental results}

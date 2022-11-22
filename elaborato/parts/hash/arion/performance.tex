@@ -1,0 +1,146 @@
+\section{Performance evaluation of \Arion}\label{sec:performance}
+As we saw in \Cref{sec:gtds}, the concept of CCZ-equivalence introduced in the \Anemoi{} 
+proposal~\cite{BouvierBCPSVW2022} plays an important role to build high degree permutations 
+verifiable with low degree constraint systems.
+In fact, it is possible to extend the concept of CCZ-equivalence by allowing any permutation.
+\begin{definition}[\(\pi \)-equivalence]
+  Given a vector space \(\mathbb{V}\) and two functions \(f,g\colon \mathbb{V} \to \mathbb{V}\), 
+  \(f\) and \(g\) are \emph{\(\pi \)-equivalent} if there is a permutation 
+  \(\pi\colon \mathbb{V}^2 \to \mathbb{V}^2\) such that \(\Gamma_{f} = \call{\pi}{\Gamma_{g}}\).
+\end{definition}
+
+Any function \(\pi\colon \mathbb{V}^2 \to \mathbb{V}^2\) can be decomposed into its 
+\emph{projections} \(\pi_{\hat{x}}, \pi_{\hat{y}}\colon \mathbb{V}^2 \to \mathbb{V}\) such that:
+\[
+  \forall \bm{x}, \bm{y} \in \mathbb{V}\colon \call{\pi}{\bm{x}, \bm{y}} = 
+    \Tuple{\call{\pi_{\hat{x}}}{\bm{x}, \bm{y}}, \call{\pi_{\hat{y}}}{\bm{x}, \bm{y}}}
+\]
+
+Thus, for any function \(f\colon \mathbb{V} \to \mathbb{V}\), we have that 
+\(\call{\pi}{\bm{x}, \call{f}{\bm{x}}} = 
+  \Tuple{\call{\pi_{\hat{x}}}{\bm{x}, \call{f}{\bm{x}}}, 
+  \call{\pi_{\hat{y}}}{\bm{x}, \call{f}{\bm{y}}}}\).
+Now, let \(\call{f_{\hat{x}}}{\bm{x}} = \call{\pi_{\hat{x}}}{\bm{x}, \call{f}{\bm{x}}}\) and 
+\(\call{f_{\hat{y}}}{\bm{x}} = \call{\pi_{\hat{y}}}{\bm{x}, \call{f}{\bm{x}}}\), then 
+\(\call{\pi}{\Gamma_f} = \Gamma_{f'}\) if and only if \(\pi_{\hat{x}}\) is a permutation, and 
+in particular \(f' = f_{\hat{y}} \compose f_{\hat{x}}^{-1}\) is \(\pi \)-equivalent to \(f\).
+
+Just like CCZ-equivalence, \(\pi \)-equivalence is also an equivalence relation, denoted 
+\(\pieq \), which allows us to identify equiivalence classes of functions over \(\mathbb{V}\).
+\begin{lemma}[\(\pi \)-equivalence of permutations]\label{lem:pi_equiv}
+  All permutations over a vector space \(\mathbb{V}\) are \(\pi \)-equivalent.
+\end{lemma}
+\begin{proof}
+  We just have to prove that, for every permutation \(f\colon \mathbb{V} \to \mathbb{V}\), it 
+  is the case that \(f \pieq \fooid \), and the result will follow.
+  Clearly, the function \(\call{\pi}{\bm{x}, \bm{y}}\colon \mathbb{V}^2 \to \mathbb{V}^2 = 
+    \Tuple{\bm{x}, \call{f^{-1}}{\bm{y}}}\) is a permutation, and 
+  \(\call{\pi}{\Gamma_f} = \Gamma_{\fooid}\).
+\end{proof}
+
+\begin{definition}[Alternative GTDS of \Arion]
+  Given the same parameters as in \Cref{def:gtds}, the \emph{alternative GTDS of \Arion} is the
+  function \(\tilde{F}_{GTDS}\colon \mathbb{F}_p^t \to \mathbb{F}_p^t\) such that:
+  \[
+    \call{\tilde{F}_{GTDS}}{\bm{x}}_i = \bm{y}_i =
+    \begin{cases}
+      \bm{x}_i^{d_1}\call{g_i}{\tilde{\sigma}_{i+1,t}} + 
+        \call{h_i}{\tilde{\sigma}_{i+1,t}} & 1 \le i < t \\
+      \bm{x}_i^{d_2} & i = t
+    \end{cases}
+  \]
+  where \(\tilde{\tau}_{i, k} = \bm{x}_k + \bm{x}_{k}^{e} + \sum_{j=i}^{k-1}{\bm{x}_j + \bm{y}_j}\).
+
+\end{definition}
+
+\begin{proposition}[\(\pi \)-equivalence of GTDS]
+  \(F_{GTDS} \pieq \tilde{F}_{GTDS}\).
+\end{proposition}
+\begin{proof}
+  \(F_{GTDS}\) and \(\tilde{F}_{GTDS}\) are both permutations over the vector space \(\mathbb{F}_p^t\),
+  therefore by \Cref{lem:pi_equiv} the claim follows.
+\end{proof}
+
+As a corollary, we have that verifying the constraint system of \(F_{GTDS}\) is equivalent to 
+verifying the constraint system of \(\tilde{F}_{GTDS}\).
+Computing the number of multiplicative constraints for \Arionhash{} is quite straightforward:
+\begin{lemma}[R1CS constraints for \Arionhash]
+  Given the \Arionhash{} function over a prime field \(\mathbb{F}_p\) with branch size 
+  \(t\) and rate \(r\), let \(\call{\minmul}{x}\colon \mathbb{F}_p \to \mathbb{N}\) be the minimum
+  number of field multiplications required to compute \(y^x\) for any \(y \in \mathbb{F}\).
+  The number of R1CS constraints required by \Arionhash{} is:
+  \[
+    N_{\Arionhash} = 
+      r\Parens*{\Parens*{n - 1}\Parens*{\call{\minmul}{d_1} + 2} + \call{\minmul}{d_2}}
+  \]
+\end{lemma}
+\begin{proof}
+  Consider the alternative GTDS \(\tilde{F}_{GTDS}\): we need \(\call{\minmul}{d_2}\) 
+  multiplicative constraints in the last branch.
+  In the remaining \(n - 1\) branches, we need \(\call{\minmul}{d_1}\) multiplications to 
+  compute \(\bm{x}_i^{d_1}\), one multiplication for computing \(g_i\), one for computing \(h_i\), 
+  and one to multiply \(g_i\) with \(\bm{x}_i^{d_1}\).
+\end{proof}
+
+For reference, the number of R1CS constraints required by \Poseidon{} and \Griffin{} 
+over their respective parameters (see \Cref{def:poseidon} and \Cref{def:griffin}) are given by:
+\begin{align*}
+  & N_{\Poseidon} = \call{\minmul}{d}\Parens*{2tr_f + r_P} \\
+  & N_{\Griffin} = 2r\Parens{\call{\minmul}{d} + t - 2}
+\end{align*}
+
+\begin{table}
+  \centering
+  \caption{R1CS constraint comparison over \(256\)-bit prime fields and \(128\) bits of security 
+  with \(d_2 \in \Set{121, 123, 125, 161, 257}\).}\label{tab:arion_compare_muls}
+  \begin{tabular}{  c c c c c c c  }
+      \toprule
+      \phantom{ }\(d_1\)\phantom{ } & \phantom{ }\(t\)\phantom{ } & \phantom{ }\Arionhash{}\phantom{ } & \phantom{ }\Aarionhash{}\phantom{ } & \phantom{ }\Griffin{}\phantom{ } & \phantom{ }\Anemoi{}\phantom{ } & \phantom{ }\Poseidon{}\phantom{ }             \\
+      \midrule
+      \multicolumn{2}{  c | }{} & \multicolumn{5}{ c }{Rounds} \\
+      \midrule
+      \(3\) & \(3\) & \(6\) & \(5\) & \(12\) &      & \phantom{ }\(r_f = 4,\ r_P = 84\)\phantom{ } \\
+      \(5\) & \(3\) & \(6\) & \(4\) & \(12\) &      & \phantom{ }\(r_f = 4,\ r_P = 56\)\phantom{ } \\
+
+      \(3\) & \(4\) & \(6\) & \(4\) & \(11\) & \(12\) & \phantom{ }\(r_f = 4,\ r_P = 84\)\phantom{ } \\
+      \(5\) & \(4\) & \(5\) & \(4\) & \(11\) & \(12\) & \phantom{ }\(r_f = 4,\ r_P = 56\)\phantom{ } \\
+
+      \(3\) & \(5\) & \(5\) & \(4\) &      &      & \phantom{ }\(r_f = 4,\ r_P = 84\)\phantom{ } \\
+      \(5\) & \(5\) & \(5\) & \(4\) &      &      & \phantom{ }\(r_f = 4,\ r_P = 56\)\phantom{ } \\
+
+      \(3\) & \(6\) & \(5\) & \(4\) &      & \(10\) & \phantom{ }\(r_f = 4,\ r_P = 84\)\phantom{ } \\
+      \(5\) & \(6\) & \(5\) & \(4\) &      & \(10\) & \phantom{ }\(r_f = 4,\ r_P = 84\)\phantom{ } \\
+
+      \(3\) & \(8\) & \(4\) & \(4\) & \(9\)  & \(10\) & \phantom{ }\(r_f = 4,\ r_P = 84\)\phantom{ } \\
+      \(5\) & \(8\) & \(4\) & \(4\) & \(9\)  & \(10\) & \phantom{ }\(r_f = 4,\ r_P = 56\)\phantom{ } \\
+
+      \midrule
+
+      \multicolumn{2}{  c | }{} & \multicolumn{5}{ c  }{R1CS Constraints} \\
+      \midrule
+
+      \(3\) & \(3\) & \(102\) & \(85\)  & \(72\)  &       & \(216\) \\
+      \(5\) & \(3\) & \(114\) & \(76\)  & \(96\)  &       & \(240\) \\
+
+      \(3\) & \(4\) & \(126\) & \(84\)  & \(88\)  & \(96\)  & \(232\) \\
+      \(5\) & \(4\) & \(120\) & \(96\)  & \(110\) & \(120\) & \(264\) \\
+
+      \(3\) & \(5\) & \(120\) & \(100\) &       &       & \(248\) \\
+      \(5\) & \(5\) & \(125\) & \(116\) &       &       & \(288\) \\
+
+      \(3\) & \(6\) & \(145\) & \(116\) &       & \(120\) & \(264\) \\
+      \(5\) & \(6\) & \(170\) & \(136\) &       & \(150\) & \(312\) \\
+
+      \(3\) & \(8\) & \(148\) & \(148\) & \(144\) & \(160\) & \(296\) \\
+      \(5\) & \(8\) & \(176\) & \(176\) & \(162\) & \(200\) & \(360\) \\
+
+      \bottomrule
+  \end{tabular}
+\end{table}
+
+\Cref{tab:arion_compare_muls} shows the number of constraints required for specific instantiations 
+of \Arion, \Aarion, \Anemoi, \Poseidon{} and \Griffin{} over \(\approx 256\)-bit prime fields for a 
+target \(128\) bits of security.
+
+\subsection{\texttt{libsnark} implementation and experiments}
+
