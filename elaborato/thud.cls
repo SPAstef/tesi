@@ -198,7 +198,7 @@
             \let\and\@undefined
         \fi%
         \begin{lrbox}{\thud@tmpbox}\parbox[t]{\linewidth}{\@nameuse{thud@#2}}\end{lrbox}%
-        \textsc{\thud@varname}\\[\thud@se@qual]%
+        \textrm{\textsc{\thud@varname}}\\[\thud@se@qual]%
         \usebox{\thud@tmpbox}\\[\thud@se@sep]\null%
     \fi%
 }

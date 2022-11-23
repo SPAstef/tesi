@@ -248,7 +248,7 @@ quite straightforward.
   \caption{Performance of various hash functions for generating a proof of membership in a Merkle 
       tree accumulator over BN254. Proving times are in milliseconds.}\label{tab:runtimes}
   \resizebox{480pt}{!}{
-      \begin{tabular}{  c | c c c | c c c | c c c | c c c  }
+      \begin{tabular}{  c  c c c  c c c  c c c  c c c  }
           \toprule
           & \multicolumn{12}{ c  }{Time (ms)} \\
           \midrule
@@ -272,4 +272,4 @@ All experiments were run on a system with an Intel Core i7--11800H CPU and 32GB 
 instance, using the \texttt{g++-12} compiler with \texttt{-O3 -march=native} flags.
 Our result shows that \Arionhash{} significantly outperforms \Poseidon{} showing \(2\)x efficiency 
 improvement, and \Aarionhash{} is considerably faster than \Griffin{} for the most common
-real-world parameter choices (i.e.\ \(n = 3\) in Merkle tree hashing mode).
+real-world parameter choices (i.e.\  \(n = 3\) in Merkle tree hashing mode).
