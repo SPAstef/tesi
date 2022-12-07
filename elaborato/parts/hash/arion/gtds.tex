@@ -1,12 +1,12 @@
-\section{\Arion: A new ZK-friendly permutation}\label{sec:gtds}
+\section{\Arion{}: A new ZK-friendly permutation}\label{sec:gtds}
 The constructions that we saw in \Cref{sec:sota} are prominent examples of different 
 \emph{generations} of \emph{Arithmetization Oriented} (AO) designs.
 For example, \Mimc{} is an example of a Gen-I design: its main purpose was mostly to demonstrate 
-that it was indeed possible to to construct secure and efficient cryptographic primitives by 
+that it was indeed possible to construct secure and efficient cryptographic primitives by 
 stacking simple, low-degree round functions.
 On the other hand, the \Hades{} framework, its derivative \Poseidon{} and other similar 
 constructions like \Rescue{} are examples of Gen-II designs: by tweaking the SPN and 
-Feistel constructions, their purpose was to massimely improve the efficiency over Gen-I designs.
+Feistel constructions, their purpose was to massively improve the efficiency over Gen-I designs.
 Finally, \Griffin{} is an example of a Gen-III design: the underlying \Horst{} scheme is neither 
 a ``pure'' Feistel nor SPN design and, by deviating from such standard constructions, its authors 
 were able to improve the efficiency even further. 
@@ -24,7 +24,7 @@ between, say, using \(x^{d}\) and \(x^{\frac{1}{d}}\).
 \begin{definition}[Affine function]
   An \emph{affine function} over an \(n\)-dimensional vector space \(\mathbb{F}^n\) is a function
   \(\call{f}{\bm{x}}\colon \mathbb{F}^n \to \mathbb{F}^n = \bm{Mx} + q\), where 
-  \(\bm{M} \in \mathbb{F}^{n \times n}\) and \(q \in \mathbb{F}\).
+  \(\bm{M} \in \mathbb{F}^{n \times n}\) and \(q \in \mathbb{F}^n\).
 \end{definition}
 \begin{definition}[Function graph]
   Given a set \(S\), the \emph{function graph} of a function \(f\colon S \to S\) is the pair 
@@ -50,11 +50,11 @@ Even more importantly for our purposes is that CCZ-equivalent functions are indi
 constraint verification: checking the constraint system of any member of the class verifies 
 the validity of the computation of any other member.
 However, one thing that CCZ-equivalent functions do not share in general is their degree, hence we 
-can use the one with highest degree in the actual computation to provide the most strict security 
+can use the one with the highest degree in the actual computation to provide the most strict security 
 guarantees against algebraic attacks, while using the one with the lowest degree when building
 the constraint system for the verification in the SNARK framework.
 
-In an high-level, intuitive way we can say that CCZ-equivalence allows us to ``ignore the order'' 
+In a high-level, intuitive way we can say that CCZ-equivalence allows us to ``ignore the order'' 
 in which the witnesses of a certain computation are obtained: reprising our usual example,
 the verifier does not care that the prover first must know \(x\) in order to obtain \(y = x^{1/d}\), 
 all it matters is that the prover knows both of them and that their relationship is correct.
@@ -63,12 +63,12 @@ the intermediate values of a computation, hence we might as well exploit this to
 order to reduce the complexity of the protocol.
 
 \subsection{The Generalized Triangular Dynamical System}
-As we said, the design of third generation AO cryprographic primitives diverts from the plain 
+As we said, the design of third generation AO cryptographic primitives diverts from the plain 
 SPN or Feistel constructions.
 For this reason, we introduce the \emph{Generalized Triangular Dynamical System}~\cite{RoyS2022}, 
 GTDS for short, an algebraic framework which generalizes many previous designs (such as Feistel, 
-SPN, and \Horst) and enables us to provide a systematic security analysis 
-of the constructions derived from it.
+SPN, \Horst{}, \dots) and their instantiations (\Mimc{}, \Poseidon{}, \Griffin{}, \dots), and enables 
+us to provide a systematic security analysis of the constructions derived from it.
 In particular:
 \begin{itemize}
   \item The input is split in branches like in earlier designs.
@@ -81,8 +81,8 @@ In particular:
 
 \begin{definition}[GTDS of \Arion~\cite{RoyS2022}]\label{def:gtds}
   Given a prime field \(\mathbb{F}_p\), a number of branches \(t \in \mathbb{N}\), the smallest 
-  integer \(d_1\) such that \(\call{\gcd}{d_1, \call{\totient}{p}} = 1\), an arbitrary 
-  integer \(d_2\) such that \(\call{\gcd}{d_2, \call{\totient}{p}} = 1\), some constants 
+  integer \(d_1\) such that \(\call{\gcd}{d_1, p - 1} = 1\), an arbitrary 
+  integer \(d_2\) such that \(\call{\gcd}{d_2, p - 1} = 1\), some constants 
   \(\alpha_{1}, \beta_{1}, \gamma_1, \dots, \alpha_{t - 1}, \beta_{t - 1}, \gamma_{t - 1} \in \mathbb{F}_p\) 
   such that \(\forall i < t\colon \alpha_i^2 - 4\beta_i\) is a quadratic non-residue modulo 
   \(p\), let \(e = {1}/{d_2}\) and, for all \(i < t\) let:
@@ -99,7 +99,7 @@ In particular:
       \bm{x}_i^e & i = t
     \end{cases}
   \]
-  where \(\sigma_{i, k} = \sum_{j=i+1}^{k}{\bm{x}_j + \bm{y}_j}\).
+  where \(\sigma_{i, k} = \sum_{j=i}^{k}{\bm{x}_j + \bm{y}_j}\).
 \end{definition}
 
 It can be shown~\cite{RoyS2022} that the GTDS is function is invertible.
@@ -111,20 +111,20 @@ over the GTDS depend on the size of \(d_2\): if it is too small, we would need m
 achieve the desired level of security, hence increasing the circuit complexity.
 If \(d_2\) were to be equal to \(d_1\), the reduction in terms of number of rounds would be 
 overcompensated by the increase of the complexity of a single round, but since \(d_2\) is only 
-used in the last branch, the tradeoff becomes more convenient, especially for bigger branch sizes.
+used in the last branch, the trade-off becomes more convenient, especially for bigger branch sizes.
 
 Of course, \(d_2\) should require an optimal number of constraints.
-Note that, since we have at our disposal intermediate results, the optimal number of oeprations 
+Note that, since we have at our disposal intermediate results, the optimal number of operations 
 required to exponentiate a number is not determined by the classical \emph{binary exponentiation} 
 algorithm~\cite{Gueron2011}, but rather by \emph{addition chains}~\cite{BosC1990}.
 
 \subsection{\Arion{} and \Arionhash{}}
-Depending on our security and efficiency needs, we can instantiate the GTDS in many different 
+Depending on our security and efficiency needs, we can instantiate the GTDS in many 
 ways.
 We design \Arion{} and \Arionhash{}~\textbf{\cite{RoyST2023}} to work over fields of size 
 \(\approx 2^{256}\).
 In order to achieve a \emph{degree overflow} in the first round, it can be shown that \(4e\), where 
-\(e = {1}/{d_2}\), should be greaater than \(p\). 
+\(e = {1}/{d_2}\), should be greater than \(p\). 
 For BN254 and BLS12, this can be achieved by \(d_2 \in \Set{121, 123, 125, 161, 257}\).
 For example, the optimal way to compute \(x^{121}\) is:
 \begin{align*}
@@ -202,7 +202,7 @@ initial value \(v = 0^{\Parens*{t\abs{\Encode{p}}}}\) (where \(\Encode{x}\) deno
 encoding of an object \(x\)) with 
 \(v' = \Encode{\abs{m}} \concat 0^{\Parens*{t-1}\abs{\Encode{p}}}\).
 Note that we assume,  as basically any constructions does, that \(\abs{m} < p\), 
-which should not be a problem as typically \(p \approx 2^{256}\) and we don't expect to hash 
+which should not be a problem as typically \(p \approx 2^{256}\), and we don't expect to hash 
 messages of length \(\abs{m} > 2^{256}\).
 
 \begin{table}

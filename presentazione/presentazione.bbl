@@ -1,0 +1,135 @@
+\newcommand{\etalchar}[1]{$^{#1}$}
+\begin{thebibliography}{BDPVA07}
+
+\bibitem[AABS{\etalchar{+}}19]{AlyABDS2019}
+Abdelrahaman Aly, Tomer Ashur, Eli Ben-Sasson, Siemen Dhooghe, and Alan
+  Szepieniec.
+\newblock Design of symmetric-key primitives for advanced cryptographic
+  protocols.
+\newblock Cryptology ePrint Archive, Paper 2019/426, 2019.
+\newblock \url{https://eprint.iacr.org/2019/426}.
+
+\bibitem[ABR21]{AndreevaBR2021}
+Elena Andreeva, Rishiraj Bhattacharyya, and Arnab Roy.
+\newblock Compactness of hashing modes and efficiency beyond merkle tree.
+\newblock Cryptology ePrint Archive, Paper 2021/573, 2021.
+\newblock \url{https://eprint.iacr.org/2021/573}.
+
+\bibitem[AGR{\etalchar{+}}16]{AlbrechtGRRT2016}
+Martin Albrecht, Lorenzo Grassi, Christian Rechberger, Arnab Roy, and Tyge
+  Tiessen.
+\newblock Mimc: Efficient encryption and cryptographic hashing with minimal
+  multiplicative complexity.
+\newblock In Jung~Hee Cheon and Tsuyoshi Takagi, editors, {\em Advances in
+  Cryptology -- ASIACRYPT 2016}, pages 191--219, Berlin, Heidelberg, 2016.
+  Springer Berlin Heidelberg.
+
+\bibitem[BBC{\etalchar{+}}22]{BouvierBCPSVW2022}
+Clémence Bouvier, Pierre Briaud, Pyrros Chaidos, Léo Perrin, Robin Salen,
+  Vesselin Velichkov, and Danny Willems.
+\newblock New design techniques for efficient arithmetization-oriented hash
+  functions:anemoi permutations and jive compression mode.
+\newblock Cryptology ePrint Archive, Paper 2022/840, 2022.
+\newblock \url{https://eprint.iacr.org/2022/840}.
+
+\bibitem[BDPVA07]{BertoniDPA2007}
+Guido Bertoni, Joan Daemen, Micha{\"e}l Peeters, and Gilles Van~Assche.
+\newblock Sponge functions.
+\newblock In {\em ECRYPT hash workshop}, volume 2007, 2007.
+
+\bibitem[BSCG{\etalchar{+}}14]{SassonCGGMTV2014}
+Eli Ben~Sasson, Alessandro Chiesa, Christina Garman, Matthew Green, Ian Miers,
+  Eran Tromer, and Madars Virza.
+\newblock Zerocash: Decentralized anonymous payments from bitcoin.
+\newblock In {\em 2014 IEEE Symposium on Security and Privacy}, pages 459--474,
+  2014.
+
+\bibitem[BSCTV13]{SassonCTV2013}
+Eli Ben-Sasson, Alessandro Chiesa, Eran Tromer, and Madars Virza.
+\newblock Succinct non-interactive zero knowledge for a von neumann
+  architecture.
+\newblock Cryptology ePrint Archive, Paper 2013/879, 2013.
+\newblock \url{https://eprint.iacr.org/2013/879}.
+
+\bibitem[Dam93]{Damgard1993}
+Ivan Damg{\aa}rd.
+\newblock Non-interactive circuit based proofs and non-interactive perfect
+  zero-knowledge with preprocessing.
+\newblock In Rainer~A. Rueppel, editor, {\em Advances in Cryptology ---
+  EUROCRYPT' 92}, pages 341--355, Berlin, Heidelberg, 1993. Springer Berlin
+  Heidelberg.
+
+\bibitem[Dan15]{Dang2015}
+Quynh~H. Dang.
+\newblock {\em Secure Hash Standard}.
+\newblock National Institute of Standards and Technology, Jul 2015.
+
+\bibitem[GGPR12]{GennaroGPR2012}
+Rosario Gennaro, Craig Gentry, Bryan Parno, and Mariana Raykova.
+\newblock Quadratic span programs and succinct nizks without pcps.
+\newblock Cryptology ePrint Archive, Paper 2012/215, 2012.
+\newblock \url{https://eprint.iacr.org/2012/215}.
+
+\bibitem[GHR{\etalchar{+}}22]{GrassiHRSWW2022}
+Lorenzo Grassi, Yongling Hao, Christian Rechberger, Markus Schofnegger, Roman
+  Walch, and Qingju Wang.
+\newblock A new feistel approach meets fluid-spn: Griffin for zero-knowledge
+  applications.
+\newblock {\em {IACR} Cryptol. ePrint Arch.}, 2022:403, 2022.
+
+\bibitem[GKR{\etalchar{+}}21]{GrassiKRRS2021}
+Lorenzo Grassi, Dmitry Khovratovich, Christian Rechberger, Arnab Roy, and
+  Markus Schofnegger.
+\newblock Poseidon: A new hash function for zero-knowledge proof systems.
+\newblock In {\em USENIX Security Symposium}, 2021.
+
+\bibitem[GMR89]{GoldwasserMR1989}
+Shafi Goldwasser, Silvio Micali, and Charles Rackoff.
+\newblock The knowledge complexity of interactive proof systems.
+\newblock {\em SIAM Journal on Computing}, 18(1):186--208, 1989.
+
+\bibitem[Gro16]{Groth2016}
+Jens Groth.
+\newblock On the size of pairing-based non-interactive arguments.
+\newblock Cryptology ePrint Archive, Paper 2016/260, 2016.
+\newblock \url{https://eprint.iacr.org/2016/260}.
+
+\bibitem[Mer88]{Merkle1988}
+Ralph~C. Merkle.
+\newblock A digital signature based on a conventional encryption function.
+\newblock In Carl Pomerance, editor, {\em Advances in Cryptology --- CRYPTO
+  '87}, pages 369--378, Berlin, Heidelberg, 1988. Springer Berlin Heidelberg.
+
+\bibitem[Mic00]{Micali2000}
+Silvio Micali.
+\newblock Computationally sound proofs.
+\newblock {\em SIAM J. Comput.}, 30(4):1253--1298, oct 2000.
+
+\bibitem[PGHR13]{ParnoGHR2013}
+Bryan Parno, Craig Gentry, Jon Howell, and Mariana Raykova.
+\newblock Pinocchio: Nearly practical verifiable computation.
+\newblock Cryptology ePrint Archive, Paper 2013/279, 2013.
+\newblock \url{https://eprint.iacr.org/2013/279}.
+
+\bibitem[Pre05]{Preneel2005}
+Bart Preneel.
+\newblock {\em Davies--Meyer Hash Function}, pages 136--136.
+\newblock Springer US, Boston, MA, 2005.
+
+\bibitem[RS22]{RoyS2022}
+Arnab Roy and Matthias Steiner.
+\newblock Generalized triangular dynamical system: An algebraic system for
+  constructing cryptographic permutations over finite fields, 2022.
+
+\bibitem[RST23]{RoyST2023}
+Arnab Roy, Matthias Steiner, and Stefano Trevisani.
+\newblock Arion: Arithmetization-oriented permutation and hashing from
+  generalized triangular dynamical systems.
+\newblock Undergoing submission, 2023.
+
+\bibitem[Sha92]{Shamir1992}
+Adi Shamir.
+\newblock Ip = pspace.
+\newblock {\em J. ACM}, 39(4):869--877, oct 1992.
+
+\end{thebibliography}

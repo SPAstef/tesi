@@ -24,12 +24,12 @@ not just the one that engages the protocol, is able to check the proof, which is
 \end{proposition}
 
 \begin{definition}[Succint proof]
-  A \emph{succint proof} for a statement \(\sigma \) over a language \(L \subseteq \Set{0, 1}^*\) 
+  A \emph{succinct proof} for a statement \(\sigma \) over a language \(L \subseteq \Set{0, 1}^*\) 
   is a proof \(\pi \) such that \(\abs{\pi} = \BigO{\call{\log}{\abs{\sigma}}}\).
 \end{definition}
 
-Similarly, one can define the notion of succint argument of knowledge, and in particular, a 
-succint ZK-NARK system is called a ZK-SNARK system.
+Similarly, one can define the notion of succinct argument of knowledge, and in particular, a 
+succinct ZK-NARK system is called a ZK-SNARK system.
 \begin{definition}[Probabilistically checkable proof system~\cite{BabaiFLS1991,FeigeGLSS1991}]
   A \emph{probabilistically checkable proof system} (PCP system) is an interactive proof system 
   \(\Tuple{\mathcal{P, V}}\) such that for any proof \(\pi \) provided by \(\mathcal{P}\):
@@ -42,14 +42,14 @@ polylogarithmically bound to the size of the proof, it can only query a small po
 however, it is enough to get statistical completeness and soundness.
 
 In~\cite{Kilian1992}, the author uses Merkle trees to have the prover commit to a proof \(\pi \), 
-(the bits of \(\pi \) are the leaves and the root, whcih has constant size, is sent to the verifier). 
+(the bits of \(\pi \) are the leaves and the root, which has constant size, is sent to the verifier). 
 The verifier then queries a certain number of authentication paths, which have length
 \(\BigO{\call{\log}{\abs{\pi}}}\), and decides whether to accept or reject.
-In this sense, the protocol is therefore succint.
+In this sense, the protocol is therefore succinct.
 In~\cite{Micali2000}, the construction was extended and, by applying the Fiat-Shamir heuristic, it 
 is possible to make the protocol non-interactive.
 
-One of the first \emph{succint} ZK-NARK (ZK-SNARK) systems that didn't make explicit use of 
+One of the first \emph{succinct} ZK-NARK (ZK-SNARK) systems that didn't make explicit use of 
 PCPs was devised in~\cite{Groth2010}, but had one important drawback: while the size of the proof 
 is constant, the size of the CRS, and the computation that the prover has to perform is 
 \emph{quadratic} in the size of the input circuit
@@ -57,7 +57,7 @@ is constant, the size of the CRS, and the computation that the prover has to per
 
 However, by first transforming the circuit into \emph{quadratic span programs} (QSPs), 
 the boolean equivalent of QAPs (\Cref{subsec:qap}), it was shown that it is possible to reduce both 
-the size of the CRS and the prover's computational complexity to linear, while still having succint 
+the size of the CRS and the prover's computational complexity to linear, while still having succinct 
 proofs~\cite{GennaroGPR2012}.
 Since all these constructions make use of encryption based on the hardness of finding the discrete
 logarithm of a number over a big finite field, dealing with boolean circuits and QSPs is not 
@@ -75,16 +75,16 @@ and some by the server:
 \begin{itemize}
   \item The client does not trust the server, so we would need a proof system, but since the server 
         is not computationally unbounded, an \emph{argument of knowledge} system will suffice.
-  \item The server might have to interact with many clients or, similarly, many different clients
-        might require the same computation, the system must be \emph{non-interactive}.
+  \item The server might have to provide the same computation to different clients, hence 
+        the system must be \emph{non-interactive}.
   \item Verifying the computation must be cheaper than performing it, otherwise the client wouldn't 
-        have to ask the server in the first place, the system must provide \emph{succint} proofs.
-  \item The server has too interests in to the client that the computation was correct, say to 
-        avoid legal liability, but it is not willing to share its own inputs, so our system must
-        be \emph{zero-knowledge}.
+        have to ask the server in the first place, the system must provide \emph{succinct} proofs.
+  \item The server is also interested in proving to the client that the computation was correct, for
+        example to avoid legal liability, but it is not willing to share its own inputs, so our 
+        system must be \emph{zero-knowledge}.
 \end{itemize}
-Clearly, among the various systems we saw up to now, ZK-SNARKs are the only one that can reasonably 
-fulfill all of the requirements above.
+Clearly, among the various systems we saw up to now, ZK-SNARKs are the only ones that can reasonably 
+fulfill all the requirements above.
 However, all the constructions we saw, due to the high overheads involved in generating the CRS, 
 building the QSP/QAP, generating the proof, and even verifying it, were (much) slower than native 
 execution by the client.
@@ -95,7 +95,7 @@ broke the `native execution' barrier for verification time, was
 \begin{definition}[Bilinear group~\cite{BonehF2001}]
   A \emph{bilinear group} is a group \(\mathbb{G}\) and \(\mathbb{G}'\) 
   such that there is bilinear map (w.r.t.\ exponentiation) 
-  \(B\colon \mathbb{G} \times \mathbb{G} \to \mathbb{G}_T\) such that 
+  \(B\colon \mathbb{G} \times \mathbb{G} \to \mathbb{G}'\) such that 
   \(\forall a, b \in \mathbb{Z}\colon \call{B}{x^a, y^b} = \call{B}{x, y}^{ab}\).
 \end{definition}
 
@@ -117,7 +117,8 @@ of this thesis.
 \end{example}
 
 The two main ingredients of Pinocchio are QAPs and bilinear maps.
-Given in input an arithmetic formula \(\varphi \) over some field \(\mathbb{F} \cong \gengroup{g}\) 
+Given in input an arithmetic formula \(\varphi \) over some field \(\mathbb{F}\) such that 
+\(\mathbb{F}_{\otimes} \cong \gengroup{g}\),
 equipped with a bilinear map \(B\colon \gengroup{g} \times \gengroup{g} \to \mathbb{F}\) defined as 
 in \Cref{ex:bilinear_map}, the Pinocchio protocol is organized in three phases: the 
 \emph{setup phase}, the \emph{prover phase}, and the \emph{verifier phase}.
@@ -135,9 +136,9 @@ Recall that \(m = \abs{\bm{v}} = \abs{\bm{w}} = \abs{\bm{y}} = \abs{\mathcal{G}_
   }, 
 that \(n = \call{\deg}{t} = m + 1 + \abs{\mathcal{G}_{in}}\), and that 
 \(\forall i\colon \call{\deg}{\bm{v}_i} = \call{\deg}{\bm{w}_i} = \call{\deg}{\bm{y}_i} = n - 1\).
-The QAP (and eventually all the other componenets) are made public.
+The QAP (and eventually all the other components) are made public.
 
-Either via a trusted third party or an ensamble of authorities~\cite{GrothO2006}, we generate 
+Either via a trusted third party or an ensemble of authorities~\cite{GrothO2006}, we generate 
 a CRS \(\overbar{\sigma}\), which has length 
 \(\abs{\overbar{\sigma}} = 8\Ceil*{\call{\log}{\abs{\mathbb{F}}}}\) and interpret every 
 \(\Ceil*{\call{\log}{\abs{\mathbb{F}}}}\)-bit subsequence as elements of \(\mathbb{F}\): 
@@ -262,4 +263,4 @@ It is immediate to see that the proving key \(\ProverKey \) contains
 \(8\abs{\mathcal{G}_{\otimes}} + \abs{\mathcal{G}_{in}} + 1\) field elements, the verification 
 key \(\VerifierKey \) contains \(3\abs{\mathcal{G}_{in}} + 7\) field elements (\(6\) more in the 
 zero-knowledge setting), and the proof \(\pi \) contains \(8\) field elements, meaning that its size
-is independent from the input circuit.
+is independent of the input circuit.

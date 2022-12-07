@@ -2,7 +2,7 @@
 A \emph{computational model} (or model of computation) is any kind of system able to describe 
 how to produce some \emph{output} given some \emph{input}~\cite{Savage1997}.
 Different models do this in different ways, each one with its own strength and weaknesses in terms
-of \emph{expressivness}, \emph{complexity} and \emph{succintness}.
+of \emph{expressiveness}, \emph{complexity} and \emph{succinctness}.
 Two historically important models of computations are Alonzo Church's 
 \emph{\(\lambda \)-calculus}~\cite{Church1941} and Alan Turing's 
 \emph{Turing machine} (TM)~\cite{Turing1950}. 
@@ -19,7 +19,7 @@ computation.
 
 By only requiring \(\delta \) to be a relation instead of a function, we obtain the so-called 
 \emph{non-deterministic} Turing machine (NTM): given a state and an alphabet symbol, the machine 
-can take different choiches at every step.
+can take different choices at every step.
 A TM \(\mathcal{M}\) manipulates a string \(\overbar{\sigma}\) over the alphabet 
 \(\Sigma \setminus \Set{\sqcup}\) by placing it over an \emph{infinite, discrete working tape} 
 \(\Tapework \), a total order isomorphic to \(\mathbb{Z}\).
@@ -37,7 +37,7 @@ The computation \emph{terminates} whenever one of the two \emph{halting} states 
 \emph{rejected}, else if \(\call{\mathcal{M}}{\overbar{\sigma}} = \top \), then \(\overbar{\sigma}\) 
 is \emph{accepted}.
 It can also happen that the computation does not terminate: in such cases, we write 
-\(\call{\mathcal{M}}{\overbar{\sigma}} = {\uparrow}\) and we say that the computation \emph{hangs}.
+\(\call{\mathcal{M}}{\overbar{\sigma}} = {\uparrow}\), and we say that the computation \emph{hangs}.
 
 In many scenarios, it is useful to extend Turing machines to include additional features, for 
 example to represent the ability to access some source of randomness, or to communicate with an 
@@ -83,7 +83,7 @@ As for the writing tape of an I/O TM, the head on \(\Taperand \) can only move t
 \end{definition}
 
 An interactive Turing machine (ITM) is quite similar to an I/O TM, as it also has two additional 
-tapes, called the \emph{send tape} \(\Tapesend \) and the \emph{receive tape} \(\Taperec \).
+tapes, the \emph{send-tape} \(\Tapesend \) and the \emph{receive-tape} \(\Taperec \).
 However, unlike for the input tape \(\Tapein \) of an I/O TM, the head on \(\Taperec \) cannot move 
 backwards.
 \begin{remark}  

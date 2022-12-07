@@ -1,21 +1,21 @@
-\chapter{Hash Functions and Succint Proofs}\label{chap:crypto}
+\chapter{Hash Functions and Succinct Proofs}\label{chap:crypto}
 Cryptography, quite unsurprisingly, is the field in which zero-knowledge proof systems have 
 got the most attention.
-The possibility of two or more parties to cooperate and exchange information one with another in a 
-zero-knowledge manner is the fundamental idea behind many branches of cryptography such as 
-\emph{Multi Party Computation} (MPC)~\cite{Yao1982-2} and \emph{Fully Homomorphic Encryption} 
-(FHE)~\cite{ArmknechtEtAl2015}.
+The possibility of two or more parties to cooperate in performing joint computation without 
+revealing any secret or compromising privacy is the fundamental idea behind many branches of 
+cryptography such as \emph{Multi Party Computation} (MPC)~\cite{Yao1982-2} and 
+\emph{Fully Homomorphic Encryption} (FHE)~\cite{ArmknechtEtAl2015}.
 
-An important application of zero-knowledge protocols lies in \emph{verifiable computation}:
+Indeed, an important application of zero-knowledge protocols lies in \emph{verifiable computation}:
 a server (the prover) wants to convince some users (the verifiers) that some function has been 
 executed properly, without revealing the inputs.
 
 In \Cref{sec:hash_functions}, we review the fundamental notions concerning 
-\emph{cryptographic hash functions}, and some of the standard ways to construct them.
-In \Cref{sec:tree_hash}, we go in more depth over \emph{tree-like modes of hashing}, which 
+\emph{cryptographic hash functions}, and some standard ways to construct them.
+Then, in \Cref{sec:tree_hash}, we go in more depth over \emph{tree-like modes of hashing}, which 
 constitute the basis of some of the most important use-cases of verifiable computation.
-In \Cref{sec:zk-snark} we study the construction of zero-knowledge succint NARKs, with a focus on 
-the \emph{Pinocchio} protocol~\cite{ParnoGHR2013}.
+In \Cref{sec:zk-snark} we study the construction of zero-knowledge succinct NARK (ZK-SNARK) systems, 
+with a focus on the \emph{Pinocchio} protocol~\cite{ParnoGHR2013}.
 Finally, in \Cref{sec:libsnark} we describe \texttt{libsnark}, a C\texttt{++} library which 
 implements (a variant of) the Pinocchio protocol. 
 

@@ -9,7 +9,7 @@ circled dot \(\odot \) and algebraic structures by blackboard bold letters
 We will also denote constants over a set by lowercase letters at the beginning of the alphabet 
 (e.g.\  \(a, b, c, \dots \)) and variables over a set by lowercase letters at the end of the 
 alphabet (e.g.\  \(x, y, z, \dots \)).
-Finally, we will often use the term algebra to mean algebraic structure, whenever we belive the 
+Finally, we will often use the term algebra to mean algebraic structure, whenever we believe the 
 meaning to be clear from the context.
 \begin{remark}
   Some symbols will be reserved to denote some common algebraic structures. 
@@ -21,7 +21,7 @@ meaning to be clear from the context.
 We will denote the \emph{cardinality} of set \(S\) by \(\abs{S}\), and use the same notation for 
 the \emph{order} of an algebraic structure and for the \emph{arity} of an operation: for example, 
 if \(\odot \) is a binary operation, like integer 
-addition\footnote{if considered as a relation, addition would be ternary.}, then \(\abs{\odot} = 2\).
+addition\footnote{If considered as a relation, addition would be ternary.}, then \(\abs{\odot} = 2\).
 When an algebraic structure \(\mathbb{A}\) has exactly one \emph{underlying set} \(A\), we will 
 identify the two, e.g.\ by writing \(x \in \mathbb{A}\) to mean \(x \in A\).
 
@@ -36,11 +36,11 @@ identify the two, e.g.\ by writing \(x \in \mathbb{A}\) to mean \(x \in A\).
   \(\forall i \le n\colon \odot_i \subseteq \odot'_i\).
 \end{definition}
 
-Elements of differents algebraic structures can be associated through \emph{morphisms}.
+Elements of different algebraic structures can be associated through \emph{morphisms}.
 \begin{definition}[Homomorphism]
   Given two algebras \(\mathbb{A} = \Tuple{A, \odot_{1}, \dots, \odot_{n}}\), 
   \(\mathbb{A}' = \Tuple{A', \odot'_{1}, \dots, \odot'_{n}}\) such that 
-  \(\forall i \le n\colon \abs{\odot_i} = \abs{\odot'_i} = a_i\), an \emph{homomorphism} is a map 
+  \(\forall i \le n\colon \abs{\odot_i} = \abs{\odot'_i} = a_i\), a \emph{homomorphism} is a map 
   \(h\colon A \to A'\) such that:
   \begin{align*}
     & \forall i \le n, \forall x_1,\dots, x_{a_{i}} \in A\colon 
@@ -55,7 +55,7 @@ Elements of differents algebraic structures can be associated through \emph{morp
 \end{definition}
 
 Given two algebras \(\mathbb{A}\) and \(\mathbb{A}'\), if they are isomorphic through some map
-\(h\), we write \(\mathbb{A} \cong_h \mathbb{A}'\), or more succintly \(\mathbb{A} \cong \mathbb{A}'\).
+\(h\), we write \(\mathbb{A} \cong_h \mathbb{A}'\), or more succinctly \(\mathbb{A} \cong \mathbb{A}'\).
 
 \begin{definition}[Endomorphism, Automorphism]
   An \emph{endomorphism} is a homomorphism from an algebraic structure \(\mathbb{A}\) to itself.
@@ -75,7 +75,7 @@ operation.
     & \exists \id \in M\colon \forall x \in M\colon x \odot \id = x
       && \textnormal{(\emph{identity element})}
   \end{align*}
-  \(\mathbb{M}\) is a \emph{commutative (or abelian) monoid}, if it also holds that:
+  \(\mathbb{M}\) is a \emph{commutative (or Abelian) monoid}, if it also holds that:
   \begin{align*}
     & \forall x,y \in M\colon x \odot y = y \odot x && (\emph{commutativity})
   \end{align*}
@@ -118,7 +118,7 @@ intend to pick the identity element, dropping the subscript when \(\mathbb{A}\) 
 context.
 \begin{remark}  
   Although we will strive, throughout this work, to be as unambiguous as possible, in 
-  some points we will likely be using a particualr symbol to denote different operations.
+  some points we will likely be using a particular symbol to denote different operations.
   For example, \(+\) might denote addition between numbers, or polynomials, or vectors, and so on.
   This \emph{overloading} will be done mostly in an effort to slim the notation and shift the 
   attention from the operations themselves to the surrounding context. 
@@ -126,8 +126,8 @@ context.
 \end{remark}
 
 \begin{example}
-  The algebra \(\mathbb{Z} \setminus \Set{\times}\) (i.e.\ integer numbers without multiplication) 
-  is an abelian group: addition is associative and commutative, the identity element is 
+  The algebra \(\Tuple{Z, +}\) (i.e.\ integer numbers without multiplication) 
+  is an Abelian group: addition is associative and commutative, the identity element is 
   \(\id = 0\), and every number \(x\) has an inverse \(\inv{x} = -x\) (e.g.\  \(\inv{42} = -42\)). 
 \end{example}
 
@@ -136,7 +136,7 @@ context.
   \(\Endset{\mathbb{G}}_{+} = \Tuple{H, +}\), where \(H\) is the set of endomorphisms over 
   \(\mathbb{G}\) and \(+\colon H \times H \to H\) is such that 
   \(\forall h_1, h_2 \in H, \forall x \in G\colon \call{\Parens*{h_1 + h_2}}{x} = 
-  \call{h_1}{x} + \call{h_2}{x}\).
+  \call{h_1}{x} \odot \call{h_2}{x}\).
 
   \(\Endset{\mathbb{G}}_{+}\) is a commutative group: \(+\) is both associative and 
   commutative, the identity element is \(\id_{\Endset{\mathbb{G}}_{+}} = z\), where
@@ -165,9 +165,9 @@ Many algebraic structures rely on two fundamental operations, called \emph{addit
   \(\otimes\colon O \times O \to O\) is the \emph{multiplication} operation, such that the 
   following properties are satisfied:
   \begin{align*}
-    & \mathbb{O}_{\oplus} = \mathbb{O} \setminus \Set{\otimes}
+    & \mathbb{O}_{\oplus} = \Tuple{O, \oplus}
       \textnormal{ is an abelian group} \\
-    & \mathbb{O}_{\otimes} = \mathbb{O} \setminus \Set{\oplus} 
+    & \mathbb{O}_{\otimes} = \Tuple{O, \otimes} 
       \textnormal{ is a monoid} \\
     & \forall x,y,z \in O\colon x \otimes \Parens*{y \oplus z} = 
       \Parens*{x \otimes y} \oplus \Parens*{x \otimes z} && (\emph{left distributivity})\\
@@ -175,7 +175,7 @@ Many algebraic structures rely on two fundamental operations, called \emph{addit
       \Parens*{y \otimes x} \oplus \Parens*{z \otimes x} && (\emph{right distributivity})
   \end{align*}
   If \(\mathbb{O}_{\otimes}\) is a commutative monoid, then \(\mathbb{O}\) is a 
-  \emph{commutative (abelian) ring}.
+  \emph{commutative (Abelian) ring}.
   %(in this case, either one of the two distributivity properties becomes redundant).
 \end{definition}
 
@@ -193,8 +193,8 @@ and multiplicative inverses are typically equivalent to \(0\) and \(1\) respecti
   is a commutative group.
 \end{definition}
 
-Fields are one of the most important and studied algebraic structures: the algebra of real numbers 
-\(\mathbb{R}\) is a field, as is the algebra of complex numbers \(\mathbb{C}\).
+Fields are one of the most important and studied algebraic structures: the algebraic structure of 
+the real numbers \(\mathbb{R}\) is a field, as are complex numbers \(\mathbb{C}\).
 Given the set of integers \(Z_q = \Set{0, \dots, q-1}\), we denote by \(\oplus_q\) integer sum 
 modulo \(q\), and by \(\otimes_q\) integer multiplication modulo \(q\).
 Furthermore, we will denote by \(\gengroup{g}_q\) the cyclic group generated by \(g\) under 
@@ -202,7 +202,7 @@ the operation \(\otimes_q\).
 The algebra \(\mathbb{Z}_q = \Tuple{Z_q, \oplus_q, \otimes_q}\) is a finite ring 
 \(\forall q \in \mathbb{N}\), and it is a finite field if and only if \(q\) is prime.
 \begin{definition}[Discrete logartithm]
-  The \emph{discrete logartithm} over some cyclic group \(\gengroup{g}\) of order \(q\) is the 
+  The \emph{discrete logarithm} over some cyclic group \(\gengroup{g}\) of order \(q\) is the 
   function:
   \[\call{\log_g}{g^x}\colon \gengroup{g} \to \mathbb{Z}_q = x\]
 \end{definition}
@@ -225,7 +225,7 @@ a composite number, its totient is the product of the totients of its factors.
 
 It is important to remark that, when we need to invert the exponentiation \(x^y\) over a prime 
 field \(\mathbb{Z}_p\), we must consider the inverse in its underlying multiplicative group, which 
-has order \(\totient{\abs{F}}\). 
+has order \(\call{\totient}{p}\). 
 The multiplicative inverse \(z\) of \(y\) modulo \(p\) does not invert the exponentiation since, 
 by Euler's theorem, \(\Parens*{x^{y}}^{z} = x^{yz} = x^{kp + 1} = x^{k + 1} \neq x^{y \otimes z} = x\).
 Instead, if we use the inverse \(w\) of \(y\) modulo \(\call{\totient}{p}\), we have that 
@@ -235,18 +235,17 @@ semantic depending on the context (when talking about exponentiations, we always
 second meaning).
 
 \begin{example}
-  Boolean circuits with \textsc{xor} and \textsc{and} gates behave like elements of the boolean 
+  Boolean circuits with XOR and AND gates behave like elements of the boolean 
   field \(\mathbb{B} = \Tuple{\Set{\bot, \top}, \bitxor, \bitand} \).
   It is easy to show that \(\mathbb{B} \cong \mathbb{Z}_2\).
-  Similarly, \(k\)-bit unsigned integers sum and multiplication work as in \(\mathbb{Z}_{2^k}\).
 \end{example}
 
 \begin{example}
-  Given an abelian group \(\mathbb{G}\), the algebra \(\mathbb{H}_{\mathbb{G}} = 
+  Given an Abelian group \(\mathbb{G}\), the algebra \(\mathbb{H}_{\mathbb{G}} = 
   \Endset{\mathbb{G}} = \Endset{\mathbb{G}}_{+} \cup \Endset{\mathbb{G}}_{\circ}\) 
-  is the \emph{endomorphism ring} of \(\mathbb{G}\): \(\Endset{\mathbb{G}}_{+}\) is an abelian 
+  is the \emph{endomorphism ring} of \(\mathbb{G}\): \(\Endset{\mathbb{G}}_{+}\) is an Abelian 
   group, \(\Endset{\mathbb{G}}_{\circ}\) is a monoid 
-  (cfr.\ \Cref{ex:endo_group,ex:endo_monoid}), and it is easy to show that \(\circ \)
+  (see \Cref{ex:endo_group,ex:endo_monoid}), and it is easy to show that \(\circ \)
   distributes over \(+\) both on the left and the right.
 \end{example}
 
@@ -254,7 +253,7 @@ second meaning).
   Consider the cyclic group 
   \(\mathbb{G} = \gengroup{2}_{23} = \Tuple{\Set{1, 2, 3, 4, 6, 8, 9, 12, 13, 16, 18}, \otimes_{23}}\)
   which has order \(\abs{G} = 11\).
-  Let's show that \(\log = \log_2\) is an homomorphism between \(\mathbb{G}\) and 
+  Let's show that \(\log = \log_2\) is a homomorphism between \(\mathbb{G}\) and 
   \(\mathbb{Z}_{11,\oplus}\): for any two elements \(x, y \in \mathbb{G}\), 
   we have:
   \[
@@ -270,16 +269,16 @@ second meaning).
 \subsection{Vector spaces}
 All the algebraic structures we have seen in the previous section operate on an underlying set 
 whose elements we consider to be, in some sense, atomic.
-On the other hand, many objects interact with each other exhibiting a multi-dimensional behaviour 
+On the other hand, many objects interact with each other exhibiting a multidimensional behaviour 
 (e.g.\ physical forces).
 The standard structure to deal with such objects are \emph{vector spaces}.
 \begin{definition}[Module]
   A \emph{module} is a quadruple \(\mathbb{M} = \Tuple{M, \mathbb{O}, +, \odot}\) where 
   \(M\) is the underlying vector set, \(\mathbb{O} = \Tuple{O, \oplus, \otimes}\) is the underlying 
   scalar ring, \(+\colon M \times M \to M\) is the \emph{module addition} operation and 
-  \(\odot\colon O \times M \to M\) is the \emph{scalar multiplication} operation, such 
-  that \(\mathbb{M}_{+} = \Tuple{M, +}\) is a commutative group and \(\odot \) is an 
-  homomorphism between \(\mathbb{O}\) and \(\Endset{\mathbb{M}_{+}}\).
+  \(\odot\colon O \times M \to M\) is the \emph{scalar multiplication} operation, such that 
+  \(\mathbb{M}_{+} = \Tuple{M, +}\) is a commutative group and \(\odot \) is a homomorphism between 
+  \(\mathbb{O}\) and \(\Endset{\mathbb{M}_{+}}\).
 \end{definition} 
 
 \begin{definition}[Linear map]
@@ -401,7 +400,7 @@ element of \(\Parens*{\mathbb{F}^m}^{\transpose} \cong \mathbb{F}^{1 \times m}\)
 
 We say that a circulant matrix is \emph{induced} by the elements in its first row, and denote 
 the circulant matrix induced by \(x_1, \dots, x_n\) by \(\call{\circulant}{x_1, \dots, x_n}\).
-We can extend the definition to allow ``circulant'' matrices where instead of rotating single 
+This definition can be extended to allow ``circulant'' matrices where instead of rotating single 
 elements we rotate submatrices of size \(n \times m\). 
 We denote a ``circulant'' matrix induced in this way through the matrices 
 \(\bm{M}_1, \dots, \bm{M}_k \in \mathbb{F}^{n \times m}\) by 
@@ -423,8 +422,9 @@ We will denote polynomials by lowercase letters (e.g.\  \(p, q, r, \dots \)), an
 some polynomial \(p\) by \(\call{\deg}{p}\).
 Given a field \(\mathbb{F}\) and its corresponding polynomial ring \(\extend{\mathbb{F}}{x}\), 
 we will denote by \(\extend{\mathbb{F}}{x}^n\) the \(n\)-dimensional module\footnote{Since 
-\(\extend{\mathbb{F}}{x}\) is a commutative ring, \(\extend{\mathbb{F}}{x}^n\) is not a vector 
-space, but we will nevertheless call its elements `vectors' for the sake of simplicity.} of 
+\(\extend{\mathbb{F}}{x}\) is a commutative ring, \(\extend{\mathbb{F}}{x}^n\) is actually a module, 
+not a vector space, but we will nevertheless call its elements `vectors' for the sake of simplicity.} 
+of 
 column vectors of polynomials over \(\mathbb{F}\), with addition and scalar product defined in the 
 standard way.
 \begin{definition}[Lagrange interpolation~\cite{Waring1779}]

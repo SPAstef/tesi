@@ -5,14 +5,14 @@ By asking the prover to share the digest, whose size \(\abs{d} = n\) is typicall
 \(\BigO{1}\) (or \(\BigO{\call{\log}{\abs{m}}}\) in some cases), a verifier is convinced that the 
 prover does know \(m\) with probability \(\approx 1 - {1}/{2^n}\).
 A modern standard CHF like SHA-256~\cite{Dang2015} produces digests of length at least \(256\) bits,
-making the \(1 - {1}/{2^n}\) bound really hard to bruteforce through.
+making the \(1 - {1}/{2^n}\) bound really hard to brute force through.
 Note that the verifier needs not to know \(m\) in advance: the commitment \(d\) is (temporarily) 
 appended to a public \emph{blockchain} and, at any point in the future, when the verifier becomes 
 aware of some \(m'\) provided by the prover, if \(\call{H}{m'} = d\), the commitment can be 
 approved or rejected.
 
 Now, suppose that the prover wants to commit to a list of \(k\) messages: the simplest solution 
-would be to publish the hash of every message, which would require to append \(\BigO{k}\) 
+would be to publish the hash of every message, which would require appending \(\BigO{k}\) 
 elements on the blockchain.
 Another way would be for the prover to share \(\call{H}{\Tuple{m_1, \dots, m_k}}\): the 
 communication cost would only be \(\BigO{1}\) but, in general, not all the messages belong to the 
@@ -40,8 +40,8 @@ some message \(m_i\) among \(n = 2^h\) messages, the contents of the co-path fro
 containing \(m_i\) to the root, in addition plus the hash of \(m_i\): this requires
 just \(\BigO{\call{\log}{n}}\) cost to validate the commitment.
 Merkle trees bottom-up construction is very easy to parallelize, and they can be used in the 
-multiple-provers scenario: each prover only needs to commit to the path from its own leaf to the 
-root of the tree.
+scenario with multiple provers: each prover only needs to commit to the path from its own leaf to 
+the root of the tree.
 It is immediate to generalize the notion of binary Merkle tree to arbitrary arity.
 \begin{proposition}[Security of Merkle tree mode of hash~\cite{Merkle1988}]
 	Given a one-way \(tn\)-to-\(n\) compression function \(C\), the \(t\)-ary Merkle tree over 
@@ -124,7 +124,7 @@ of the message.
 
 \begin{definition}[Augmented Binary tRee~\cite{AndreevaBR2021}]
 	An \emph{Augmented Binary tRee (ABR)} of height \(h \in \mathbb{N}\) over a 
-	\(2n\)-to\(n\) compression function \(C\) is a complete binary tree of height \(h\) 
+	\(2n\)-to-\(n\) compression function \(C\) is a complete binary tree of height \(h\) 
 	augmented with \emph{middle} nodes such that, given a sequence of input messages
 	\(S = \Tuple{m_1, \dots, m_{2^{h-1} + 2^{h-2}-1} \mid \forall i\colon m_i \in \Set{0, 1}^{*}}\), 
 	it produces an output digest \(d \in \Set{0, 1}^n\) in the following way:
@@ -137,7 +137,7 @@ of the message.
 		\item Every other node \(\nu \) contains \(\call{C}{\nu_l \oplus \nu_m, \nu_r \oplus
 		      \nu_m} \oplus \nu_r \), where \(\nu_l\) is the left child of \(\nu \), \(\nu_r\)
 		      is the right child of \(\nu \), and \(\nu_m\) is the middle child of \(\nu \), or \(0\)
-		      if \(\nu \) doesen't have a middle child.
+		      if \(\nu \) doesn't have a middle child.
 	\end{enumerate}
 \end{definition}
 

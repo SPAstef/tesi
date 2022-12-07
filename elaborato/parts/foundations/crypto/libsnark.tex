@@ -31,7 +31,7 @@ standard curve used \texttt{libsnark}, or the curve
 BLS12\footnote{\url{https://electriccoin.co/blog/new-snark-curve/}}~\cite{BonehLS2001}, which 
 will also be of interest to us.
 
-After choosing the group, we setup the \emph{protoboard} which, as the 
+After choosing the group, we set up the \emph{protoboard} which, as the 
 name suggests, it is the object where one places the components of the circuit:
 \begin{lstlisting}[language=C++]
   libsnark::protoboard<Field> board;
@@ -100,10 +100,10 @@ proof.
 At this point, the verifier has to check the proof by using the public key, and there are two 
 kinds of choices regarding how to perform such verification: 
 \begin{itemize}
-  \item \emph{weak} vs.\  \emph{strong} verification: in the former case, it is ok for the prover 
-        to only provide some of the primary inputs, which will be zero-padded. 
+  \item \emph{Weak} vs.\  \emph{strong} verification: in the former case, it is ok for the prover 
+        to only provide some primary inputs, which will be zero-padded. 
         In the latter case, this is not considered acceptable.
-  \item \emph{offline} vs.\  \emph{online} verification: in the former case, the verification key 
+  \item \emph{Offline} vs.\  \emph{online} verification: in the former case, the verification key 
         is used `as is', in the latter, it is processed to get faster verification times when used 
         multiple times.
 \end{itemize}

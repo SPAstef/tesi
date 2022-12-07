@@ -1,17 +1,17 @@
-\chapter{\Arion: Cryptographic Primitives from Generalized Triangular Dynamical Systems}\label{chap:arion}
+\chapter{Cryptographic Primitives from Generalized Triangular Dynamical Systems}\label{chap:arion}
 One of the most important applications of zero-knowledge verifiable computation lies in digital 
 currency transactions over the blockchain infrastructure.
 An example of ZK-SNARK applied in the real world is the ZCash cryptocurrency~\cite{SassonCGGMTV2014}, 
-which is inspired by the more famous Bitcoin~\cite{NarayananBFMG2016}, and was devised by some of 
-the authors of \texttt{libsnark} (which frames the zero-knowledge backend of the currency).
+which is inspired by the more famous Bitcoin~\cite{NarayananBFMG2016}, and was devised by the 
+authors of \texttt{libsnark} (which frames the zero-knowledge backend of the currency).
 
-As we discussed in \Cref{sec:tree_hash}, the fundamental component of a block chain is the 
+As we discussed in \Cref{sec:tree_hash}, the fundamental component of a blockchain is the 
 Merkle tree, which uses one-way compression functions in order to produce the binding 
 commitment.
 In a digital currency scenario, the leaves of the Merkle tree consist of the details of some 
-transaction, typical informations include the ID of the sender, the ID of the recipient, and the 
+transaction, typical information include the ID of the sender, the ID of the recipient, and the 
 amount of currency to be transferred. 
-Without a zero-knowledge framework in place, when one wants to verify whether an user did abide to 
+Without a zero-knowledge framework in place, when one wants to verify whether a user did abide to 
 their commitment, the only possible solution is to ask the user to disclose his transaction, 
 together with the authentication path, and check that the tree commitment is respected. 
 When using currencies like Bitcoin or Ethereum\footnote{\url{https://ethereum.org/}}, anyone 

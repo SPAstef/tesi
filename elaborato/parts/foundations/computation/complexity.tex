@@ -1,17 +1,17 @@
 \section{Problems and complexity}\label{sec:complexity}
 Historically, the most important class of problems that have been analyzed are so-called
-\emph{decision problems}, i.e.\ probles whose solution is a binary \emph{yes-or-no} 
+\emph{decision problems}, i.e.\ problems whose solution is a binary \emph{yes-or-no} 
 answer~\cite{Sipser2013}.
-This perfectly suits Turing machiens as we can interpret their acceptance or rejection of the input 
+This perfectly suits Turing machines as we can interpret their acceptance or rejection of the input 
 string respectively as a yes and a no answer.
 
 \begin{definition}[Kleene's closure]
   The Kleene's closure of a set \(S\) is the set \(S^* = \bigcup_{n \in \mathbb{N}}{S^n}\).
 \end{definition}
 
-As Turing machine operate over strings in \(\Sigma^*\), also called \emph{words}, they partition 
+As Turing machines operate over strings in \(\Sigma^*\), also called \emph{words}, they partition 
 \(\Sigma^* \) into three \emph{languages} (a language is any set of strings): the language of 
-accepted words, the languages of rejected words and the language of hanging words.
+accepted words, the language of rejected words and the language of hanging words.
 \begin{definition}[Turing-recognizable language]
   A language \(L \subseteq \Sigma^*\) is recognized by some Turing machine \(\mathcal{M}\) if 
   \(\forall w \in L\colon \call{\mathcal{M}}{w} = \top \).

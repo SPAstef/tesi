@@ -6,23 +6,23 @@ and hardware~\cite{DaddaMO2004,MichailAKTG2012} implementations, and is the most
 function from a security standpoint (e.g.\ for SHA-2 
 see~\cite{KhovratovichRS2012,GuoLRW2010,DobraunigEM2016}).
 
-However, when working with arithmetic circuits over a prime field \(\mathbb{F}_p\), SHA has a lot 
-of issues: the underlying operations being performed are bitwise XOR, bitwise AND, 
-bit shifts/rotations and additions modulo \(2^{32}\).
-While shifts and rotations come at no cost, as they basically consist in a renaming of the circuit 
-wires/variables, bitwise operations and addition which is not modulo \(p\) have to be simulated 
+However, when working with arithmetic circuits over a prime field \(\mathbb{F}_p\), using SHA poses
+a fundamental problem: the underlying operations are bit-based: e.g.\ bitwise XOR, bitwise AND, 
+bit shifts/rotations, additions modulo \(2^{32}\)\dots.
+While shifts and rotations come at no cost, as they basically consist of renaming the circuit 
+wires/variables, bitwise operations like XOR and modular addition have to be simulated 
 bit-by-bit, and the overhead introduced in such a translation is huge.
 For example, for SHA-256, over a bilinear group like BN254 for which 
 \(\abs{\mathbb{F}_p} \approx 2^{256}\), we would need \(256\) input variables each holding a
 \(256\)-bit integer to simulate the behaviour of every single bit during the SHA computation; 
-clearly, this is decisely suboptimal.
+clearly, this is decidedly suboptimal.
 
 \begin{example}
   Suppose we are given two strings \(a, b \in \Set{0, 1}^{n}\), and we want to compute 
   \(a \bitxor b\).
   By interpreting them as vectors \(\bm{v}, \bm{w} \in \mathbb{F}_{p}^{n}\), (we interpret 
   a string \(\sigma \) as a vector \(\bm{x}\) by setting \(\bm{x}_i = 0\) when 
-  \(\call{\sigma}{i} = 0\) and \(\bm{x}_i = 1\) when \(\call{\sigma}{i} = 1\)),we can simulate 
+  \(\call{\sigma}{i} = 0\) and \(\bm{x}_i = 1\) when \(\call{\sigma}{i} = 1\)), we can simulate 
   bitwise XOR by computing, \(\forall i \le n\):
   \[\bm{v}_{i} \bitxor \bm{w}_{i} = \bm{v}_{i} + \bm{w}_{i} - 2\bm{v}_{i}\bm{w}_{i}\]
   that is, every XOR operation requires one multiplication gate.
@@ -38,14 +38,14 @@ settings, called \emph{zk-friendly} designs, researchers began to study the prop
 permutations that make use of a low number of multiplications 
 (\emph{multiplicative complexity})~\cite{AlbrechtRSTZ2016}.
 
-One of the first constructions over finite fields was the \emph{Minimal Multiplicative Complexity}
+One of the first constructions over prime fields was the \emph{Minimal Multiplicative Complexity}
 (\Mimc) family of cryptographic permutations~\cite{AlbrechtGRRT2016}.
 The idea of \Mimc{}, reprising an older proposal~\cite{NybergK1995}, is to use a very simple 
 polynomial permutation as its core component, and by repeating it for an adequate number of rounds,
 obtain a secure construction.
-\begin{definition}[\Mimc{} keyed permutation]
+\begin{definition}[\Mimc{} keyed permutation~\cite{AlbrechtGRRT2016}]
   Given a finite field \(\mathbb{F}_p\), a number of rounds 
-  \(r = \Ceil*{\frac{\call{\log}{p}}{\call{\log}{3}}}\), some constants 
+  \(r \ge \Ceil*{\frac{\call{\log}{p}}{\call{\log}{3}}}\), some constants 
   \(c_1, \dots, c_r \in \mathbb{F}_p\) and a set of functions 
   \(f_1, \dots, f_r\colon \mathbb{F}_p \times \mathbb{F}_p \to \mathbb{F}_p\) such that 
   \(\forall i \le r\colon \call{f_i}{x, k} = x^3 + k + c_i\), the \emph{\Mimc{} keyed permutation}
@@ -60,25 +60,25 @@ The \Mimc{} keyed permutation is also called \Mimc-\(n/n\).
 By applying the Feistel construction on the \Mimc{} permutation, one obtains Feistel \Mimc, 
 or \Mimc-\(2n/n\).
 Finally, by applying the sponge construction, one can obtain the \Mimchash{} hash function.
-In alternative, it is also possible to build an hash function using first the Davies-Meyer 
+In alternative, it is also possible to build a hash function using first the Davies-Meyer 
 construction to obtain a one-way compression function, and then the Merkle-Damg\"{a}rd construction
-to obtain an hash function.
+to obtain a hash function.
 
 There are some important observations to be made on the \Mimc{} construction.
 First, the round permutation uses a low degree polynomial, but it is repeated for a high number of 
 rounds: for example, if the size of the underlying field is \(\approx 2^{256}\), the number of 
 rounds will be \(r = 162\). 
 Note that \(x^3\) might not actually induce a permutation over \(\mathbb{F}_p\), as in general 
-\(3\) is not coprime with \(\call{\totient}{p}\) (in fact, in the underlying fields of both BN254 
+\(3\) is not coprime with \(p - 1\) (in fact, in the underlying fields of both BN254 
 and BLS12, \(3\) is a factor of \(p - 1\)).
-In such cases, one should modify the definition to consider the smallest prime number \(d\) such 
-that \(\call{\gcd}{d, \call{\totient}{p}} = 1\), and reduce the number of rounds to
-\(r = \Ceil*{\frac{\call{\log}{p}}{\call{\log}{d}}}\).
+In such cases, one should modify the definition to consider the smallest number \(d\) such 
+that \(\call{\gcd}{d, p - 1} = 1\), and change the number of rounds to
+\(r \ge\Ceil*{\frac{\call{\log}{p}}{\call{\log}{d}}}\).
 
-A second observation is that \(r\) must be chosen to thwart many different types of cryptanalysis 
+A second observation is that \(r\) must be chosen to thwart many types of cryptanalysis 
 techniques: since the \Mimc{} permutation corresponds to the 
-polynomial \(p = \Parens*{x^3 + k + c_1}\dots\Parens*{x^3 + k + c_r}\) 
-(which has degree \(\call{\deg}{p} = 3^r\)), in addition to the traditional \emph{brute-force}, 
+polynomial \(P = \Parens*{\dots\Parens*{x^3 + k + c_1}^3 + \dots}\) 
+(which has degree \(\call{\deg}{P} = 3^r\)), in addition to the traditional \emph{brute-force}, 
 \emph{meet-in-the-middle}~\cite{DiffieH1977}, \emph{differential}~\cite{BihamS1991} and 
 \emph{linear}~\cite{Matsui1994} attacks, one must also consider \emph{algebraic attacks}, 
 which exploit the inherent nature of this type of constructions.
@@ -86,17 +86,17 @@ which exploit the inherent nature of this type of constructions.
 In fact, traditional attacks don't tend to pose a major threat to these kinds of constructions:
 brute force is clearly too expensive and meet-in-the-middle is also infeasible both due to the high 
 number of rounds and to the huge degree of the inverse permutation (usually \(1/3 \gg 3\)).
-The permutation \(x^3\) is not approximable by a linear function~~\cite{AbdelraheemABL2012}, 
+The permutation \(x^3\) is not approximable by a linear function~\cite{AbdelraheemABL2012}, 
 hence linear attacks are not a threat, and since it can be easily shown that any arbitrary input 
 difference \(\delta_{in} \) propagates to any arbitrary output difference \(\delta_{out} \) with a 
 probability of at most \({2}/{2^n}\), differential attacks are also ineffective~\cite{Nyberg1994}.
 
 On the side of algebraic cryptanalysis, one might attempt an \emph{interpolation attack}, which 
-uses Lagrange interpolation to find a polynomial \(\tilde{p}\) which behaves like a keyless version 
-of \(p\)~\cite{JakobsenK1997}.
-This attack's complexity depends solely on \(\call{\deg}{p}\) (in fact, an interpolation can be 
-computed in \(\BigO{n\call{\log}{n}}\), where \(n = \call{\deg}{p}\)~\cite{Stoss1985}), hence we 
-must be sure that the degree of \(p\) also grows exponentially round by round (as it is the case).
+uses Lagrange interpolation to find a polynomial \(\tilde{P}\) which behaves like a keyless version 
+of \(P\)~\cite{JakobsenK1997}.
+This attack's complexity depends solely on \(\call{\deg}{P}\) (in fact, an interpolation can be 
+computed in \(\BigO{n\call{\log}{n}}\), where \(n = \call{\deg}{P}\)~\cite{Stoss1985}), hence we 
+must be sure that the degree of \(P\) also grows exponentially round by round (as it is the case).
 Another kind of algebraic attack is the \emph{GCD attack}: by using two plaintext/ciphertext pairs,
 once can compute their greatest common divisor which will allow to easily retrieve the secret key.
 Again, computing the GCD depends almost linearly on the degree of the polynomial, hence one must 
@@ -104,7 +104,7 @@ again be sure that the degree grows exponentially.
 
 \subsubsection*{\Mimc{} vs.\ SHA}
 Performing computations over large prime fields is extremely expensive, as addition and 
-multiplication cannot be performed by a single CPU intruction, but must be emulated (multiplication 
+multiplication cannot be performed by a single CPU instruction, but must be emulated (multiplication 
 in particular is extremely costly, even with clever implementations like the Montgomery 
 form~\cite{Montgomery1985}): for example, on an x86 architecture, a standard software 
 implementation of SHA-256 is more than \(100\) times faster than \Mimc{} over the BN254 curve 
@@ -120,12 +120,12 @@ the complexity of the round function and reduce the number of rounds without com
 security.
 In particular, researchers started exploring the design of \emph{algebraic frameworks} that could 
 abstract from the details involved in the construction of a specific primitive, by still providing 
-security guarantees for their instantiatios.
+security guarantees for their instantiations.
 
 In~\cite{GrassiLRRS2019}, the authors present the \Hades{} design, a generalization
 of the \emph{substitution-permutation network} (SPN) approach used in many famous cryptographic 
 primitives such as AES~\cite{DaemenR1999}.
-In fact, the \Hades{} design has the same three main steps of the classic SPN, where the 
+The \Hades{} design has the same three main steps of the classic SPN, where the 
 message and the key are interpreted as vectors in \(\mathbb{F}_{p}^t\) for some prime field 
 \(\mathbb{F}_p\) and some arbitrary \(t \in \mathbb{N}\):
 \begin{enumerate}
@@ -135,21 +135,21 @@ message and the key are interpreted as vectors in \(\mathbb{F}_{p}^t\) for some 
   \item \emph{MixLayer}: apply a permutation function \(M\colon \mathbb{F}_{p}^t \to \mathbb{F}_{p}^t\) 
         to the message (\emph{linear layer}).
 \end{enumerate}
-The substitution function \(S\) is defined as \(\call{S}{x} = x^d\), where \(d\) is the smallest 
-integer such that \(\call{\gcd}{d, p} = 1\), while the permutation function \(M\) is defined as 
+The function \(S\) is defined as \(\call{S}{x} = x^d\), where \(d\) is the smallest 
+integer such that \(\call{\gcd}{d, p -1} = 1\), while the permutation function \(M\) is defined as 
 \(\call{M}{\bm{x}} = \bm{Mx}\), where \(\bm{M}\) is a \emph{maximum distance separable} (MDS) 
 matrix (i.e.\ the determinant of all its submatrices are non-zero, this for example minimizes the 
 effectiveness of differential attacks~\cite{MacwilliamsS1977,RijmenD1996}).
 
 The peculiarity of \Hades{} is that only the first and last few rounds apply the substitution
 function to all elements: the middle rounds are \emph{partial}, meaning that \(S\) is only applied 
-to some of the elements of the message.
+to some elements of the message.
 This allows to use the first and last part of the construction as an argument for dealing with 
 classical attacks, while also considering the middle rounds when dealing with algebraic attacks.
 Additionally, in the design of \Hades{}, new kind of algebraic attacks were 
 considered~\cite{BeyneEtAl2020}, the most important of which is certainly the 
 \emph{Gr\"{o}bner basis attack} 
-(a generalization of the concept of gaussian elimination~\cite{CoxLO2015,Lazard1983}).
+(a generalization of the concept of Gaussian elimination~\cite{CoxLO2015,Lazard1983}).
 In a Gr\"{o}bner attack, we view the function under attack as a system of polynomial equations 
 for which we want to find a solution.
 This kind of attack, and in particular its probabilistic version~\cite{FaugereGHR2014}, is 
@@ -177,7 +177,7 @@ A family of hash functions that builds on the \Hades{} design is \Poseidon~\cite
       \bm{x}_{1}^{d} & \bm{x}_{2} & \cdots & \bm{x}_{t}
     \end{pmatrix}}^{\transpose}
   \]
-  where \(d\) is the smallest prime number such that \(\call{\gcd}{x, \call{\totient}{p}} = 1\).
+  where \(d\) is the smallest integer such that \(\call{\gcd}{x, p - 1} = 1\).
   Then, let the full \(i\)th round function be 
   \(\call{f_{i}}{\bm{x}}\colon \mathbb{F}_{p}^{t} \to \mathbb{F}_{p}^{t} = 
   \bm{M}\call{S_{f}}{\bm{x} + \bm{c}_{i}}\)
@@ -197,8 +197,8 @@ The \Poseidon{} permutation can be easily used in a sponge construction to obtai
 one-way compression function.
 For example, by setting \(t = 3\), we immediately obtain a \(2/1\) compression function, 
 or by setting \(t = 5\) we get a \(4/1\) compression function.
-For the same level of security \(s\), the \Poseidon-\(s\) arithmetic circuit is much cheaper than 
-\Mimc{} in terms of multiplications. 
+To get the same level of security \(s\), the \Poseidon-\(s\) arithmetic circuit is much cheaper 
+than \Mimc{} in terms of multiplications. 
 For reference, the \Poseidon-\(128\) \(2/1\) compression function requires \(276\) 
 multiplications, compared to the \(640\) required by \Mimc{}.
 
@@ -220,9 +220,9 @@ exponentiations (i.e.\  \(x^{1/d}\)) in the substitution layer.
 An extremely recent design is \Griffin~\cite{GrassiHRSWW2022}, which deviates from the
 established SPN approach by instead using an extension of the Feistel construction, called the 
 \emph{\Horst{} scheme}: instead of the mapping 
-\(\Tuple{x, y} \mapsto \Tuple{x, y \oplus \call{F}{x}}\) for some function \(F\) over the 
+\(\Tuple{x, y} \mapsto \Tuple{y, x \oplus \call{F}{y}}\) for some function \(F\) over the 
 underlying field \(\mathbb{F}_p\), it uses the mapping 
-\(\Tuple{x, y} \mapsto \Tuple{x, y \otimes \call{G}{x} \oplus \call{F}{x}}\), where \(G\) is an 
+\(\Tuple{x, y} \mapsto \Tuple{y, x \otimes \call{G}{y} \oplus \call{F}{y}}\), where \(G\) is an 
 additional function such that \(\forall x \in \mathbb{F}_p\colon \call{G}{x} \neq 0\), in order 
 to maintain invertibility (note that if \(\forall x\colon \call{G}{x} = 1\), the \Horst{} scheme
 degenerates into the Feistel construction).
@@ -253,7 +253,7 @@ but is well-defined only when \(t = 3\) or \(t \equiv 0 \pmod{4}\).
       \alpha_{i}\call{L_i}{\bm{y}_0, \bm{y}_1, \bm{x}_{i-1}} + \beta_i}   & 4 \le i \le t
     \end{cases}
   \]
-  where \(d\) is the smallest prime number such that \(\call{\gcd}{x, \call{\totient}{p}} = 1\).\\
+  where \(d\) is the smallest prime number such that \(\call{\gcd}{x, p - 1} = 1\).\\
   Finally, let the matrix \(\bm{M}_t \in \mathbb{F}_p^{t \times t}\) be:
   \[
     \bm{M}_t = 

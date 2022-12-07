@@ -26,7 +26,7 @@ Now, let \(\call{f_{\hat{x}}}{\bm{x}} = \call{\pi_{\hat{x}}}{\bm{x}, \call{f}{\b
 in particular \(f' = f_{\hat{y}} \compose f_{\hat{x}}^{-1}\) is \(\pi \)-equivalent to \(f\).
 
 Just like CCZ-equivalence, \(\pi \)-equivalence is also an equivalence relation, denoted 
-\(\pieq \), which allows us to identify equiivalence classes of functions over \(\mathbb{V}\).
+\(\pieq \), which allows us to identify equivalence classes of functions over \(\mathbb{V}\).
 \begin{lemma}[\(\pi \)-equivalence of permutations]\label{lem:pi_equiv}
   All permutations over a vector space \(\mathbb{V}\) are \(\pi \)-equivalent.
 \end{lemma}
@@ -144,24 +144,24 @@ target \(128\) bits of security.
 
 \subsection{Implementations and Experiments}
 In order to experiment with the cryptographic primitives and the constructions discussed 
-throughrout this thesis, we wrote the C\texttt{++} 
+throughout this thesis, we wrote the C\texttt{++} 
 \texttt{zkp-hash}\footnote{\url{https://github.com/SPAstef/zkp_hash}} library, by building on
 \texttt{libsnark}.
-In particualar, our library is meant to improve and extend \texttt{libsnark}, by providing: 
+In particular, our library is meant to improve and extend \texttt{libsnark}, by providing: 
 \begin{itemize}
   \item A native and ZK-SNARK implementation of SHA-512.
   \item Native and ZK-SNARK implementation of \Mimchash-\(256\) and \Mimchash-\(512\).
-  \item Templates for native and Zk-SNARK implementations of \Poseidon, \Griffin{} 
+  \item Templates for native and ZK-SNARK implementations of \Poseidon, \Griffin{} 
         and \Arionhash.
   \item A template for native and ZK-SNARK fixed-size Merkle tree authentication paths with 
         arbitrary arity and node size, for arbitrary hash functions.
-  \item A template for native and ZK-SNARK fixed-size ABR authenticatin paths with arbitrary node 
+  \item A template for native and ZK-SNARK fixed-size ABR authentication paths with arbitrary node 
         size over arbitrary \(2n\)/\(n\) hash functions.
   \item Additional utilities to simplify working with \texttt{libsnark}.
 \end{itemize}
 
 We would like to discuss a bit more in detail our Merkle tree implementation, both to highlight some 
-important security considerations that might not be obvious at first, as well as an optimization 
+important security considerations that might not be obvious at first, and as an optimization 
 for its construction, which we are not aware of being applied in any other implementation.
 
 Let's consider, for the sake of simplicity, a binary Merkle tree over a field \(\mathbb{F}_p\) 
@@ -218,8 +218,8 @@ vectors \(\bm{y}_1, \dots, \bm{y}_{h-1}\), where \(\bm{y}_i\) will contain the s
 the \(i\)th level of the tree, and the compression function will be \(t\)-to-\(1\).
 The base-\(t\) representation of the index, from LSD to MSD, will again show the path from the leaf 
 to the root, where the \(i\)th digit will tell us which of the \(t\) children we are on.
-We introduce a set of \(t\)-dimensional selection variables \(\bm{s}_1, \dots, \bm{s}_{h-1}\), a
-a set of \(t\)-dimensional children variables \(\bm{c}_1, \dots, \bm{c}_{h-1}\), and introduce 
+We introduce a set of \(t\)-dimensional selection variables \(\bm{s}_1, \dots, \bm{s}_{h-1}\), a 
+set of \(t\)-dimensional children variables \(\bm{c}_1, \dots, \bm{c}_{h-1}\), and introduce 
 the following constraints:
 \begin{align*}
   & n = \sum_{i=1}^{h}{t^{i-1}\sum_{j=1}^{t}{j\bm{s}_{i,j}2^{t-1}}} \\
@@ -268,8 +268,8 @@ quite straightforward.
 
 Using our library, we compared \Arion{} with \Griffin{} and \Poseidon{}.
 The comparative result of our experiments are given in \Cref{tab:runtimes}. 
-All experiments were run on a system with an Intel Core i7--11800H CPU and 32GB RAM on a Clear Linux 
-instance, using the \texttt{g++-12} compiler with \texttt{-O3 -march=native} flags.
+All experiments were run on a system with an Intel Core i7--11800H CPU and 32~GB of RAM on a Clear 
+Linux instance, using the \texttt{g++-12} compiler with \texttt{-O3 -march=native} flags.
 Our result shows that \Arionhash{} significantly outperforms \Poseidon{} showing \(2\)x efficiency 
 improvement, and \Aarionhash{} is considerably faster than \Griffin{} for the most common
 real-world parameter choices (i.e.\  \(n = 3\) in Merkle tree hashing mode).

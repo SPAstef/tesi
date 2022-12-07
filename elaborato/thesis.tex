@@ -15,7 +15,7 @@
 \author{Stefano Trevisani}
 \supervisor{Dr.\ Arnab Roy}
 \cosupervisor{Prof.\ Alberto Policriti \and Prof.\ Elisabeth Oswald}
-\tutor{Msc. Matthias Steiner}
+\tutor{Msc.\ Matthias Steiner}
 %% Campi obbligatori: \title, \author e \course.
 %% Altri campi disponibili: \reviewer, \tutor, \chair, \date (anno accademico, calcolato in automatico), \rights
 %% Con \supervisor, \cosupervisor, \reviewer e \tutor si possono indicare pi� nomi separati da \and.
@@ -59,7 +59,7 @@
 \usetikzlibrary{automata,positioning,shapes.multipart}
 
 \mleftright{}
-\hypersetup{colorlinks,linkcolor = blue,
+\hypersetup{hidelinks,linkcolor = blue,
 urlcolor  = blue,
 citecolor = blue,
 anchorcolor = blue}
@@ -110,7 +110,8 @@ anchorcolor = blue}
 
 %% Sommario (opzionale)
 \abstract{
-	Zero Knowledge (ZK) proof systems have been an increasingly studied subject in the last 40 years.
+	Zero Knowledge (ZK) proof systems have been a subject of study of increasing interest in the last 
+	40 years.
 	In the last decade, the efficiency of the proposed frameworks, along with the processing power of 
 	computing devices, has improved to the point of making ZK computation feasible in real-world 
 	scenarios.
@@ -120,10 +121,10 @@ anchorcolor = blue}
 
 	In this work, we begin by studying the history of ZK systems and reviewing the state of the art 
 	concerning ZK-friendly cryptographic permutations. 
-	We then present a novel, generic algebraic framework to design cryptographic permutations 
-	and we apply it to construct a new permutation.
+	We then apply a new generic algebraic framework, the Generalized Triangular Dynamical System, 
+	to design a cryptographic permutation called \Arion{}.
 	Finally, we implement our permutation together with the reviewed ones in the Groth16 ZK-SNARK 
-	framework and compare their efficiency for Merkle-Tree commitment verification.
+	framework and compare their efficiency for Merkle tree commitment verification.
 }
 %% Indice
 \tableofcontents
@@ -168,35 +169,3 @@ anchorcolor = blue}
 %% Per l'indice analitico, usare il pacchetto makeidx (o analogo).
 
 \end{document}
-
-\begin{comment}
---- Istruzioni per l'aggiunta di nuove lingue ---
-Per ogni nuova lingua utilizzata aggiungere nel preambolo il seguente spezzone:
-\addto\captionsitalian{%
-\def\abstractname{Sommario}%
-\def\acknowledgementsname{Ringraziamenti}%
-\def\authorcontactsname{Contatti dell'autore}%
-\def\candidatename{Candidato}%
-\def\chairname{Direttore}%
-\def\conclusionsname{Conclusioni}%
-\def\cosupervisorname{Co-relatore}%
-\def\cosupervisorsname{Co-relatori}%
-\def\cyclename{Ciclo}%
-\def\datename{Anno accademico}%
-\def\indexname{Indice analitico}%
-\def\institutecontactsname{Contatti dell'Istituto}%
-\def\introductionname{Introduzione}%
-\def\prefacename{Prefazione}%
-\def\reviewername{Controrelatore}%
-\def\reviewersname{Controrelatori}%
-%% Anno accademico
-\def\shortdatename{A.A.}%
-\def\summaryname{Riassunto}%
-\def\supervisorname{Relatore}%
-\def\supervisorsname{Relatori}%
-\def\thesisname{Tesi di \expandafter\ifcase\csname thud@target\endcsname Laurea\or Laurea Magistrale\or Dottorato\fi}%
-\def\tutorname{Tutor aziendale%
-	\def\tutorsname{Tutor aziendali}%
-}
-sostituendo a "italian" (nella 1a riga) il nome della lingua e traducendo le varie voci.
-\end{comment}

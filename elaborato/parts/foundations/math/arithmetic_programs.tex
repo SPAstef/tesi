@@ -3,7 +3,7 @@ Suppose we have some algebra \(\mathbb{A}\): we can represent and deal with fini
 operations, called \emph{expressions}, between elements of \(\mathbb{A}\) and/or variables over 
 \(\mathbb{A}\).
 
-For example, given the expression \(x^2 + x + 1\) over \(\mathbb{R}\left[x\right]\), we might be 
+For example, given the expression \(x^2 + x + 1\) over \(\extend{\mathbb{A}}{x}\), we might be 
 interested to know what is the \emph{evaluation} of the expression given some value for \(x\).
 We will limit our analysis to fields (and rings).
 \begin{definition}[Arithmetic formula over a field]
@@ -27,7 +27,7 @@ We will limit our analysis to fields (and rings).
 
 It is always possible to translate an implicit formula into an equivalent explicit one by unrolling 
 exponentiations.
-We denote the explicit version of an implcit formula \(\varphi \) with \(\explicit{\varphi}\).
+We denote the explicit version of an implicit formula \(\varphi \) with \(\explicit{\varphi}\).
 Note also that multiplication by constants can also be unrolled to a sequence of additions 
 (in fact, they can be viewed as exponentiations w.r.t.\ addition).
 From now on, we will only deal with arithmetic formulae over some field (or ring) \(\mathbb{F}\), 
@@ -36,7 +36,7 @@ in which case implicit arithmetic expressions are equivalent to multi-variate po
   Consider the finite field \(\mathbb{Z}_{13}\).
   For ease of notation, we will use \(+\), juxtaposition and superscripting to denote, respectively,
   field addition, field multiplication, and exponentiation w.r.t.\ field multiplication. 
-  A possible implicit arithemtic formula over \(\mathbb{Z}_{13}\) is the following expression:
+  A possible implicit arithmetic formula over \(\mathbb{Z}_{13}\) is the following expression:
   \[\varphi = x_{2}\Parens*{x_{1}^{3} + 4x_{2} + 5}\]
   Since in a finite field multiplication by a constant is simply repeated addition, i.e. 
   \(cx = \call{+^{c}}{x}\), the explicit version of \(\varphi \) then is:
@@ -44,7 +44,7 @@ in which case implicit arithmetic expressions are equivalent to multi-variate po
 \end{example} 
 
 \subsection{Arithmetic circuits}
-It is possible to visually represent an arithmetic formula using a particualr kind of labeled 
+It is possible to visually represent an arithmetic formula using a particular kind of labeled 
 \emph{directed acyclic graph} (DAG), called the \emph{arithmetic circuit}.
 \begin{definition}[Arithmetic circuit]
   An \emph{arithmetic circuit} over a field \(\mathbb{F}\) and a set of variables \(X\) over 
@@ -69,7 +69,7 @@ in the following way: for every distinct (i.e.\ ignoring repetitions) variable \
 in \(\varphi \), we add a vertex \(v\) with label \(\call{L}{v} = x\); 
 for every distinct constant \(c\) appearing in \(\varphi \) we add a vertex \(v\) with label 
 \(\call{L}{v} = c\); 
-finally, for every occurence \(i\) of some operation \(\odot \) in \(\varphi \), we add a vertex
+finally, for every occurrence \(i\) of some operation \(\odot \) in \(\varphi \), we add a vertex
 \(v\) with label \(\call{L}{v} = \odot_{i}\).
 We can partition \(V\) as follows:
 \begin{itemize}
@@ -90,7 +90,7 @@ We can partition \(V\) as follows:
   \item \emph{I/O vertices}: \(\mathcal{G}_{IO} = \mathcal{G}_{in} \cup \mathcal{G}_{out}\).
 \end{itemize}
 
-To build the set of edges \(E\), for every operation occuring in \(\varphi \), we connect the 
+To build the set of edges \(E\), for every operation occurring in \(\varphi \), we connect the 
 vertices representing the operands to the vertex representing said operation, e.g.\ if we have 
 the formula \(\Parens*{x \odot y} \odot z\) we add the edges \(\Tuple{x, \odot_1}\), 
 \(\Tuple{y, \odot_1}\) and \(\Tuple{z, \odot_2}\).
@@ -172,7 +172,7 @@ Therefore, we say that \(\mathcal{A}\) is \emph{valid} if and only if
 \(\call{L'}{v} = \call{\eval}{v}\).
 
 \begin{example}\label{ex:arithmetic_eval}
-  \Cref{fig:circuit_assign_ok} shows a valid assignement for the circuit \(\mathcal{G}\) 
+  \Cref{fig:circuit_assign_ok} shows a valid assignment for the circuit \(\mathcal{G}\) 
   shown in \Cref{ex:arithmetic_circuit}: we fix the inputs \(x_1 = 2\) and \(x_2 = 3\), and label 
   every operation vertex \(v\) with the correct value \(\call{\eval}{v}\).
 \end{example}
@@ -220,7 +220,7 @@ An arithmetic circuit tells us two things:
   \item  how the intermediate values are constrained, depending on the inputs.
 \end{enumerate*}   
 \begin{definition}[Rank-1 Contraint System~\cite{CramerD1998}]
-	Given \(m,n \in \mathbb{N}\), a \emph{\(m/n\) Rank-1 Constraint System (R1CS)} over a field 
+	Given \(m,n \in \mathbb{N}\), an \emph{\(m/n\) Rank-1 Constraint System (R1CS)} over a field 
 	\(\mathbb{F}\) is a triple \(\mathcal{C} = \Tuple{\bm{A}, \bm{B}, \bm{C}}\) such that 
   \(\bm{A}, \bm{B}, \bm{C} \in \mathbb{F}^{m \times n}\).
 \end{definition}
@@ -231,8 +231,7 @@ An arithmetic circuit tells us two things:
 \end{definition}
 Any explicit arithmetic circuit \(\mathcal{G}\) with \(m\) multiplicative gates 
 (i.e.\  \(m = \abs{\mathcal{G}_{\otimes}}\)) and \(n\) input variables 
-(i.e.\  \(n = \abs{\mathcal{G}_{var}}\)) can be associated with a 
-\({m}/\Parens*{n+m+1}\) 
+(i.e.\  \(n = \abs{\mathcal{G}_{var}}\)) can be associated with an \({m}/\Parens*{n+m+1}\) 
 R1CS \(\mathcal{C}\) representing the constraints in the circuit, as follows:
 \begin{enumerate}
 	\item Add a new `constant variable' \(x_0\) which always assumes value \(1\).
@@ -252,7 +251,7 @@ denoted \(y\) as it represents the output of the circuit.
   R1CS\@.
 	So, our variable vector will be:
 	\[\bm{x} = {\begin{pmatrix}1 & x_1 & x_2 & t_1 & t_2 & y\end{pmatrix}}^{\transpose}\]
-  Let's explicit all of the intermediate variables, and transform the constraint equations in 
+  Let us explicit all the intermediate variables, and transform the constraint equations in 
   canonical form:
 	\begin{align*}
 		 & {t_1 = x_1x_1} && \iff && {\Parens*{x_1}\Parens*{x_1} = t_1} \\ 
@@ -303,7 +302,7 @@ This is an issue, as such solution is not \emph{compact}: by compact, we mean th
 should be constant (i.e.\ independent of the circuit's size) or at most logarithmic (i.e.\ 
 upper-bounded by a logarithmic function in the circuit's size).
 \begin{definition}[Quadratic Arithmetic Program~\cite{GennaroGPR2012}]
-	Given some \(m,n \in \mathbb{N}\), a
+	Given some \(m,n \in \mathbb{N}\), an
 	\emph{\(m/n\) Quadratic Arithmetic Program (QAP)} over \(\mathbb{F}\) is a quadruple
 	\(\mathcal{Q} = \Tuple{t, \bm{v}, \bm{w}, \bm{y}}\) where \(t \in \extend{\mathbb{F}}{x}\) is 
   the \emph{target} polynomial, and \(\bm{v}, \bm{w}, \bm{y} \in \extend{\mathbb{F}}{x}^m\) are,
@@ -322,7 +321,7 @@ upper-bounded by a logarithmic function in the circuit's size).
 	\(\mathbb{F}\) is a pair of polynomials \(h,p \in \extend{\mathbb{F}}{x}\) such that \(p = ht\).
 \end{definition}
 
-It is possible to represent any \(m/n\) R1CS \(\mathcal{C}\) with a \(m/n\) QAP \(\mathcal{Q}\).
+It is possible to represent any \(m/n\) R1CS \(\mathcal{C}\) with an \(m/n\) QAP \(\mathcal{Q}\).
 First, we choose any arbitrary row vector \(\bm{z} \in \Parens*{\mathbb{F}^m}^{\transpose}\) such 
 that \(\forall i,j\colon \bm{z}_i \neq \bm{z}_j\); typically 
 \(\bm{z} = {\begin{pmatrix}1 & \cdots & m\end{pmatrix}}\).
@@ -340,7 +339,7 @@ Then, given a solution \(\bm{s}\) for \(\mathcal{C}\), we can build a solution f
 by computing \(p = \Parens*{\bm{v}\bm{s}}\Parens*{\bm{w}\bm{s}} - \bm{y}\bm{s}\), which, by 
 construction, is divisible by \(t\), and \(h\) will be their common factor.
 One might see that \(p\) is not really more compact than \(\bm{s}\): 
-as a matter of fact, given a \(m/n\) arithmetic circuit, \(\bm{s}\) has size \(n\), while 
+as a matter of fact, given an \(m/n\) arithmetic circuit, \(\bm{s}\) has size \(n\), while 
 \(p\) has degree (and therefore size) up to \(2n\).
 
 However, the fact that \(p = ht\) implies that, for every \(x \in \mathbb{F}\), 

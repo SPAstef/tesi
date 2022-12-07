@@ -1,11 +1,11 @@
 \section{Secure Hash functions}\label{sec:hash_functions}
-Secure Hash functions are a fundamental tool of cryptography, as they can be used to produce 
-\(\BigO{1}\) or \(\BigO{\call{\log}{n}}\) commitments for any message of length \(\abs{n}\).
+Secure (cryptographic) hash functions are a fundamental tool of cryptography, as they can be used 
+to produce short commitments for any message of length \(\abs{n}\).
 \begin{definition}[Hash function]
   Given \(n \in \mathbb{N}\), an \emph{\(n\)-bit hash function} is a function 
   \(H\colon \Set{0, 1}^{*} \to \Set{0, 1}^{n}\).
 \end{definition}
-The input of an hash function is called the \emph{message}, while its output is called the 
+The input of a hash function is called the \emph{message}, while its output is called the 
 \emph{digest}.
 From the definition, it is immediate to see that there are an infinite number of messages which map
 to the same digest.
@@ -26,7 +26,7 @@ additional \emph{security guarantees}.
 	it is mostly used to denote bitwise \textsc{xor}. Since a message/string over \(\Set{0, 1}^{*}\) 
 	can be considered as a vector over \(\mathbb{Z}_{2}^n\), bitwise \textsc{xor} is the same as 
 	vector addition.
-	However, there are instances, particularly in ZK systems, where messages are interpreted as 
+	However, there are instances, particularly in zero-knowledge systems, where messages are interpreted as 
 	elements of some prime field \(\mathbb{Z}_p\): in such cases, \(\oplus \) will denote addition
 	modulo \(p\), as defined in \Cref{chap:math}.
 	However, such cases will be explicitly specified, so we decided to keep the ambiguity to be 
@@ -34,7 +34,7 @@ additional \emph{security guarantees}.
 \end{remark}
 
 \begin{definition}[Cryptographic hash function~\cite{AlKuwariDB2011}]
-	Given \(n \in \mathbb{N}\), an \emph{\(n\)-bit cryptographic hash function (CHF)} is a \(n\)-bit 
+	Given \(n \in \mathbb{N}\), an \emph{\(n\)-bit cryptographic hash function (CHF)} is an \(n\)-bit 
   hash function which satisfies the following properties:
 	\begin{itemize}
 		\item \textbf{Collision resistance}: It is hard to find two messages \(m_1, m_2\) such
@@ -52,8 +52,8 @@ preimage resistance implies second preimage resistance (if given any \(d\) we ca
 \(m\), then given any \(m'\) we can compute \(d\) and find the collision).
 
 A perfect \(n\)-bit CHF provides \(n/2\) bits of security for collision resistance 
-(birthday paradox), meaning that every possible adversary is expected to need at least 
-\(\BigO{2^{n/2}}\) time to find a collision, 
+(birthday paradox), assuming that the output is uniformly distributed, meaning that every possible 
+adversary is expected to need at least \(\BigO{2^{n/2}}\) time to find a collision, 
 while for preimage resistance it provides \(n\) bits of security.
 A CHF can be built by applying some known secure construction to functions which are
 simpler to devise.
@@ -63,26 +63,22 @@ simpler to devise.
 \end{definition}
 \begin{definition}[Pseudorandom permutation]
 	Given \(l \in \mathbb{N}\), an \(l\)-bit \emph{pseudorandom permutation} is a permutation 
-	\(P\colon \Set{0, 1}^l \to \Set{0, 1}^l\) which is indistinguishable from an uniform random 
+	\(P\colon \Set{0, 1}^l \to \Set{0, 1}^l\) which is indistinguishable from a uniform random 
 	distribution.
 \end{definition}
 \begin{definition}[Keyed permutation]
 	Given \(l, n \in \mathbb{N}\), an \emph{\(l/n\)-bit keyed permutation} is
 	a function \(F\colon \Set{0, 1}^l \times \Set{0, 1}^n \to \Set{0, 1}^l\) which is a permutation 
-  on its first parameter.
+  on its first parameter for every fixed second argument.
 \end{definition}
 \begin{definition}[Block cipher]
   A \emph{block cipher} is a trapdoor pseudorandom keyed permutation.
 \end{definition}
 \begin{definition}[One-way compression function]
 	Given \(l_1, n, l_2 \in \mathbb{N}\) such that \(l_1 + n > l_2\), an 
-	\emph{\(l_1/n/l_2\)-bit one-way compression function (OWCF)} is a one-way function 
-	\(F\colon \Set{0, 1}^{l_1} \times \Set{0, 1}^{n} \to \Set{0, 1}^{l_2}\).
+	\emph{\(l_1/n/l_2\)-bit (or \(\Parens*{l_1+n}\)-to-\(l_2\)-bit) one-way compression function (OWCF)} 
+	is a one-way function \(F\colon \Set{0, 1}^{l_1} \times \Set{0, 1}^{n} \to \Set{0, 1}^{l_2}\).
 \end{definition}
-Since many compression functions exploit their second component (the key), rather than
-the first component to compress a message, we will call \(n\)-to-\(m\)(-bit) compression function 
-any compression function which, in any way, reduces an input of length \(n\) to an output of 
-length \(m\).
 
 A \emph{pseudorandom keyed permutation} (PKP) is typically built by iterating a 
 ``somewhat pseudorandom'' keyed permutation \(F\) for an adequate number of \emph{rounds}, until 
@@ -91,7 +87,7 @@ A block cipher can be built from a PKP by following some secure construction sch
 like the Feistel-Luby-Rackoff construction~\cite{MenezesOV2001}.
 A OWCF can also be derived from a PKP or a block cipher, by applying a secure construction scheme, 
 like the Davies-Meyer construction~\cite{Preneel2005}.
-Finally, CHF can again be derived either by a OWCF, for exaple through the Merkle-Damg\r{a}rd 
+Finally, CHF can again be derived either by a OWCF, for example through the Merkle-Damg\r{a}rd 
 construction~\cite{Merkle1979}, or directly from a pseudorandom permutation, like in the sponge 
 construction~\cite{BertoniDPA2007, Tiwari2017}.
 \begin{proposition}[Feistel-Luby-Rackoff construction~\cite{MenezesOV2001}]
@@ -161,4 +157,4 @@ construction~\cite{BertoniDPA2007, Tiwari2017}.
 
 The sponge construction is particularly interesting as it is very flexible: given a pseudorandom 
 permutation, it can be used to build pseudorandom keyed permutations, cryptographic hash functions, 
-random number generators and authenticated encryptions~\cite{BertoniDPA2012}.
+random number generators and authenticated encryption~\cite{BertoniDPA2012}.

@@ -1,8 +1,7 @@
 \chapter{Introduction}
-An important research branch of cryptography which emerged in the last fourty years is the study of
-\emph{Zero Knowledge Interactive} (ZK-I) protocols, and more specifically zero knowledge proof 
-systems (ZKP)~\cite{GoldwasserMR1989}.
-The main idea behind ZKP systems is to have two (or, in some cases, more) parties, where 
+An important research branch of cryptography which emerged in the last forty years is the study of
+\emph{Zero Knowledge Proof} (ZKP) systems~\cite{GoldwasserMR1989}.
+The main idea behind ZKP is to have two (or, in some cases, more) parties, where 
 one is the \emph{prover} and the other is the \emph{verifier}: in a classical proof system, the prover
 must be able to convince the verifier that a certain statement is true, when this is indeed the case, 
 but the verifier cannot be fooled if the statement is actually false.
@@ -17,18 +16,18 @@ verifier.
 
 Along the years, additional interesting and useful properties have been added to extend and improve 
 the capabilities of ZKP systems.
-For example, we would like to have a \emph{Non-interactive} (ZK-NP) protocol, to minimize the amount 
+For example, we would like to have a \emph{Non-interactive} protocol, to minimize the amount 
 of required communication and have it happen only at the beginning and at the end of the protocol.
 We could also want to relax the soundness requirement so that it is guaranteed only against 
 computationally bounded provers: in this case, instead of `proof' we use the term 
-\emph{ARgument of Knowledge}, and hence we can have ZK-IARK/ZK-NARK systems.
+\emph{ARgument of Knowledge}.
 More recently, there has been a research effort towards reducing the length of the ARK by ensuring 
 that it is constant size or at most bounded by a logarithmic function in the length of the theorem 
-statement: such systems are said to be \emph{Succint}. 
+statement: such systems are said to be \emph{Succinct}. 
 Implementations of ZK-SNARK system, like Pinocchio~\cite{ParnoGHR2013} or Groth16~\cite{Groth2016}, 
-represent the current state of the art of ZKP systems, and allow to generate proofs to verify any 
+represent the current state of the art of ZKP systems, and allow generating proofs to verify any 
 computation representable by means of \emph{bounded arithmetic circuits}.
-A major downside of ZK-SNARK protocols is their need of a trusted third party (TTP) to setup the 
+A major downside of ZK-SNARK protocols is their need of a trusted third party (TTP) to set up the 
 system, hence current research is studying \emph{Transparent} systems (ZK-STARK) to address this 
 issue~\cite{SassonBHR2018}.
 
@@ -36,11 +35,11 @@ An especially useful application of ZKP systems is proving knowledge of a preima
 for a cryptographic hash function digest (a.k.a.\ commitment).
 Many data integrity systems, such as blockchains, rely on Merkle Trees~\cite{Merkle1979} to 
 ensure efficient commitment validation, especially in dynamic environments. 
-In Merkle Trees, an hash function is applied in a bottom-up fashion: the leaves will contain the 
+In Merkle Trees, a hash function is applied in a bottom-up fashion: the leaves will contain the 
 data owned by some parties, while the root will contain the tree commitment.
-In a non-ZK setting, a prover would send the verifier his leaf together with the co-path, 
+In a non zero-knowledge setting, a prover would send the verifier his leaf together with the co-path, 
 the verifier would then recompute the tree commitment and compare it with the public one and be 
-convinced whether or not the prover does actually own the leaf. 
+convinced whether the prover does actually own the leaf. 
 On the other hand, in a ZK-SNARK setting, we first have to represent the computation through a 
 bounded arithmetic circuit, i.e.\ we are allowed to use exclusively a constant number of additions 
 and multiplications over some suitable finite field.
@@ -61,19 +60,20 @@ become extremely inefficient in the ZK case.
 
 It is no wonder then, that in the last years researchers began to study so-called ZK-friendly 
 cryptographic permutation (ZKFCP) designs that exploit the features of large prime fields to be 
-efficient when translated into airhtmetic circuit, fundamentally resulting in a one-to-one mapping.
+efficient when translated into arithmetic circuit, fundamentally resulting in a one-to-one mapping.
 Being a new research topic, these designs have seen a rapid series of 
 improvements~\cite{AlbrechtGRRT2016,GrassiKRRS2021,GrassiHRSWW2022} in the last three years:
 in a two-part series of papers undergoing publication, we presented an algebraic 
 framework, called \emph{Generalized Triangular Dynamical System} (GTDS), which allows to express
 many of the existing cryptographic permutation designs and eases the construction of new ones, while
 at the same time giving strong security guarantees, and we then applied it to devise the \Arion{}
-blockcipher and the \Arionhash{} hash function.
+block cipher and the \Arionhash{} hash function.
 Using the \texttt{libsnark}\footnote{\url{https://github.com/scipr-lab/libsnark}} library (an 
 implementation of the Groth16 framework), we implemented our hash function, along with other 
-competitor hash functions and a hash-agnostic variable-arity Merkle Tree circuit template, in a 
+competitor hash functions and a hash-agnostic, variable-arity Merkle Tree circuit template, in a 
 \texttt{C++} project which we then used to compare their real-world performance for same-level 
-security gaurantees in various scenarios.
+security guarantees in various scenarios.\footnote{This work was funded by the project 
+"RampUp Cybersecurity" (KWF-3520 | 31870 | 45842) by the KWF.}
 
 \section*{Structure of this thesis}
 This work is organized as follows: \Cref{chap:math} presents the mathematical background for 
