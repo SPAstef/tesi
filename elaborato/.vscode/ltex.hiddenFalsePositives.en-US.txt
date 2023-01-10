@@ -104,3 +104,15 @@
 {"rule":"WHITESPACE_RULE","sentence":"^\\Q-1Driver file for pgf:   Driver file “” not found.\\E$"}
 {"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\Qand \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q , a new keyed permutation from the GTDS: Exponent \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q: easy to exponentiate by, inverse is big.\\E$"}
 {"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\Q, a new keyed permutation from the GTDS: Exponent \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q: easy to exponentiate by, inverse is big.\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\Q[allowframebreaks,noframenumbering]\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QInteractive Proof Systems \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q max height=96pt,keepaspectratio\\E$"}
+{"rule":"EN_A_VS_AN","sentence":"^\\QBottom-up computation using an hash function.\\E$"}
+{"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qand\\E$"}
+{"rule":"UNLIKELY_OPENING_PUNCTUATION","sentence":"^\\Q: Partial substitution-permutation network (from AES \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q).\\E$"}
+{"rule":"UNLIKELY_OPENING_PUNCTUATION","sentence":"^\\Q: based on the scheme: \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q.\\E$"}
+{"rule":"DOUBLE_PUNCTUATION","sentence":"^\\QEncompasses existing design strategies (Feistel, , SPN…).\\E$"}
+{"rule":"UNLIKELY_OPENING_PUNCTUATION","sentence":"^\\Q: aggressive variant,\\E$"}
+{"rule":"DOUBLE_PUNCTUATION","sentence":"^\\QEncompasses existing strategies (Feistel, , SPN…).\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\Q-256: 96 R1CS constraints (\\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q less than ).\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QA self-configuring Merkle tree, and the Augmented Binary tRee \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q.\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\Q\\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q less constraints than .\\E$"}
