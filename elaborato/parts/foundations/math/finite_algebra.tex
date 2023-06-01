@@ -105,8 +105,9 @@ operation.
   \[
     \forall x \in \mathbb{G},\forall k \in \mathbb{Z}\colon x^k =
     \begin{cases}
-      x^{k-1} \odot x & k \ge 0 \\
-      x^{k+1} \odot x^{-1} & k < 0
+      \id & k = 0 \\
+      x^{k-1} \odot x & k > 0 \\
+      x^{k+1} \odot \inv{x} & k < 0
     \end{cases}
   \]
   If \(\mathbb{G}\) is also a commutative (resp.\ cyclic) monoid, then it is a 
